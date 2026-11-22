@@ -8,6 +8,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
 COPY packages/contracts/package.json packages/contracts/
 COPY packages/core/package.json packages/core/
 COPY packages/chain/package.json packages/chain/
+COPY packages/api-schema/package.json packages/api-schema/
 COPY apps/server/package.json apps/server/
 RUN pnpm install --frozen-lockfile --filter @atprice/server...
 COPY packages ./packages

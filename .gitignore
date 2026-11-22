@@ -16,3 +16,4 @@ recordings/
 .DS_Store
 .turbo/
 *.tsbuildinfo
+.vercel/
