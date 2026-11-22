@@ -23,6 +23,7 @@ jobs:
           --health-cmd "pg_isready -U atprice" --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgres://atprice:atprice@localhost:5432/atprice_test
+      TEST_DATABASE_URL: postgres://atprice:atprice@localhost:5432/atprice_test
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
