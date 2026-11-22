@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/winsznx/atprice/security/advisories/new
+    about: Anything that could put user funds at risk. Please report it privately, not as an issue.
+  - name: Recover or cancel an order
+    url: https://github.com/winsznx/atprice/blob/main/docs/recovery.md
+    about: Step-by-step cancel instructions that work without AtPrice servers.

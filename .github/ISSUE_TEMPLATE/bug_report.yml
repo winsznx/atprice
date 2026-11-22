@@ -1,0 +1,62 @@
+name: Bug report
+description: Something in AtPrice doesn't work the way the docs say it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If this could put funds at risk, stop and use the private security report link instead. Never paste a private key, seed phrase or xpub here.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Web app
+        - Keeper or API
+        - Recover file or pnpm recover
+        - Contracts
+        - Docs
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network
+      options:
+        - mainnet
+        - chipnet
+        - local only
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead. Include any error code shown, such as API_UNREACHABLE.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open /trade
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: txid
+    attributes:
+      label: Transaction id
+      description: The funding, fill or cancel txid, if a transaction is involved. Txids are public, so this is safe to share.
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and wallet
+      description: For web app or recover issues, for example "Firefox 140, Cashonize".
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: The build hash in the site footer, or the commit you ran locally.
