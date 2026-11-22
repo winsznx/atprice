@@ -48,6 +48,8 @@ The contract itself is short: [`AtPriceBuy.cash`](packages/contracts/src/AtPrice
 
 ## Verify it yourself
 
+**Mainnet, through the live app:** a BCH -> PUSD limit order funded from a phone wallet over WizardConnect ([`6849c4a8...c0cd`](https://explorer.selene.cash/tx/6849c4a82e1eb4730bb5a7b21b56cc059f7206110c5c5e54b9472935dc07c0cd?network=mainnet)), then filled by AtPrice's keeper through a Cauldron pool with no further signature ([`612eba05...d321`](https://explorer.selene.cash/tx/612eba052ed15827ba4163287620ce4d979fb0907cadbf4875541a1e2199d321?network=mainnet), block 978,486).
+
 Every claim below is a transaction on chipnet that you can open in an explorer. Mainnet orders and fills are listed on the site's [/evidence](https://atprice.cash/evidence) page, which reads them from `GET /api/v1/evidence`.
 
 Contract behaviour, proven with real public Cauldron pools and the compiled artifacts (token PUSDTEST, category `dfe50223c8d5cba8dcef8dff6d92b61deb88a8ba44947367f2b746487b56039b`):
