@@ -1,12 +1,22 @@
 import { ArrowSquareOutIcon, CheckIcon, CopyIcon } from '@phosphor-icons/react/dist/ssr';
 import qrcode from 'qrcode-generator';
-import { useEffect, useMemo, useRef, useState, type ComponentProps, type MouseEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { truncateMiddle } from '../../../web/lib/format';
 
 /** An outpoint as the chip shows it: the txid truncated, the output index kept. */
-export const outpointDisplay = (txid: string, vout: number): string => `${txid.slice(0, 8)}…${txid.slice(-6)}:${vout}`;
+export const outpointDisplay = (txid: string, vout: number): string =>
+  `${txid.slice(0, 8)}…${txid.slice(-6)}:${vout}`;
 
-export const cx = (...classes: (string | false | null | undefined)[]): string => classes.filter(Boolean).join(' ');
+export const cx = (...classes: (string | false | null | undefined)[]): string =>
+  classes.filter(Boolean).join(' ');
 
 /** M-01: colour properties only, so the focus outline is never transitioned (motion.md rule 7). */
 export const CONTROL_TRANSITION =
@@ -23,13 +33,18 @@ const BUTTON_VARIANT = {
   primary: 'bg-brand text-brand-fg shadow-inset hover:bg-brand-hover active:bg-brand-hover',
   outline: 'border border-border-input bg-surface text-fg hover:bg-surface-sunken active:bg-surface-sunken',
   ghost: 'text-fg-secondary hover:bg-surface-sunken active:bg-surface-sunken',
-  destructive: 'bg-status-failed text-brand-fg shadow-inset hover:bg-status-failed-hover active:bg-status-failed-hover',
+  destructive:
+    'bg-status-failed text-brand-fg shadow-inset hover:bg-status-failed-hover active:bg-status-failed-hover',
 } as const;
 
 export type ButtonVariant = keyof typeof BUTTON_VARIANT;
 
 export const buttonClass = (variant: ButtonVariant, compact = false): string =>
-  cx(BUTTON_BASE, BUTTON_VARIANT[variant], compact ? 'min-h-10 px-4 text-label font-semibold' : 'min-h-(--size-control) px-5');
+  cx(
+    BUTTON_BASE,
+    BUTTON_VARIANT[variant],
+    compact ? 'min-h-10 px-4 text-label font-semibold' : 'min-h-(--size-control) px-5',
+  );
 
 /**
  * DD 7.1. A control that must keep its reason reachable uses `aria-disabled` plus `aria-describedby`
@@ -50,7 +65,14 @@ export function Button({
     }
     onClick?.(event);
   };
-  return <button type="button" className={cx(buttonClass(variant, compact), className)} onClick={handleClick} {...props} />;
+  return (
+    <button
+      type="button"
+      className={cx(buttonClass(variant, compact), className)}
+      onClick={handleClick}
+      {...props}
+    />
+  );
 }
 
 export function DisabledReason({ id, children }: { id: string; children: ReactNode }) {
@@ -118,7 +140,11 @@ function CopyIcons({ state }: { state: CopyState }) {
 
 function CopyStatus({ state }: { state: CopyState }) {
   return (
-    <span role="status" aria-live="polite" className={state === 'failed' ? 'text-body-sm text-status-failed' : 'sr-only'}>
+    <span
+      role="status"
+      aria-live="polite"
+      className={state === 'failed' ? 'text-body-sm text-status-failed' : 'sr-only'}
+    >
       {state === 'copied' ? 'Copied' : state === 'failed' ? 'Copy failed. Select the text instead.' : ''}
     </span>
   );
@@ -180,7 +206,10 @@ export function HashChip({
       >
         <span
           ref={textRef}
-          className={cx('hash min-w-0 py-1', full || state === 'failed' ? 'whitespace-normal' : 'whitespace-nowrap')}
+          className={cx(
+            'hash min-w-0 py-1',
+            full || state === 'failed' ? 'whitespace-normal' : 'whitespace-nowrap',
+          )}
           title={full ? undefined : value}
         >
           {shown}
@@ -243,7 +272,9 @@ export function CopyTextButton({
         </span>
         {children}
       </Button>
-      {disabled && disabledReason !== undefined ? <DisabledReason id={reasonId}>{disabledReason}</DisabledReason> : null}
+      {disabled && disabledReason !== undefined ? (
+        <DisabledReason id={reasonId}>{disabledReason}</DisabledReason>
+      ) : null}
       <CopyStatus state={state} />
     </span>
   );
@@ -297,7 +328,12 @@ const TONE: Readonly<Record<Tone, string>> = {
 /** DD 7.15 status badge: a tinted pill with text, so status never depends on colour alone. */
 export function Badge({ tone, children }: { tone: Tone; children: ReactNode }) {
   return (
-    <span className={cx('inline-flex min-h-6 items-center rounded-full px-2.5 text-caption font-semibold', TONE[tone])}>
+    <span
+      className={cx(
+        'inline-flex min-h-6 items-center rounded-full px-2.5 text-caption font-semibold',
+        TONE[tone],
+      )}
+    >
       {children}
     </span>
   );
@@ -317,7 +353,10 @@ export function ErrorBlock({
 }) {
   const showCode = typeof message !== 'string' || !message.includes(code);
   return (
-    <div role="alert" className="flex flex-col gap-2 rounded-md border border-status-failed bg-status-failed-subtle p-4">
+    <div
+      role="alert"
+      className="flex flex-col gap-2 rounded-md border border-status-failed bg-status-failed-subtle p-4"
+    >
       <p className="text-body-sm text-fg">{message}</p>
       {showCode ? <p className="hash text-mono-sm text-status-failed">{code}</p> : null}
       {detail === undefined ? null : <p className="hash text-mono-sm text-fg-secondary">{detail}</p>}

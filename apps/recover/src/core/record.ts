@@ -1,4 +1,10 @@
-import { decodeOrderRecord, RecordDecodeError, RECORD_MAGIC, type OrderRecord, type RecordDecodeFailure } from '@atprice/core';
+import {
+  decodeOrderRecord,
+  RecordDecodeError,
+  RECORD_MAGIC,
+  type OrderRecord,
+  type RecordDecodeFailure,
+} from '@atprice/core';
 import { binToHex, type TransactionCommon } from '@bitauth/libauth';
 
 const OP_RETURN = 0x6a;

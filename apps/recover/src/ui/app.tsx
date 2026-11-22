@@ -101,7 +101,8 @@ function SpentSummary({ order }: { order: LoadedOrder }) {
       </>
     ) : status.kind === 'needs_review' ? (
       <>
-        Nothing to cancel here. The order output was already spent in <span className="hash">{status.txid}</span>.
+        Nothing to cancel here. The order output was already spent in{' '}
+        <span className="hash">{status.txid}</span>.
       </>
     ) : null;
   return <CollapsedSection id="step-cancel" step={4} title="Cancel" summary={summary} />;
@@ -142,7 +143,8 @@ export function App({
     reveal(focus.target === 'find' ? findRef.current : orderRef.current);
   }, [focus]);
 
-  const requestFocus = (target: FocusTarget) => setFocus((previous) => ({ target, request: (previous?.request ?? 0) + 1 }));
+  const requestFocus = (target: FocusTarget) =>
+    setFocus((previous) => ({ target, request: (previous?.request ?? 0) + 1 }));
 
   const replaceOrder = (order: LoadedOrder) => {
     setSelected((current) => (current !== null && sameOrder(current, order) ? order : current));
@@ -177,9 +179,14 @@ export function App({
       } else {
         const owner = parseOwnerAddress(input, config.network);
         if (!owner.ok) return;
-        const found = await findOrdersByAddress(state.chain, config.network, owner.value.ownerPkh, (checked, total) => {
-          if (isCurrent()) setActivity({ kind: 'searching', checked, total });
-        });
+        const found = await findOrdersByAddress(
+          state.chain,
+          config.network,
+          owner.value.ownerPkh,
+          (checked, total) => {
+            if (isCurrent()) setActivity({ kind: 'searching', checked, total });
+          },
+        );
         if (!isCurrent()) return;
         if (found.orders.length === 0 && found.unknownVersions.length === 0) {
           setResults({ kind: 'no_orders' });
@@ -218,7 +225,13 @@ export function App({
     setSent((current) => new Map(current).set(outpointKey(order), { txid, height: 0 }));
     const state = session.getState();
     if (state.kind !== 'connected') return;
-    readOrderStatus(state.chain, order.record, order.lockingBytecode, order.funding, order.fundingOutput).then(
+    readOrderStatus(
+      state.chain,
+      order.record,
+      order.lockingBytecode,
+      order.funding,
+      order.fundingOutput,
+    ).then(
       ({ status, fundingHeight }) => replaceOrder({ ...order, status, fundingHeight }),
       (error: unknown) => console.error('Re-reading the order after the cancel failed:', error),
     );
@@ -242,10 +255,13 @@ export function App({
           existing !== null && sameOrder(existing, order) ? { ...existing, status, fundingHeight } : existing,
         );
         if (status.kind === 'cancelled' && status.txid === pendingTxid && status.height > 0) {
-          setSent((map) => new Map(map).set(outpointKey(order), { txid: pendingTxid, height: status.height }));
+          setSent((map) =>
+            new Map(map).set(outpointKey(order), { txid: pendingTxid, height: status.height }),
+          );
         }
       },
-      (error: unknown) => console.error('Checking the cancel confirmation failed; retrying at the next block:', error),
+      (error: unknown) =>
+        console.error('Checking the cancel confirmation failed; retrying at the next block:', error),
     );
     return () => {
       current = false;
@@ -266,8 +282,8 @@ export function App({
         <div className="flex max-w-(--container-prose) flex-col gap-3">
           <h1 className="text-heading-2 text-fg md:text-heading-1">Recover an order</h1>
           <p className="text-body text-fg-secondary">
-            Find an AtPrice order on chain and cancel it with your wallet. This page talks only to a Bitcoin Cash server
-            you choose and to your wallet, never to AtPrice's servers.
+            Find an AtPrice order on chain and cancel it with your wallet. This page talks only to a Bitcoin
+            Cash server you choose and to your wallet, never to AtPrice's servers.
           </p>
         </div>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
@@ -307,7 +323,12 @@ export function App({
                   <div aria-hidden="true" className="h-64 rounded-md bg-surface-muted" />
                 </section>
               ) : (
-                <CollapsedSection id="step-order" step={3} title="Order" summary="Find an order in step 2 first." />
+                <CollapsedSection
+                  id="step-order"
+                  step={3}
+                  title="Order"
+                  summary="Find an order in step 2 first."
+                />
               )
             ) : (
               <OrderSection

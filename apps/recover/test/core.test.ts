@@ -7,15 +7,34 @@ import {
 } from '@atprice/core';
 import { binToHex, decodeTransactionBch, encodeLockingBytecodeP2pkh, hexToBin } from '@bitauth/libauth';
 import { describe, expect, it } from 'vitest';
-import { checkSignedCancel, CancelCheckError, planCancel, supportsPlaceholderSigning, verifyCancel } from '../src/core/cancel';
-import { aboveMinimumText, minimumLine, parameterRows, parametersJson, spokenGroups } from '../src/core/describe';
+import {
+  checkSignedCancel,
+  CancelCheckError,
+  planCancel,
+  supportsPlaceholderSigning,
+  verifyCancel,
+} from '../src/core/cancel';
+import {
+  aboveMinimumText,
+  minimumLine,
+  parameterRows,
+  parametersJson,
+  spokenGroups,
+} from '../src/core/describe';
 import { RecoverError } from '../src/core/errors';
 import { parseOwnerAddress, parseServerUrl, parseTxid, SERVER_REASON, TXID_REASON } from '../src/core/inputs';
 import { findOrderByTxid, findOrdersByAddress, type LoadedOrder } from '../src/core/lookup';
 import { recoverNetworkProvider } from '../src/core/provider';
 import { scanRecords } from '../src/core/record';
 import { FakeChain } from './support/chain';
-import { buyParams, fundingTransaction, OWNER, seedUnspentOrder, sellParams, STRANGER } from './support/orders';
+import {
+  buyParams,
+  fundingTransaction,
+  OWNER,
+  seedUnspentOrder,
+  sellParams,
+  STRANGER,
+} from './support/orders';
 
 const loadOrder = async (chain: FakeChain, params: OrderParams): Promise<LoadedOrder> => {
   const txid = seedUnspentOrder(chain, params);
@@ -37,7 +56,10 @@ describe('inputs', () => {
     expect(parsed.ok && parsed.value.address).toBe(plain);
     const bare = parseOwnerAddress(plain.slice('bchtest:'.length), 'chipnet');
     expect(bare.ok && bare.value.address).toBe(plain);
-    expect(parseOwnerAddress(plain, 'mainnet')).toEqual({ ok: false, reason: 'Enter a mainnet Bitcoin Cash address.' });
+    expect(parseOwnerAddress(plain, 'mainnet')).toEqual({
+      ok: false,
+      reason: 'Enter a mainnet Bitcoin Cash address.',
+    });
     expect(parseOwnerAddress('bchtest:pq0000', 'chipnet').ok).toBe(false);
   });
 
@@ -76,9 +98,13 @@ describe('scanRecords', () => {
   it('reports a malformed ATPR record and ignores other OP_RETURNs', () => {
     const record = encodeOrderRecord(buyParams());
     const truncated = record.slice(0, record.length - 3);
-    expect(scanRecords(decode(fundingTransaction(buyParams(), { recordBytecode: truncated }).hex)).kind).toBe('invalid');
+    expect(scanRecords(decode(fundingTransaction(buyParams(), { recordBytecode: truncated }).hex)).kind).toBe(
+      'invalid',
+    );
     const memo = Uint8Array.from([0x6a, 0x04, 0x6d, 0x65, 0x6d, 0x6f]);
-    expect(scanRecords(decode(fundingTransaction(buyParams(), { recordBytecode: memo }).hex))).toEqual({ kind: 'none' });
+    expect(scanRecords(decode(fundingTransaction(buyParams(), { recordBytecode: memo }).hex))).toEqual({
+      kind: 'none',
+    });
   });
 });
 
@@ -153,7 +179,13 @@ describe('order lookup', () => {
     const sellFunding = fundingTransaction(sell);
     chain.addTransaction(sellFunding.txid, sellFunding.hex);
     chain.setUtxos(orderLockingBytecode(sell), [
-      { txid: sellFunding.txid, vout: 0, satoshis: 2_000n, height: 0, token: { category: sell.tokenCategory, amount: 30n } },
+      {
+        txid: sellFunding.txid,
+        vout: 0,
+        satoshis: 2_000n,
+        height: 0,
+        token: { category: sell.tokenCategory, amount: 30n },
+      },
     ]);
     chain.setHistory(orderLockingBytecode(sell), [{ txid: sellFunding.txid, height: 0 }]);
     const strangerFunding = fundingTransaction(buyParams({ ownerPkh: STRANGER.pkh }));
@@ -164,8 +196,12 @@ describe('order lookup', () => {
       { txid: sellFunding.txid, height: 0 },
     ]);
     const progress: [number, number][] = [];
-    const found = await findOrdersByAddress(chain, 'chipnet', OWNER.pkh, (checked, total) => progress.push([checked, total]));
-    expect(found.orders.map((order) => order.funding.txid).sort()).toEqual([buyTxid, sellFunding.txid].sort());
+    const found = await findOrdersByAddress(chain, 'chipnet', OWNER.pkh, (checked, total) =>
+      progress.push([checked, total]),
+    );
+    expect(found.orders.map((order) => order.funding.txid).sort()).toEqual(
+      [buyTxid, sellFunding.txid].sort(),
+    );
     expect(progress.at(0)).toEqual([0, 3]);
     expect(progress.at(-1)).toEqual([3, 3]);
   });
@@ -194,7 +230,15 @@ describe('cancel plan', () => {
     const order = await loadOrder(chain, buyParams());
     const plan = planCancel({
       order,
-      ownerUtxos: [{ txid: 'cd'.repeat(32), vout: 1, satoshis: 800n, height: 1, token: { category: 'ef'.repeat(32), amount: 5n } }],
+      ownerUtxos: [
+        {
+          txid: 'cd'.repeat(32),
+          vout: 1,
+          satoshis: 800n,
+          height: 1,
+          token: { category: 'ef'.repeat(32), amount: 5n },
+        },
+      ],
       path: 'cancel',
       provider: recoverNetworkProvider(chain, 'chipnet'),
     });
@@ -204,12 +248,19 @@ describe('cancel plan', () => {
   it('builds cancelWithSig with no owner input and the tokens mirrored for a sell', async () => {
     const chain = new FakeChain();
     const order = await loadOrder(chain, sellParams());
-    const plan = planCancel({ order, ownerUtxos: [], path: 'cancelWithSig', provider: recoverNetworkProvider(chain, 'chipnet') });
+    const plan = planCancel({
+      order,
+      ownerUtxos: [],
+      path: 'cancelWithSig',
+      provider: recoverNetworkProvider(chain, 'chipnet'),
+    });
     expect(plan.kind).toBe('ready');
     if (plan.kind !== 'ready') return;
     expect(plan.cancel.ownerCoin).toBeNull();
     expect(plan.cancel.refund.token?.amount).toBe(30n);
-    expect(plan.cancel.draft.request.transaction.sourceOutputs[0]?.contract?.artifact.contractName).toBe('AtPriceSell');
+    expect(plan.cancel.draft.request.transaction.sourceOutputs[0]?.contract?.artifact.contractName).toBe(
+      'AtPriceSell',
+    );
   });
 
   it('accepts the owner’s signed cancel and refuses an unsigned or altered one', async () => {
@@ -217,30 +268,42 @@ describe('cancel plan', () => {
     const params = buyParams();
     const order = await loadOrder(chain, params);
     const ownerUtxo = { txid: 'cd'.repeat(32), vout: 2, satoshis: 1_000n, height: 342_300 };
-    const plan = planCancel({ order, ownerUtxos: [ownerUtxo], path: 'cancel', provider: recoverNetworkProvider(chain, 'chipnet') });
+    const plan = planCancel({
+      order,
+      ownerUtxos: [ownerUtxo],
+      path: 'cancel',
+      provider: recoverNetworkProvider(chain, 'chipnet'),
+    });
     if (plan.kind !== 'ready') throw new Error(plan.kind);
     const signed = buildSignedCancelTransaction({
       owner: { utxos: [ownerUtxo] },
-      orders: [{ order: instantiateOrder(params, recoverNetworkProvider(chain, 'chipnet')), utxo: { txid: order.funding.txid, vout: 0, satoshis: 153_000n } }],
+      orders: [
+        {
+          order: instantiateOrder(params, recoverNetworkProvider(chain, 'chipnet')),
+          utxo: { txid: order.funding.txid, vout: 0, satoshis: 153_000n },
+        },
+      ],
       ownerSigner: OWNER.signer,
     });
     expect(checkSignedCancel(plan.cancel, order, signed.hex).txid).toBe(signed.txid);
-    expect(() => checkSignedCancel(plan.cancel, order, plan.cancel.draft.unsignedHex)).toThrow(CancelCheckError);
+    expect(() => checkSignedCancel(plan.cancel, order, plan.cancel.draft.unsignedHex)).toThrow(
+      CancelCheckError,
+    );
 
     const tampered = decodeTransactionBch(hexToBin(plan.cancel.draft.unsignedHex));
     if (typeof tampered === 'string') throw new Error(tampered);
     const refund = tampered.outputs[1];
     if (refund === undefined) throw new Error('no refund');
     tampered.outputs[1] = { ...refund, lockingBytecode: STRANGER.lockingBytecode };
-    expect(() => verifyCancel(tampered, plan.cancel.draft.sourceOutputs, order, 'cancel', plan.cancel.ownerCoin)).toThrow(
-      /refund rule R/,
-    );
+    expect(() =>
+      verifyCancel(tampered, plan.cancel.draft.sourceOutputs, order, 'cancel', plan.cancel.ownerCoin),
+    ).toThrow(/refund rule R/);
     const underpaid = decodeTransactionBch(hexToBin(plan.cancel.draft.unsignedHex));
     if (typeof underpaid === 'string') throw new Error(underpaid);
     underpaid.outputs[1] = { ...refund, valueSatoshis: 153_000n - 2_001n };
-    expect(() => verifyCancel(underpaid, plan.cancel.draft.sourceOutputs, order, 'cancel', plan.cancel.ownerCoin)).toThrow(
-      /refund rule R/,
-    );
+    expect(() =>
+      verifyCancel(underpaid, plan.cancel.draft.sourceOutputs, order, 'cancel', plan.cancel.ownerCoin),
+    ).toThrow(/refund rule R/);
   });
 
   it('lists placeholder-signing wallets by the name they send', () => {
@@ -262,7 +325,9 @@ describe('describe', () => {
     expect(minOutRow?.label).toBe('minOut (contract value; for a sell this includes the 2,000 sat reserve)');
     expect(minOutRow?.value).toContain('146,934 sat');
     expect(aboveMinimumText(order, 151_725n)).toBe('+0.00004791 BCH');
-    const json = JSON.parse(parametersJson(order)) as { constructorParameters: { minOut: string; minOutNote: string } };
+    const json = JSON.parse(parametersJson(order)) as {
+      constructorParameters: { minOut: string; minOutNote: string };
+    };
     expect(json.constructorParameters.minOut).toBe('146934');
     expect(json.constructorParameters.minOutNote).toContain('2,000 sat reserve');
   });

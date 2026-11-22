@@ -65,7 +65,9 @@ function PairingBlock({ state, wallet }: { state: Pairing; wallet: RecoverWallet
     <a
       href={state.uri}
       aria-label="Open pairing link in your wallet app"
-      className={mdUp ? 'self-start text-body text-link underline underline-offset-4' : buttonClass('primary')}
+      className={
+        mdUp ? 'self-start text-body text-link underline underline-offset-4' : buttonClass('primary')
+      }
     >
       Open in wallet app
     </a>
@@ -95,8 +97,8 @@ function PairingBlock({ state, wallet }: { state: Pairing; wallet: RecoverWallet
       )}
       <p ref={waitingRef} tabIndex={-1} className="text-body-sm text-fg-secondary">
         {mdUp ? 'Waiting for your wallet to scan this code' : 'Waiting for your wallet'} ·{' '}
-        <span className="num">{formatElapsed(elapsed)}</span>. This page stops waiting after 5 minutes unless you ask for
-        more time.
+        <span className="num">{formatElapsed(elapsed)}</span>. This page stops waiting after 5 minutes unless
+        you ask for more time.
       </p>
       <p role="status" aria-live="polite" className="sr-only">
         {state.warningSince === null ? '' : 'This page stops waiting in 0:30.'}
@@ -125,8 +127,8 @@ function Reconnecting({ since }: { since: number }) {
   const elapsed = useElapsed(since) ?? 0;
   return (
     <p className="text-body-sm text-fg-secondary">
-      Reconnecting to your wallet (<span className="num">{formatElapsed(elapsed)}</span>). Requests resume when it
-      answers.
+      Reconnecting to your wallet (<span className="num">{formatElapsed(elapsed)}</span>). Requests resume
+      when it answers.
     </p>
   );
 }
@@ -181,8 +183,8 @@ export function ConnectBlock({
       body = (
         <>
           <p className="text-body-sm text-fg-secondary">
-            This page uses WizardConnect to ask the wallet that created this order to sign the cancel. It never asks for a
-            seed phrase or private key.
+            This page uses WizardConnect to ask the wallet that created this order to sign the cancel. It
+            never asks for a seed phrase or private key.
           </p>
           {connect('Connect owner wallet')}
         </>
@@ -190,9 +192,13 @@ export function ConnectBlock({
       break;
     case 'unavailable':
       body = (
-        <div role="alert" className="flex flex-col gap-2 rounded-md border border-status-failed bg-status-failed-subtle p-4">
+        <div
+          role="alert"
+          className="flex flex-col gap-2 rounded-md border border-status-failed bg-status-failed-subtle p-4"
+        >
           <p className="text-body-sm text-fg">
-            The wallet connection library in this file failed its start-up check: {state.problems.join('; ')}. Use{' '}
+            The wallet connection library in this file failed its start-up check: {state.problems.join('; ')}.
+            Use{' '}
             <a href="#other-ways" className="text-link underline underline-offset-4">
               Other ways
             </a>{' '}
@@ -208,7 +214,9 @@ export function ConnectBlock({
     case 'pairing_timed_out':
       body = (
         <>
-          <p className="text-body-sm text-fg-secondary">This page stopped waiting for a scan. That code no longer works.</p>
+          <p className="text-body-sm text-fg-secondary">
+            This page stopped waiting for a scan. That code no longer works.
+          </p>
           {connect('New pairing code')}
         </>
       );
@@ -228,7 +236,9 @@ export function ConnectBlock({
           ) : (
             <p className="text-body-sm text-fg-secondary">
               This wallet isn't the owner. The order was created by key hash{' '}
-              <span className="hash text-mono-sm text-fg">{spokenGroups(hex).split(' ').slice(0, 2).join(' ')} …</span>
+              <span className="hash text-mono-sm text-fg">
+                {spokenGroups(hex).split(' ').slice(0, 2).join(' ')} …
+              </span>
               <span className="sr-only">{spokenGroups(hex)}</span>. Connect the wallet that created it.
             </p>
           )}
@@ -242,8 +252,8 @@ export function ConnectBlock({
         <>
           {reconnectingSince !== null ? <Reconnecting since={reconnectingSince} /> : null}
           <p className="text-body-sm text-fg-secondary">
-            Your wallet is on {walletNetworkLabel(state.walletNetwork)}. This file recovers {network} orders. Switch your
-            wallet, then connect again.
+            Your wallet is on {walletNetworkLabel(state.walletNetwork)}. This file recovers {network} orders.
+            Switch your wallet, then connect again.
           </p>
           {disconnect}
         </>
@@ -254,7 +264,8 @@ export function ConnectBlock({
         <>
           {reconnectingSince !== null ? <Reconnecting since={reconnectingSince} /> : null}
           <p className="text-body-sm text-fg-secondary">
-            Your wallet didn't share the receive key path that owns AtPrice orders, so it can't sign this cancel.
+            Your wallet didn't share the receive key path that owns AtPrice orders, so it can't sign this
+            cancel.
           </p>
           {disconnect}
         </>
@@ -271,7 +282,10 @@ export function ConnectBlock({
     case 'error':
       body = (
         <>
-          <div role="alert" className="flex flex-col gap-2 rounded-md border border-status-failed bg-status-failed-subtle p-4">
+          <div
+            role="alert"
+            className="flex flex-col gap-2 rounded-md border border-status-failed bg-status-failed-subtle p-4"
+          >
             {state.relayUnreachable ? (
               <p className="text-body-sm text-fg">
                 Couldn't reach the wallet connection relay ({state.message}). You can still cancel from{' '}
@@ -294,7 +308,10 @@ export function ConnectBlock({
   }
 
   return (
-    <section aria-labelledby="connect-status" className="flex flex-col gap-3 rounded-lg border border-border p-4 md:p-5">
+    <section
+      aria-labelledby="connect-status"
+      className="flex flex-col gap-3 rounded-lg border border-border p-4 md:p-5"
+    >
       <p className="text-label text-fg-muted">Wallet</p>
       <h3 id="connect-status" ref={headingRef} tabIndex={-1} className="text-label font-semibold text-fg">
         {heading}

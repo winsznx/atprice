@@ -5,5 +5,9 @@ declare module 'subset-font' {
     readonly keepFeatures?: readonly string[];
     readonly noHinting?: boolean;
   }
-  export default function subsetFont(font: Uint8Array, text: string, options?: SubsetOptions): Promise<Buffer>;
+  export default function subsetFont(
+    font: Uint8Array,
+    text: string,
+    options?: SubsetOptions,
+  ): Promise<Buffer>;
 }

@@ -13,7 +13,16 @@ export const FONT_SUBSET_TEXT =
   '−…·→⇄≈';
 
 /** The `z.*` members the zod shim provides to `packages/chain` (see `zodShimPlugin` in build.ts). */
-export const ZOD_SHIM_MEMBERS = ['array', 'bigint', 'boolean', 'enum', 'number', 'object', 'string', 'union'] as const;
+export const ZOD_SHIM_MEMBERS = [
+  'array',
+  'bigint',
+  'boolean',
+  'enum',
+  'number',
+  'object',
+  'string',
+  'union',
+] as const;
 
 /** Every `z.member` a module calls, so the build fails if `packages/chain` starts using one the shim lacks. */
 export const zodMembersUsed = (source: string): string[] => [
@@ -53,7 +62,8 @@ export const animationViolations = (css: string): string[] => {
 };
 
 /** CSP source for an inline element: base64 SHA-256 of its exact text. */
-export const cspHash = (text: string): string => `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
+export const cspHash = (text: string): string =>
+  `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`;
 
 export const contentSecurityPolicy = (css: string, js: string): string =>
   [
@@ -88,7 +98,8 @@ export const optionalHttpsUrl = (name: string, value: string | undefined): strin
   } catch {
     throw new BuildConfigError(`${name}_INVALID`, `${name} is not a URL: ${trimmed}`);
   }
-  if (url.protocol !== 'https:') throw new BuildConfigError(`${name}_INVALID`, `${name} must start with https://`);
+  if (url.protocol !== 'https:')
+    throw new BuildConfigError(`${name}_INVALID`, `${name} must start with https://`);
   if (/[<>&"]/.test(url.href)) throw new BuildConfigError(`${name}_INVALID`, `${name} contains < > & or "`);
   return url.href;
 };

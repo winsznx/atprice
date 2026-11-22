@@ -44,11 +44,15 @@ export const assertTemplateSafe = (parts: DocumentParts): void => {
     ['csp', parts.csp],
     ['icon', parts.icon],
   ] as const) {
-    if (/[<>&"]/.test(value)) throw new Error(`RECOVER_TEMPLATE_UNSAFE: ${name} contains a character that needs escaping`);
+    if (/[<>&"]/.test(value))
+      throw new Error(`RECOVER_TEMPLATE_UNSAFE: ${name} contains a character that needs escaping`);
   }
-  if (/<\/style/i.test(parts.css)) throw new Error('RECOVER_TEMPLATE_UNSAFE: the stylesheet contains </style');
-  if (/<\/script|<!--/i.test(parts.js)) throw new Error('RECOVER_TEMPLATE_UNSAFE: the script contains </script or <!--');
-  if (/\r/.test(parts.css + parts.js)) throw new Error('RECOVER_TEMPLATE_UNSAFE: carriage returns would be normalized');
+  if (/<\/style/i.test(parts.css))
+    throw new Error('RECOVER_TEMPLATE_UNSAFE: the stylesheet contains </style');
+  if (/<\/script|<!--/i.test(parts.js))
+    throw new Error('RECOVER_TEMPLATE_UNSAFE: the script contains </script or <!--');
+  if (/\r/.test(parts.css + parts.js))
+    throw new Error('RECOVER_TEMPLATE_UNSAFE: carriage returns would be normalized');
 };
 
 /**

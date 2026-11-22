@@ -36,7 +36,11 @@ export const useElapsed = (since: number | null): number | null => {
  * moves focus to its status heading, announced once). The heading carries `tabindex="-1"`. Leaving
  * `quietFrom` (a loading state the user didn't cause) keeps focus where it is.
  */
-export const useFocusOnChange = (ref: RefObject<HTMLElement | null>, key: string, quietFrom?: string): void => {
+export const useFocusOnChange = (
+  ref: RefObject<HTMLElement | null>,
+  key: string,
+  quietFrom?: string,
+): void => {
   const previous = useRef(key);
   useLayoutEffect(() => {
     if (previous.current === key) return;
@@ -64,4 +68,5 @@ const subscribeMd = (listener: () => void): (() => void) => {
 };
 
 /** True at DD 5.10 `md` and up; the pairing block puts the deep link first below it (wallet.md). */
-export const useIsMdUp = (): boolean => useSyncExternalStore(subscribeMd, () => window.matchMedia(MD_QUERY).matches);
+export const useIsMdUp = (): boolean =>
+  useSyncExternalStore(subscribeMd, () => window.matchMedia(MD_QUERY).matches);

@@ -44,7 +44,12 @@ export type OrderChainStatus =
       readonly authorization: 'cancel' | 'cancelWithSig';
       readonly refund: HeldValue;
     }
-  | { readonly kind: 'needs_review'; readonly txid: string; readonly height: number; readonly reason: string };
+  | {
+      readonly kind: 'needs_review';
+      readonly txid: string;
+      readonly height: number;
+      readonly reason: string;
+    };
 
 /** An order rebuilt from its funding transaction alone (recover.md hard rule 5). */
 export interface LoadedOrder {
@@ -66,7 +71,12 @@ export interface LoadedOrder {
 export type TxidLookup =
   | { readonly kind: 'order'; readonly order: LoadedOrder }
   | { readonly kind: 'no_record' }
-  | { readonly kind: 'unknown_version'; readonly version: number; readonly txid: string; readonly recordHex: string };
+  | {
+      readonly kind: 'unknown_version';
+      readonly version: number;
+      readonly txid: string;
+      readonly recordHex: string;
+    };
 
 export const heldValue = (output: Output): HeldValue => {
   const token = output.token;
@@ -76,7 +86,9 @@ export const heldValue = (output: Output): HeldValue => {
     token: {
       category: binToHex(token.category),
       amount: token.amount,
-      ...(token.nft && { nft: { capability: token.nft.capability, commitment: binToHex(token.nft.commitment) } }),
+      ...(token.nft && {
+        nft: { capability: token.nft.capability, commitment: binToHex(token.nft.commitment) },
+      }),
     },
   };
 };
@@ -102,7 +114,8 @@ const SPEND_REASON: Readonly<Record<Extract<OrderSpend, { path: 'unknown' }>['re
 
 const spendingInput = (transaction: TransactionCommon, outpoint: Outpoint): number =>
   transaction.inputs.findIndex(
-    (input) => binToHex(input.outpointTransactionHash) === outpoint.txid && input.outpointIndex === outpoint.vout,
+    (input) =>
+      binToHex(input.outpointTransactionHash) === outpoint.txid && input.outpointIndex === outpoint.vout,
   );
 
 /**
@@ -116,7 +129,10 @@ export const readOrderStatus = async (
   funding: Outpoint,
   fundingOutput: HeldValue,
 ): Promise<{ status: OrderChainStatus; fundingHeight: number }> => {
-  const [utxos, history] = await Promise.all([chain.getUtxos(lockingBytecode), chain.getHistory(lockingBytecode)]);
+  const [utxos, history] = await Promise.all([
+    chain.getUtxos(lockingBytecode),
+    chain.getHistory(lockingBytecode),
+  ]);
   const utxo = utxos.find((entry) => entry.txid === funding.txid && entry.vout === funding.vout);
   const fundingHeight = history.find((entry) => entry.txid === funding.txid)?.height ?? utxo?.height ?? 0;
   if (utxo !== undefined) return { status: { kind: 'unspent', utxo }, fundingHeight };
@@ -133,7 +149,10 @@ export const readOrderStatus = async (
         txid: poolInput === undefined ? '' : binToHex(poolInput.outpointTransactionHash),
         vout: poolInput?.outpointIndex ?? 0,
       };
-      return { status: { kind: 'filled', txid: entry.txid, height: entry.height, spend, pool }, fundingHeight };
+      return {
+        status: { kind: 'filled', txid: entry.txid, height: entry.height, spend, pool },
+        fundingHeight,
+      };
     }
     if (spend.path === 'cancel') {
       const refund = transaction.outputs[spend.refundVout];
@@ -150,7 +169,12 @@ export const readOrderStatus = async (
       };
     }
     return {
-      status: { kind: 'needs_review', txid: entry.txid, height: entry.height, reason: SPEND_REASON[spend.reason] },
+      status: {
+        kind: 'needs_review',
+        txid: entry.txid,
+        height: entry.height,
+        reason: SPEND_REASON[spend.reason],
+      },
       fundingHeight,
     };
   }
@@ -170,7 +194,9 @@ const loadFromFunding = async (
   recordHex: string,
 ): Promise<LoadedOrder> => {
   const addresses = orderAddresses(record, network);
-  const vout = transaction.outputs.findIndex((output) => bytesEqual(output.lockingBytecode, addresses.lockingBytecode));
+  const vout = transaction.outputs.findIndex((output) =>
+    bytesEqual(output.lockingBytecode, addresses.lockingBytecode),
+  );
   const output = transaction.outputs[vout];
   if (output === undefined) {
     throw new RecoverError(
@@ -203,7 +229,11 @@ const loadFromFunding = async (
 };
 
 /** Fetches a funding transaction from the chosen server and rebuilds its order locally. */
-export const findOrderByTxid = async (chain: RecoverChain, network: Network, txid: string): Promise<TxidLookup> => {
+export const findOrderByTxid = async (
+  chain: RecoverChain,
+  network: Network,
+  txid: string,
+): Promise<TxidLookup> => {
   const transaction = decodeTransactionHex(await chain.getRawTransaction(txid));
   const scan = scanRecords(transaction);
   switch (scan.kind) {
@@ -217,7 +247,10 @@ export const findOrderByTxid = async (chain: RecoverChain, network: Network, txi
         `This transaction carries an AtPrice record that doesn't decode (${scan.reason}). Nothing can be rebuilt from it.`,
       );
     case 'record':
-      return { kind: 'order', order: await loadFromFunding(chain, network, txid, transaction, scan.record, scan.recordHex) };
+      return {
+        kind: 'order',
+        order: await loadFromFunding(chain, network, txid, transaction, scan.record, scan.recordHex),
+      };
   }
 };
 
@@ -243,7 +276,8 @@ export const findOrdersByAddress = async (
 ): Promise<AddressSearch> => {
   const history = await chain.getHistory(encodeLockingBytecodeP2pkh(ownerPkh));
   const txids = [...new Set(history.map((entry) => entry.txid))];
-  const found: { txid: string; transaction: TransactionCommon; record: OrderRecord; recordHex: string }[] = [];
+  const found: { txid: string; transaction: TransactionCommon; record: OrderRecord; recordHex: string }[] =
+    [];
   const unknownVersions = new Set<number>();
   let checked = 0;
   onProgress(0, txids.length);
@@ -269,10 +303,13 @@ export const findOrdersByAddress = async (
   found.sort((a, b) => (order.get(b.txid) ?? 0) - (order.get(a.txid) ?? 0));
   const orders: LoadedOrder[] = [];
   for (const entry of found) {
-    orders.push(await loadFromFunding(chain, network, entry.txid, entry.transaction, entry.record, entry.recordHex));
+    orders.push(
+      await loadFromFunding(chain, network, entry.txid, entry.transaction, entry.record, entry.recordHex),
+    );
   }
   return { orders, unknownVersions: [...unknownVersions].sort((a, b) => a - b) };
 };
 
 /** Confirmations of a transaction at `height` with the server's tip at `tip`; 0 while unconfirmed. */
-export const confirmationsAt = (height: number, tip: number): number => (height > 0 ? Math.max(0, tip - height + 1) : 0);
+export const confirmationsAt = (height: number, tip: number): number =>
+  height > 0 ? Math.max(0, tip - height + 1) : 0;

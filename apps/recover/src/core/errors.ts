@@ -24,7 +24,8 @@ export class RecoverError extends Error {
   }
 }
 
-export const describeError = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+export const describeError = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
 
 /** The DD 7.13 name of any failure that reached the UI or the terminal. */
 export const errorCode = (error: unknown): string => {

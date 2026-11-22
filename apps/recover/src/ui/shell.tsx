@@ -36,7 +36,9 @@ export function Header({ config }: { config: RecoverConfig }) {
           </span>
           <span className="text-body text-fg-secondary">Recover</span>
         </p>
-        <Badge tone={config.network === 'mainnet' ? 'cancelled' : 'pending'}>{NETWORK_BADGE[config.network]}</Badge>
+        <Badge tone={config.network === 'mainnet' ? 'cancelled' : 'pending'}>
+          {NETWORK_BADGE[config.network]}
+        </Badge>
         {config.websiteUrl === null ? null : (
           <a
             href={config.websiteUrl}
@@ -109,14 +111,15 @@ export function OtherWays({ order, plan }: { order: LoadedOrder | null; plan: Ca
         </CopyTextButton>
       </div>
       <p className="text-body-sm text-fg-secondary">
-        It needs the owner's signature (on the owner coin for cancel(), or inside the contract for cancelWithSig) before it
-        can be broadcast.
+        It needs the owner's signature (on the owner coin for cancel(), or inside the contract for
+        cancelWithSig) before it can be broadcast.
       </p>
       <p className="max-w-prose text-body-sm text-fg-secondary">
-        The same recovery runs from the source code: <code className="hash text-mono-sm text-fg">pnpm recover --txid {txid}</code>.
-        It prints a WizardConnect pairing code and QR in your terminal, builds the same cancel, asks your paired wallet to
-        sign it, and broadcasts it to a server you choose. It never asks for a private key. The docs page "Cancel an order
-        by hand" describes the transaction byte by byte.
+        The same recovery runs from the source code:{' '}
+        <code className="hash text-mono-sm text-fg">pnpm recover --txid {txid}</code>. It prints a
+        WizardConnect pairing code and QR in your terminal, builds the same cancel, asks your paired wallet to
+        sign it, and broadcasts it to a server you choose. It never asks for a private key. The docs page
+        "Cancel an order by hand" describes the transaction byte by byte.
       </p>
     </section>
   );

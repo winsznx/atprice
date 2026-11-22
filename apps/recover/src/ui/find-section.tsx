@@ -13,7 +13,7 @@ export type SearchActivity =
 export const SERVER_FIRST = 'Connect to a server first.';
 
 export const USE_WALLET_REASON =
-  "Connect a wallet in step 4 to use its address. Step 4 opens once an order is found, so search by transaction id or type the address for now.";
+  'Connect a wallet in step 4 to use its address. Step 4 opens once an order is found, so search by transaction id or type the address for now.';
 
 /** The first failing reason for `Find order`, or null when it can run (recover.md "Controls"). */
 export const findBlocker = (
@@ -114,7 +114,11 @@ export function FindSection({
             aria-disabled={!connected || undefined}
             aria-describedby={blocker === null ? undefined : findReasonId}
             onChange={(event) => onValueChange(event.target.value)}
-            placeholder={mode === 'txid' ? '64 characters, 0-9 and a-f' : `${network === 'mainnet' ? 'bitcoincash' : 'bchtest'}:q…`}
+            placeholder={
+              mode === 'txid'
+                ? '64 characters, 0-9 and a-f'
+                : `${network === 'mainnet' ? 'bitcoincash' : 'bchtest'}:q…`
+            }
             className="hash min-h-(--size-control) w-full min-w-0 rounded-md border border-border-input bg-surface px-3 text-body text-fg aria-disabled:bg-surface-muted"
           />
         </div>
@@ -131,7 +135,9 @@ export function FindSection({
             >
               Use my wallet's address
             </Button>
-            {walletAddress === null ? <DisabledReason id={walletReasonId}>{USE_WALLET_REASON}</DisabledReason> : null}
+            {walletAddress === null ? (
+              <DisabledReason id={walletReasonId}>{USE_WALLET_REASON}</DisabledReason>
+            ) : null}
           </div>
         ) : null}
         <div className="flex flex-col gap-1">
@@ -146,8 +152,8 @@ export function FindSection({
           {blocker === null ? null : <DisabledReason id={findReasonId}>{blocker}</DisabledReason>}
           {activity.kind === 'searching' && activity.total !== null && mode === 'address' ? (
             <p role="status" aria-live="polite" className="text-body-sm text-fg-secondary">
-              Checked <span className="num">{activity.checked}</span> of <span className="num">{activity.total}</span>{' '}
-              transactions
+              Checked <span className="num">{activity.checked}</span> of{' '}
+              <span className="num">{activity.total}</span> transactions
             </p>
           ) : null}
         </div>

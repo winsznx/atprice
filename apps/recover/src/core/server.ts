@@ -59,7 +59,8 @@ const withTimeout = async <T>(promise: Promise<T>, ms: number, host: string): Pr
 };
 
 const isGenesisMismatch = (error: unknown): boolean =>
-  error instanceof NoEndpointReachableError && error.failures.some((failure) => failure.reason === 'genesis_mismatch');
+  error instanceof NoEndpointReachableError &&
+  error.failures.some((failure) => failure.reason === 'genesis_mismatch');
 
 /**
  * `packages/chain` reports a genesis mismatch without naming the network it found, so the server is
@@ -111,7 +112,9 @@ export const connectServer = async (options: {
     await chain.close();
     if (isGenesisMismatch(error)) {
       const found = await identifyOtherNetwork(network, endpoint, factory);
-      throw new RecoverError('ELECTRUM_WRONG_NETWORK', wrongNetworkMessage(host, found, network), { cause: error });
+      throw new RecoverError('ELECTRUM_WRONG_NETWORK', wrongNetworkMessage(host, found, network), {
+        cause: error,
+      });
     }
     throw new RecoverError('ELECTRUM_UNREACHABLE', unreachableMessage(host), {
       cause: new Error(describeError(error)),

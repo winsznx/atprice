@@ -38,7 +38,12 @@ export type Flow =
   | { readonly kind: 'invalid'; readonly rule: string }
   | { readonly kind: 'failed'; readonly error: unknown }
   | { readonly kind: 'broadcasting'; readonly since: number; readonly signed: SignedTransaction }
-  | { readonly kind: 'unknown'; readonly signed: SignedTransaction; readonly detail: string; readonly notFound: boolean }
+  | {
+      readonly kind: 'unknown';
+      readonly signed: SignedTransaction;
+      readonly detail: string;
+      readonly notFound: boolean;
+    }
   | { readonly kind: 'rejected'; readonly detail: string };
 
 const BUILDING = 'Building the cancel';
@@ -70,14 +75,20 @@ export const signBlocker = (options: {
   if (wallet.reconnectingSince !== null) {
     return `Reconnecting to your wallet (${options.reconnectElapsed}). Requests resume when it answers.`;
   }
-  if (!options.ownerMatches) return "This wallet isn't the owner. Connect the wallet that created this order.";
+  if (!options.ownerMatches)
+    return "This wallet isn't the owner. Connect the wallet that created this order.";
   if (plan === null) return 'Building the cancel.';
   if (plan.kind === 'invalid') return "The cancel failed a safety check, so it can't be signed.";
   return null;
 };
 
 /** The cancel status heading; each change moves focus to it (cancel-confirmation.md). */
-export const cancelHeading = (coins: OwnerCoins, plan: CancelPlan | null, flow: Flow, sent: SentState | null): string => {
+export const cancelHeading = (
+  coins: OwnerCoins,
+  plan: CancelPlan | null,
+  flow: Flow,
+  sent: SentState | null,
+): string => {
   if (sent !== null) return sent.height > 0 ? 'Cancelled' : 'Cancel sent';
   switch (flow.kind) {
     case 'checking':
@@ -133,14 +144,20 @@ function BuiltRows({ order, built }: { order: LoadedOrder; built: BuiltCancel })
           </span>
         ))}
         <span className="flex flex-wrap items-center gap-2 text-body-sm text-fg-secondary">
-          to <HashChip value={ownerAddress} kind="address" explorer={addressExplorer(order.network, ownerAddress)} />
+          to{' '}
+          <HashChip
+            value={ownerAddress}
+            kind="address"
+            explorer={addressExplorer(order.network, ownerAddress)}
+          />
         </span>
       </Row>
       <Row label="Network fee">
         <span className="num">{feeText(built.fee)}</span>
         <span className="text-body-sm text-fg-secondary">
-          at <span className="num">{built.feePerByte.toString()}</span> sat/byte, the network's minimum relay fee, for{' '}
-          <span className="num">{built.size.toLocaleString('en-US')}</span> bytes. It comes out of the order's fee cap.
+          at <span className="num">{built.feePerByte.toString()}</span> sat/byte, the network's minimum relay
+          fee, for <span className="num">{built.size.toLocaleString('en-US')}</span> bytes. It comes out of
+          the order's fee cap.
         </span>
       </Row>
       <Row label="Authorized by">
@@ -150,8 +167,8 @@ function BuiltRows({ order, built }: { order: LoadedOrder; built: BuiltCancel })
           <>
             <span>A coin at the owner address</span>
             <span className="text-body-sm text-fg-secondary">
-              <span className="num">{bchText(built.ownerCoin.satoshis)}</span>, returned to the same address in the same
-              transaction.
+              <span className="num">{bchText(built.ownerCoin.satoshis)}</span>, returned to the same address
+              in the same transaction.
             </span>
           </>
         )}
@@ -182,9 +199,13 @@ function NoOwnerCoin({
     <div className="flex flex-col gap-3">
       <p className="text-body-sm text-fg-secondary">
         The owner wallet needs a coin at{' '}
-        <HashChip value={ownerAddress} kind="address" explorer={addressExplorer(order.network, ownerAddress)} /> before
-        it can cancel. Send at least <span className="num">{feeText(plan.askSatoshis)}</span> to it from any wallet. This
-        page will notice the payment and continue.
+        <HashChip
+          value={ownerAddress}
+          kind="address"
+          explorer={addressExplorer(order.network, ownerAddress)}
+        />{' '}
+        before it can cancel. Send at least <span className="num">{feeText(plan.askSatoshis)}</span> to it
+        from any wallet. This page will notice the payment and continue.
       </p>
       <details>
         <summary className="flex min-h-11 cursor-pointer items-center text-body text-link underline underline-offset-4">
@@ -261,17 +282,16 @@ export function CancelSection({
   const chain = server.kind === 'connected' ? server.chain : null;
   const host = server.kind === 'idle' ? '' : server.host;
   const busy = BUSY.includes(flow.kind);
-  const blocker =
-    busy
-      ? null
-      : signBlocker({
-          server,
-          wallet: walletState,
-          ownerMatches,
-          plan,
-          network: config.network,
-          reconnectElapsed: formatElapsed(reconnectElapsed ?? 0),
-        });
+  const blocker = busy
+    ? null
+    : signBlocker({
+        server,
+        wallet: walletState,
+        ownerMatches,
+        plan,
+        network: config.network,
+        reconnectElapsed: formatElapsed(reconnectElapsed ?? 0),
+      });
 
   const broadcast = async (signed: SignedTransaction) => {
     if (chain === null) return;
@@ -327,9 +347,12 @@ export function CancelSection({
     try {
       signedHex = await wallet.requestSignature(built.draft, controller.signal);
     } catch (error) {
-      if (isWalletError(error) && error.code === 'WALLET_DECLINED') setFlow({ kind: 'declined', message: error.message });
-      else if (isWalletError(error) && error.code === 'SIGN_REQUEST_CANCELLED') setFlow({ kind: 'request_cancelled' });
-      else if (isWalletError(error) && error.code === 'WALLET_SESSION_ENDED') setFlow({ kind: 'session_ended' });
+      if (isWalletError(error) && error.code === 'WALLET_DECLINED')
+        setFlow({ kind: 'declined', message: error.message });
+      else if (isWalletError(error) && error.code === 'SIGN_REQUEST_CANCELLED')
+        setFlow({ kind: 'request_cancelled' });
+      else if (isWalletError(error) && error.code === 'WALLET_SESSION_ENDED')
+        setFlow({ kind: 'session_ended' });
       else setFlow({ kind: 'failed', error });
       return;
     }
@@ -365,7 +388,10 @@ export function CancelSection({
               {server.kind === 'connected' ? (
                 <>
                   {' '}
-                  (<span className="num">{confirmationsAt(sent.height, server.tip).toLocaleString('en-US')}</span>{' '}
+                  (
+                  <span className="num">
+                    {confirmationsAt(sent.height, server.tip).toLocaleString('en-US')}
+                  </span>{' '}
                   confirmations on {server.host})
                 </>
               ) : null}
@@ -381,7 +407,11 @@ export function CancelSection({
   } else {
     switch (flow.kind) {
       case 'checking':
-        status = <p className="text-body-sm text-fg-secondary">Checking on {host} that the order output is still unspent.</p>;
+        status = (
+          <p className="text-body-sm text-fg-secondary">
+            Checking on {host} that the order output is still unspent.
+          </p>
+        );
         break;
       case 'awaiting':
         status = (
@@ -394,8 +424,8 @@ export function CancelSection({
                 </>
               ) : (
                 <>
-                  Approve the cancel in your wallet · <Elapsed since={flow.since} />. This page waits as long as your wallet
-                  takes.
+                  Approve the cancel in your wallet · <Elapsed since={flow.since} />. This page waits as long
+                  as your wallet takes.
                 </>
               )}
             </p>
@@ -413,7 +443,9 @@ export function CancelSection({
         );
         break;
       case 'request_cancelled':
-        status = <p className="text-body-sm text-fg-secondary">You cancelled the request. Nothing was sent.</p>;
+        status = (
+          <p className="text-body-sm text-fg-secondary">You cancelled the request. Nothing was sent.</p>
+        );
         break;
       case 'session_ended':
         status = (
@@ -423,7 +455,9 @@ export function CancelSection({
         );
         break;
       case 'invalid':
-        status = <ErrorBlock message={cancelBuildInvalidMessage(flow.rule, 'browser')} code="CANCEL_BUILD_INVALID" />;
+        status = (
+          <ErrorBlock message={cancelBuildInvalidMessage(flow.rule, 'browser')} code="CANCEL_BUILD_INVALID" />
+        );
         break;
       case 'failed':
         status = (
@@ -439,7 +473,11 @@ export function CancelSection({
             <p className="text-body-sm text-fg-secondary">
               Sending to {host} · <Elapsed since={flow.since} />.
             </p>
-            <HashChip value={flow.signed.txid} kind="tx" explorer={txExplorer(order.network, flow.signed.txid)} />
+            <HashChip
+              value={flow.signed.txid}
+              kind="tx"
+              explorer={txExplorer(order.network, flow.signed.txid)}
+            />
           </div>
         );
         break;
@@ -447,12 +485,14 @@ export function CancelSection({
         status = (
           <div className="flex flex-col gap-3">
             <p className="text-body-sm text-fg-secondary">
-              {host} didn't confirm the broadcast. Cancel <span className="hash">{flow.signed.txid}</span> may or may not
-              have reached the network.
+              {host} didn't confirm the broadcast. Cancel <span className="hash">{flow.signed.txid}</span> may
+              or may not have reached the network.
             </p>
             <p className="hash text-mono-sm text-fg-muted">{flow.detail}</p>
             {flow.notFound ? (
-              <p className="text-body-sm text-fg-secondary">{host} doesn't have this cancel. You can send it again.</p>
+              <p className="text-body-sm text-fg-secondary">
+                {host} doesn't have this cancel. You can send it again.
+              </p>
             ) : null}
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" compact onClick={() => void checkBroadcast(flow)}>
@@ -472,7 +512,10 @@ export function CancelSection({
         break;
       case 'rejected':
         status = (
-          <ErrorBlock message={`${host} rejected the cancel: ${flow.detail}. Your order is unchanged.`} code="BROADCAST_REJECTED" />
+          <ErrorBlock
+            message={`${host} rejected the cancel: ${flow.detail}. Your order is unchanged.`}
+            code="BROADCAST_REJECTED"
+          />
         );
         break;
       case 'idle':
@@ -486,7 +529,12 @@ export function CancelSection({
     <section aria-labelledby="step-cancel" className="flex flex-col gap-4">
       <SectionHeading id="step-cancel" step={4} title="Cancel" headingRef={headingRef} />
       {sent === null ? (
-        <ConnectBlock wallet={wallet} state={walletState} ownerPkh={order.record.ownerPkh} network={config.network} />
+        <ConnectBlock
+          wallet={wallet}
+          state={walletState}
+          ownerPkh={order.record.ownerPkh}
+          network={config.network}
+        />
       ) : null}
       <div className="flex flex-col gap-3">
         <h3 ref={statusRef} tabIndex={-1} className="text-label font-semibold text-fg">

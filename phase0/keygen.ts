@@ -1,4 +1,11 @@
-import { generatePrivateKey, secp256k1, hash160, encodeCashAddress, encodePrivateKeyWif, binToHex } from '@bitauth/libauth';
+import {
+  generatePrivateKey,
+  secp256k1,
+  hash160,
+  encodeCashAddress,
+  encodePrivateKeyWif,
+  binToHex,
+} from '@bitauth/libauth';
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
 
 const [role, network] = process.argv.slice(2);
@@ -14,5 +21,20 @@ if (typeof pub === 'string') throw new Error(pub);
 const pkh = hash160(pub);
 const address = encodeCashAddress({ prefix: 'bchtest', type: 'p2pkh', payload: pkh }).address;
 const tokenAddress = encodeCashAddress({ prefix: 'bchtest', type: 'p2pkhWithTokens', payload: pkh }).address;
-writeFileSync(file, JSON.stringify({ role, network, wif: encodePrivateKeyWif(priv, 'testnet'), pubkey: binToHex(pub), address, tokenAddress }, null, 2), { mode: 0o600 });
+writeFileSync(
+  file,
+  JSON.stringify(
+    {
+      role,
+      network,
+      wif: encodePrivateKeyWif(priv, 'testnet'),
+      pubkey: binToHex(pub),
+      address,
+      tokenAddress,
+    },
+    null,
+    2,
+  ),
+  { mode: 0o600 },
+);
 console.log(JSON.stringify({ role, address, tokenAddress }));

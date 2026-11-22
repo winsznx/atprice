@@ -21,9 +21,14 @@ export const parseCliServer = (value: string): ElectrumEndpoint => {
   const separator = trimmed.lastIndexOf(':');
   const host = trimmed.slice(0, separator);
   const port = Number(trimmed.slice(separator + 1));
-  if (separator <= 0 || !/^[a-z0-9.-]+$/i.test(host) || !Number.isInteger(port) || port < 1 || port > 65_535) {
+  if (
+    separator <= 0 ||
+    !/^[a-z0-9.-]+$/i.test(host) ||
+    !Number.isInteger(port) ||
+    port < 1 ||
+    port > 65_535
+  ) {
     throw new CliExit(`--server must be host:port (TLS) or wss://host:port, got ${value}`, 2);
   }
   return { host, port, transport: 'tls' };
 };
-

@@ -48,37 +48,52 @@ describe('build checks', () => {
       logLevel: 'silent',
       define: { __RECOVER_CONFIG__: '{}', 'process.env.NODE_ENV': '"production"' },
     });
-    const inputs = Object.keys(result.metafile.inputs).map((input) => join(root, input).slice(repo.length + 1));
+    const inputs = Object.keys(result.metafile.inputs).map((input) =>
+      join(root, input).slice(repo.length + 1),
+    );
     // #then nothing from the web API layer, env or UI is in the graph
     expect(forbiddenInputs(inputs)).toEqual([]);
     expect(inputs.some((input) => input.startsWith('packages/core/'))).toBe(true);
   });
 
   it('flags an API module if one ever enters the graph', () => {
-    expect(forbiddenInputs(['apps/web/lib/api/client.ts', 'apps/web/lib/format.ts'])).toEqual(['apps/web/lib/api/client.ts']);
+    expect(forbiddenInputs(['apps/web/lib/api/client.ts', 'apps/web/lib/format.ts'])).toEqual([
+      'apps/web/lib/api/client.ts',
+    ]);
   });
 
   it('fails when packages/chain calls a zod member the shim lacks', () => {
-    expect(zodMembersUsed('z.object({ a: z.string() }); z.literal(1)')).toEqual(['object', 'string', 'literal']);
+    expect(zodMembersUsed('z.object({ a: z.string() }); z.literal(1)')).toEqual([
+      'object',
+      'string',
+      'literal',
+    ]);
     expect(missingZodMembers(['z.object(); z.literal(1)'])).toEqual(['literal']);
     expect(missingZodMembers(['z.object(); z.array(z.number())'])).toEqual([]);
   });
 
   it('finds keyframes and animate utilities in the stylesheet', () => {
     expect(animationViolations('.a{color:red}')).toEqual([]);
-    expect(animationViolations('@keyframes spin{}.animate-spin{animation:spin}')).toEqual(['@keyframes', '.animate-spin']);
+    expect(animationViolations('@keyframes spin{}.animate-spin{animation:spin}')).toEqual([
+      '@keyframes',
+      '.animate-spin',
+    ]);
   });
 
   it('limits scripts and styles to the inlined hashes', () => {
     const csp = contentSecurityPolicy('body{}', 'run()');
-    expect(csp).toMatch(/^default-src 'none'; script-src 'sha256-[A-Za-z0-9+/=]+' 'wasm-unsafe-eval'; style-src 'sha256-/);
+    expect(csp).toMatch(
+      /^default-src 'none'; script-src 'sha256-[A-Za-z0-9+/=]+' 'wasm-unsafe-eval'; style-src 'sha256-/,
+    );
     expect(csp).toContain('connect-src wss:');
     expect(csp).not.toContain('unsafe-inline');
   });
 
   it('accepts only https links from build config and leaves blank ones out', () => {
     expect(optionalHttpsUrl('ATPRICE_RECOVER_WEBSITE_URL', ' ')).toBeNull();
-    expect(optionalHttpsUrl('ATPRICE_RECOVER_WEBSITE_URL', 'https://atprice.example/')).toBe('https://atprice.example/');
+    expect(optionalHttpsUrl('ATPRICE_RECOVER_WEBSITE_URL', 'https://atprice.example/')).toBe(
+      'https://atprice.example/',
+    );
     expect(() => optionalHttpsUrl('ATPRICE_RECOVER_WEBSITE_URL', 'http://atprice.example')).toThrow(
       /ATPRICE_RECOVER_WEBSITE_URL_INVALID/,
     );
@@ -87,7 +102,11 @@ describe('build checks', () => {
 
 describe('CLI helpers', () => {
   it('reads TLS and WebSocket servers', () => {
-    expect(parseCliServer('chipnet.imaginary.cash:50002')).toEqual({ host: 'chipnet.imaginary.cash', port: 50002, transport: 'tls' });
+    expect(parseCliServer('chipnet.imaginary.cash:50002')).toEqual({
+      host: 'chipnet.imaginary.cash',
+      port: 50002,
+      transport: 'tls',
+    });
     expect(parseCliServer('wss://chipnet.imaginary.cash:50004')).toEqual({
       host: 'chipnet.imaginary.cash',
       port: 50004,

@@ -102,7 +102,11 @@ export const verifyCancel = (
   }
   if (path === 'cancel') {
     const source = sourceOutputs[0];
-    if (source === undefined || !bytesEqual(source.lockingBytecode, ownerLocking) || source.token !== undefined) {
+    if (
+      source === undefined ||
+      !bytesEqual(source.lockingBytecode, ownerLocking) ||
+      source.token !== undefined
+    ) {
       throw new CancelCheckError('input 0 must be a coin without tokens at the owner address');
     }
     const change = transaction.outputs[0];
@@ -148,7 +152,11 @@ export const planCancel = (options: {
         feePerByte: FEE_PER_BYTE,
       });
       draft = built;
-      ownerCoin = { txid: built.ownerUtxo.txid, vout: built.ownerUtxo.vout, satoshis: built.ownerUtxo.satoshis };
+      ownerCoin = {
+        txid: built.ownerUtxo.txid,
+        vout: built.ownerUtxo.vout,
+        satoshis: built.ownerUtxo.satoshis,
+      };
     } else {
       draft = buildCancelWithSigTransaction({ orders, feePerByte: FEE_PER_BYTE });
     }
@@ -158,7 +166,8 @@ export const planCancel = (options: {
         kind: 'no_owner_utxo',
         reason: error.reason,
         requiredSatoshis: error.requiredSatoshis,
-        askSatoshis: error.requiredSatoshis > OWNER_TOP_UP_FLOOR ? error.requiredSatoshis : OWNER_TOP_UP_FLOOR,
+        askSatoshis:
+          error.requiredSatoshis > OWNER_TOP_UP_FLOOR ? error.requiredSatoshis : OWNER_TOP_UP_FLOOR,
         largestSatoshis: error.largestSatoshis,
       };
     }
@@ -191,13 +200,19 @@ export const planCancel = (options: {
  * The mandatory check on every wallet response (core-api.md "WizardConnect"), then rule R again on
  * the signed bytes. Throws `CancelCheckError` with the failing rule.
  */
-export const checkSignedCancel = (built: BuiltCancel, order: LoadedOrder, signedHex: string): SignedTransaction => {
+export const checkSignedCancel = (
+  built: BuiltCancel,
+  order: LoadedOrder,
+  signedHex: string,
+): SignedTransaction => {
   let signed: SignedTransaction;
   try {
     signed = finalizeWalletSignedTransaction(built.draft, signedHex);
   } catch (error) {
     if (error instanceof TransactionVerificationError) {
-      throw new CancelCheckError(`the signed transaction failed verification (${error.reason}: ${error.message})`);
+      throw new CancelCheckError(
+        `the signed transaction failed verification (${error.reason}: ${error.message})`,
+      );
     }
     throw error;
   }

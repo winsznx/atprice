@@ -1,6 +1,15 @@
-import { ownerPkhFromPublicKey, type UnsignedTransactionDraft, type WizardConnectSignRequest } from '@atprice/core';
+import {
+  ownerPkhFromPublicKey,
+  type UnsignedTransactionDraft,
+  type WizardConnectSignRequest,
+} from '@atprice/core';
 import * as wizardCore from '@wizardconnect/core';
-import type { DappRelayResult, RelayUpdatePayload, SignTransactionRequest, SignTransactionResponse } from '@wizardconnect/core';
+import type {
+  DappRelayResult,
+  RelayUpdatePayload,
+  SignTransactionRequest,
+  SignTransactionResponse,
+} from '@wizardconnect/core';
 import * as wizardDapp from '@wizardconnect/dapp';
 import type { DappConnectionManager } from '@wizardconnect/dapp';
 import { checkWizardConnectCompatibility } from '../../../web/lib/wallet/compatibility';
@@ -50,7 +59,11 @@ export type RecoverWalletState =
       readonly walletNetwork: XpubNetwork;
       readonly reconnectingSince: number | null;
     }
-  | { readonly kind: 'missing_receive'; readonly wallet: WalletIdentity; readonly reconnectingSince: number | null }
+  | {
+      readonly kind: 'missing_receive';
+      readonly wallet: WalletIdentity;
+      readonly reconnectingSince: number | null;
+    }
   | { readonly kind: 'disconnected'; readonly reason: string; readonly message: string | null }
   | { readonly kind: 'error'; readonly message: string; readonly relayUnreachable: boolean };
 
@@ -63,7 +76,9 @@ const RECEIVE_CHILD = 0;
 const DAPP_NAME = 'AtPrice Recover';
 
 /** core's relay-safe request is the wire format; the library types it as raw bytes (see apps/web connector). */
-const asLibraryRequest = (request: WizardConnectSignRequest): Pick<SignTransactionRequest, 'transaction' | 'inputPaths'> =>
+const asLibraryRequest = (
+  request: WizardConnectSignRequest,
+): Pick<SignTransactionRequest, 'transaction' | 'inputPaths'> =>
   request as unknown as Pick<SignTransactionRequest, 'transaction' | 'inputPaths'>;
 
 /**
@@ -102,7 +117,10 @@ export class RecoverWallet {
   /** Boot-time check of the pinned library (research/wizardconnect.md); failure is a named state. */
   start(): void {
     if (this.state.kind !== 'loading') return;
-    const result = checkWizardConnectCompatibility({ core: wizardCore, dapp: wizardDapp }, WIZARDCONNECT_RELAYS);
+    const result = checkWizardConnectCompatibility(
+      { core: wizardCore, dapp: wizardDapp },
+      WIZARDCONNECT_RELAYS,
+    );
     this.setState(result.ok ? { kind: 'idle' } : { kind: 'unavailable', problems: result.problems });
   }
 
@@ -149,7 +167,11 @@ export class RecoverWallet {
     this.schedulePairingTimers();
   }
 
-  private onRelayStatus(generation: number, manager: DappConnectionManager, payload: RelayUpdatePayload): void {
+  private onRelayStatus(
+    generation: number,
+    manager: DappConnectionManager,
+    payload: RelayUpdatePayload,
+  ): void {
     manager.updateConnection(payload.client, payload.status);
     if (generation !== this.generation) return;
     if (payload.status.status === 'connected') {
@@ -159,7 +181,9 @@ export class RecoverWallet {
     // Before the relay has ever answered, a reconnect with an error means it can't be reached at all.
     if (!this.relayReached && this.state.kind === 'pairing' && payload.status.status === 'reconnecting') {
       const detail = payload.status.error ?? 'no answer from the relay';
-      void this.teardown().then(() => this.setState({ kind: 'error', message: detail, relayUnreachable: true }));
+      void this.teardown().then(() =>
+        this.setState({ kind: 'error', message: detail, relayUnreachable: true }),
+      );
     }
   }
 
@@ -174,7 +198,8 @@ export class RecoverWallet {
         if (this.state.kind === 'pairing') this.setState({ ...this.state, warningSince: Date.now() });
       }, PAIRING_TIMEOUT_MS - PAIRING_WARNING_MS),
       setTimeout(() => {
-        if (this.state.kind === 'pairing') void this.teardown().then(() => this.setState({ kind: 'pairing_timed_out' }));
+        if (this.state.kind === 'pairing')
+          void this.teardown().then(() => this.setState({ kind: 'pairing_timed_out' }));
       }, PAIRING_TIMEOUT_MS),
     );
   }
@@ -277,7 +302,8 @@ export class RecoverWallet {
 
   private onAlive(): void {
     const state = this.state;
-    if (isConnectedFamily(state) && state.reconnectingSince !== null) this.setState({ ...state, reconnectingSince: null });
+    if (isConnectedFamily(state) && state.reconnectingSince !== null)
+      this.setState({ ...state, reconnectingSince: null });
   }
 
   private async onRemoteDisconnect(reason: string, message: string | null): Promise<void> {
@@ -296,14 +322,22 @@ export class RecoverWallet {
     }
     let response: SignTransactionResponse;
     try {
-      response = await manager.signTransaction(asLibraryRequest(draft.request), signal === undefined ? undefined : { signal });
+      response = await manager.signTransaction(
+        asLibraryRequest(draft.request),
+        signal === undefined ? undefined : { signal },
+      );
     } catch (error) {
       if (signal?.aborted) {
-        throw new WalletError('SIGN_REQUEST_CANCELLED', 'You cancelled the request. Nothing was sent.', { cause: error });
+        throw new WalletError('SIGN_REQUEST_CANCELLED', 'You cancelled the request. Nothing was sent.', {
+          cause: error,
+        });
       }
-      throw new WalletError('WALLET_SESSION_ENDED', 'The wallet session ended while the request was open.', { cause: error });
+      throw new WalletError('WALLET_SESSION_ENDED', 'The wallet session ended while the request was open.', {
+        cause: error,
+      });
     }
-    if (response.error !== undefined && response.error !== '') throw new WalletError('WALLET_DECLINED', response.error);
+    if (response.error !== undefined && response.error !== '')
+      throw new WalletError('WALLET_DECLINED', response.error);
     if (response.signedTransaction === '') {
       throw new WalletError('WALLET_DECLINED', 'The wallet returned no signed transaction.');
     }

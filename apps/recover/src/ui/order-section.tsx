@@ -86,7 +86,11 @@ function OrderCard({
 }
 
 export type OrderResults =
-  | { readonly kind: 'orders'; readonly orders: readonly LoadedOrder[]; readonly unknownVersions: readonly number[] }
+  | {
+      readonly kind: 'orders';
+      readonly orders: readonly LoadedOrder[];
+      readonly unknownVersions: readonly number[];
+    }
   | { readonly kind: 'no_record' }
   | { readonly kind: 'no_orders' }
   | { readonly kind: 'unknown_version'; readonly version: number; readonly txid: string };
@@ -111,8 +115,8 @@ export function OrderSection({
   if (results.kind === 'no_record') {
     body = (
       <p className="text-body text-fg-secondary">
-        This transaction has no AtPrice order record. Check you copied the funding transaction, the one that sent funds to
-        the order.
+        This transaction has no AtPrice order record. Check you copied the funding transaction, the one that
+        sent funds to the order.
       </p>
     );
   } else if (results.kind === 'no_orders') {
@@ -122,8 +126,8 @@ export function OrderSection({
       <div className="flex flex-col gap-2">
         <Badge tone="review">Contract version {results.version}</Badge>
         <p className="text-body text-fg-secondary">
-          This order uses contract version <span className="num">{results.version}</span>, which this file doesn't
-          include. Use a newer AtPrice Recover file or pnpm recover from a newer source.
+          This order uses contract version <span className="num">{results.version}</span>, which this file
+          doesn't include. Use a newer AtPrice Recover file or pnpm recover from a newer source.
         </p>
       </div>
     );
@@ -144,8 +148,8 @@ export function OrderSection({
         ) : null}
         {results.unknownVersions.length > 0 ? (
           <p className="text-body-sm text-fg-secondary">
-            This address also has AtPrice records of contract version {results.unknownVersions.join(', ')}, which this
-            file doesn't include. Use a newer AtPrice Recover file to read them.
+            This address also has AtPrice records of contract version {results.unknownVersions.join(', ')},
+            which this file doesn't include. Use a newer AtPrice Recover file to read them.
           </p>
         ) : null}
         {selected === null ? (
@@ -167,8 +171,8 @@ export function OrderSection({
 function NoOrders({ network }: { network: Network }) {
   return (
     <p className="text-body text-fg-secondary">
-      No AtPrice orders are owned by this address on {network}. AtPrice orders are owned by the first receive address
-      of the wallet that funded them. If you have the funding transaction id, search by that instead.
+      No AtPrice orders are owned by this address on {network}. AtPrice orders are owned by the first receive
+      address of the wallet that funded them. If you have the funding transaction id, search by that instead.
     </p>
   );
 }
@@ -182,14 +186,15 @@ export function OrderDetail({ order, tip }: { order: LoadedOrder; tip: number })
     <div className="flex flex-col gap-3">
       <p className="flex flex-wrap items-center gap-2 text-label text-fg">
         <span>
-          {sideLabel(order)} {tokenLabel(order)} · contract v<span className="num">{order.record.version}</span>
+          {sideLabel(order)} {tokenLabel(order)} · contract v
+          <span className="num">{order.record.version}</span>
         </span>
         <OrderBadge order={order} />
       </p>
       {order.market === undefined ? (
         <p className="text-body-sm text-fg-secondary">
-          This token is not on the list this file ships, so it is shown by its category id only. The order can still be
-          cancelled.
+          This token is not on the list this file ships, so it is shown by its category id only. The order can
+          still be cancelled.
         </p>
       ) : null}
       <dl className="flex flex-col divide-y divide-border">
@@ -201,8 +206,12 @@ export function OrderDetail({ order, tip }: { order: LoadedOrder; tip: number })
           ))}
         </Row>
         <Row label="Receives at least">
-          <span className={minimum.kind === 'none' ? 'text-body-sm text-fg-secondary' : 'num'}>{minimum.text}</span>
-          {minimum.kind === 'sell' ? <span className="text-body-sm text-fg-secondary">{minimum.payoutLine}</span> : null}
+          <span className={minimum.kind === 'none' ? 'text-body-sm text-fg-secondary' : 'num'}>
+            {minimum.text}
+          </span>
+          {minimum.kind === 'sell' ? (
+            <span className="text-body-sm text-fg-secondary">{minimum.payoutLine}</span>
+          ) : null}
         </Row>
         <Row label="Fee cap">
           <span className="num">{feeText(order.record.maxNetworkFee)}</span>
@@ -220,27 +229,38 @@ export function OrderDetail({ order, tip }: { order: LoadedOrder; tip: number })
           </Row>
         ) : null}
         <Row label="Contract">
-          <HashChip value={contractAddress} kind="address" explorer={addressExplorer(order.network, contractAddress)} />
+          <HashChip
+            value={contractAddress}
+            kind="address"
+            explorer={addressExplorer(order.network, contractAddress)}
+          />
         </Row>
         <Row label="Funding">
           <HashChip
             value={outpoint}
             kind="outpoint"
             display={outpointDisplay(order.funding.txid, order.funding.vout)}
-            explorer={txExplorer(order.network, order.funding.txid)} />
-          <span className="text-body-sm text-fg-secondary">{confirmationsText(order.fundingHeight, tip)}</span>
+            explorer={txExplorer(order.network, order.funding.txid)}
+          />
+          <span className="text-body-sm text-fg-secondary">
+            {confirmationsText(order.fundingHeight, tip)}
+          </span>
         </Row>
         <Row label="Parameters">
           <details className="group">
             <summary className="flex min-h-11 cursor-pointer items-center text-body text-link underline underline-offset-4">
-              <span className="text-fg-secondary no-underline">ATPR v{order.record.version}, decoded locally.</span>
+              <span className="text-fg-secondary no-underline">
+                ATPR v{order.record.version}, decoded locally.
+              </span>
               &nbsp;Show
             </summary>
             <dl className="mt-2 flex flex-col gap-3 rounded-md bg-surface-sunken p-4">
               {parameterRows(order).map((row) => (
                 <div key={row.label} className="flex flex-col gap-1">
                   <dt className="text-caption text-fg-muted">{row.label}</dt>
-                  <dd className={row.mono ? 'hash text-mono-md text-fg' : 'num text-body-sm text-fg'}>{row.value}</dd>
+                  <dd className={row.mono ? 'hash text-mono-md text-fg' : 'num text-body-sm text-fg'}>
+                    {row.value}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -257,7 +277,9 @@ export function OrderOutcome({ order, tip }: { order: LoadedOrder; tip: number }
   const status = order.status;
   if (status.kind === 'unspent') {
     return isUnconfirmedFunding(order) ? (
-      <p className="text-body-sm text-fg-secondary">Your cancel confirms in the same block as the funding or after it.</p>
+      <p className="text-body-sm text-fg-secondary">
+        Your cancel confirms in the same block as the funding or after it.
+      </p>
     ) : null;
   }
   if (status.kind === 'needs_review') {
@@ -277,11 +299,14 @@ export function OrderOutcome({ order, tip }: { order: LoadedOrder; tip: number }
         <dl className="flex flex-col divide-y divide-border">
           <Row label="You received">
             <span className="num text-num-lg">
-              {order.record.side === 'buy' ? tokenText(order, status.spend.delivered) : bchText(status.spend.payoutSatoshis)}
+              {order.record.side === 'buy'
+                ? tokenText(order, status.spend.delivered)
+                : bchText(status.spend.payoutSatoshis)}
             </span>
             {order.record.side === 'sell' ? (
               <span className="text-body-sm text-fg-secondary">
-                {bchText(status.spend.payoutSatoshis - SELL_ORDER_SATS)} for your tokens + 2,000 sat reserve returned
+                {bchText(status.spend.payoutSatoshis - SELL_ORDER_SATS)} for your tokens + 2,000 sat reserve
+                returned
               </span>
             ) : null}
           </Row>

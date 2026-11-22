@@ -47,7 +47,6 @@ import { RecoverWallet, type OwnerKey, type RecoverWalletState } from '../wallet
 import { CliExit, parseCliServer } from './args';
 import { terminalQr } from './terminal-qr';
 
-
 const say = (line = ''): void => {
   stdout.write(`${line}\n`);
 };
@@ -57,7 +56,11 @@ const USAGE =
 
 const ask = async (rl: Interface, question: string): Promise<string> => (await rl.question(question)).trim();
 
-const chooseServer = async (rl: Interface | null, network: Network, flag: string | undefined): Promise<ElectrumEndpoint> => {
+const chooseServer = async (
+  rl: Interface | null,
+  network: Network,
+  flag: string | undefined,
+): Promise<ElectrumEndpoint> => {
   if (flag !== undefined) return parseCliServer(flag);
   const servers = CHAIN_NETWORKS[network].nodeElectrum;
   const first = servers[0];
@@ -78,14 +81,18 @@ const chooseServer = async (rl: Interface | null, network: Network, flag: string
 const printOrder = (order: LoadedOrder, tip: number): void => {
   const minimum = minimumLine(order);
   say();
-  say(`Order: ${sideLabel(order)} ${tokenLabel(order)}, contract v${order.record.version}, ${STATUS_BADGE[order.status.kind]}`);
+  say(
+    `Order: ${sideLabel(order)} ${tokenLabel(order)}, contract v${order.record.version}, ${STATUS_BADGE[order.status.kind]}`,
+  );
   say(`  Locked             ${heldLines(order, order.fundingOutput).join(' + ')}`);
   say(`  Receives at least  ${minimum.text}`);
   if (minimum.kind === 'sell') say(`                     ${minimum.payoutLine}`);
   say(`  Fee cap            ${feeText(order.record.maxNetworkFee)}`);
   say(`  Owner              ${ownerAddressOf(order.record.ownerPkh, order.network)}`);
   say(`  Contract           ${contractAddressOf(order)}`);
-  say(`  Funding            ${order.funding.txid}:${order.funding.vout}${order.fundingHeight > 0 ? ` (block ${order.fundingHeight})` : ' (not confirmed yet)'}`);
+  say(
+    `  Funding            ${order.funding.txid}:${order.funding.vout}${order.fundingHeight > 0 ? ` (block ${order.fundingHeight})` : ' (not confirmed yet)'}`,
+  );
   const status = order.status;
   if (status.kind === 'filled') {
     say(`  Filled in          ${status.txid}`);
@@ -95,7 +102,9 @@ const printOrder = (order: LoadedOrder, tip: number): void => {
   } else if (status.kind === 'cancelled') {
     say(`  Cancelled in       ${status.txid}, refunded ${heldLines(order, status.refund).join(' + ')}`);
   } else if (status.kind === 'needs_review') {
-    say(`  Needs review: the order output was spent by ${status.txid}, which is neither a fill nor a cancel (${status.reason}).`);
+    say(
+      `  Needs review: the order output was spent by ${status.txid}, which is neither a fill nor a cancel (${status.reason}).`,
+    );
   }
   if (tip > 0 && order.status.kind !== 'unspent') say();
 };
@@ -132,7 +141,9 @@ const findOrder = async (
   });
   if (stdout.isTTY) say();
   if (found.unknownVersions.length > 0) {
-    say(`This address also has records of contract version ${found.unknownVersions.join(', ')}, which this source doesn't include.`);
+    say(
+      `This address also has records of contract version ${found.unknownVersions.join(', ')}, which this source doesn't include.`,
+    );
   }
   if (found.orders.length === 0) {
     throw new CliExit(
@@ -144,9 +155,12 @@ const findOrder = async (
   if (found.orders.length === 1 && only !== undefined) return only;
   say('Orders owned by this address:');
   found.orders.forEach((order, index) =>
-    say(`  ${index + 1}. ${sideLabel(order)} ${tokenLabel(order)}, ${STATUS_BADGE[order.status.kind]}, ${order.funding.txid}:${order.funding.vout}`),
+    say(
+      `  ${index + 1}. ${sideLabel(order)} ${tokenLabel(order)}, ${STATUS_BADGE[order.status.kind]}, ${order.funding.txid}:${order.funding.vout}`,
+    ),
   );
-  if (rl === null) throw new CliExit('Several orders found; run again with --txid <funding txid> to pick one.', 2);
+  if (rl === null)
+    throw new CliExit('Several orders found; run again with --txid <funding txid> to pick one.', 2);
   const answer = Number(await ask(rl, `Pick an order [1-${found.orders.length}]: `));
   const picked = found.orders[answer - 1];
   if (picked === undefined) throw new CliExit('No order picked.', 2);
@@ -165,7 +179,11 @@ const nextState = (wallet: RecoverWallet, from: RecoverWalletState): Promise<Rec
     });
   });
 
-const pairOwner = async (rl: Interface | null, wallet: RecoverWallet, order: LoadedOrder): Promise<OwnerKey & { walletName: string }> => {
+const pairOwner = async (
+  rl: Interface | null,
+  wallet: RecoverWallet,
+  order: LoadedOrder,
+): Promise<OwnerKey & { walletName: string }> => {
   wallet.start();
   const boot = wallet.getState();
   if (boot.kind === 'unavailable') {
@@ -212,10 +230,17 @@ const pairOwner = async (rl: Interface | null, wallet: RecoverWallet, order: Loa
         );
       case 'missing_receive':
         await wallet.disconnect();
-        throw new CliExit("Your wallet didn't share the receive key path that owns AtPrice orders, so it can't sign this cancel.", 1);
+        throw new CliExit(
+          "Your wallet didn't share the receive key path that owns AtPrice orders, so it can't sign this cancel.",
+          1,
+        );
       case 'pairing_timed_out':
-        if (rl === null) throw new CliExit('Pairing stopped: no wallet scanned the code within 5 minutes.', 1);
-        await ask(rl, 'Pairing stopped. That code no longer works. Press Enter for a new pairing code, or Ctrl+C to quit. ');
+        if (rl === null)
+          throw new CliExit('Pairing stopped: no wallet scanned the code within 5 minutes.', 1);
+        await ask(
+          rl,
+          'Pairing stopped. That code no longer works. Press Enter for a new pairing code, or Ctrl+C to quit. ',
+        );
         continue;
       case 'disconnected':
         throw new CliExit(`Disconnected from your wallet: ${state.message ?? ''} (${state.reason})`, 1);
@@ -243,16 +268,26 @@ const buildPlan = async (
   const provider = recoverNetworkProvider(chain, order.network);
   let path: CancelPath = 'cancel';
   for (;;) {
-    const plan = planCancel({ order, ownerUtxos: path === 'cancel' ? await chain.getUtxos(ownerLocking) : [], path, provider });
+    const plan = planCancel({
+      order,
+      ownerUtxos: path === 'cancel' ? await chain.getUtxos(ownerLocking) : [],
+      path,
+      provider,
+    });
     if (plan.kind === 'ready') return plan;
     if (plan.kind === 'invalid') throw new CliExit(cancelBuildInvalidMessage(plan.rule, 'terminal'), 1);
     const ownerAddress = ownerAddressOf(order.record.ownerPkh, order.network);
     say();
     say(`The owner wallet needs a coin at ${ownerAddress} before it can cancel.`);
-    say(`Send at least ${feeText(plan.askSatoshis)} to it from any wallet. This tool notices the payment and continues.`);
+    say(
+      `Send at least ${feeText(plan.askSatoshis)} to it from any wallet. This tool notices the payment and continues.`,
+    );
     say(terminalQr(ownerAddress));
     if (rl !== null && supportsPlaceholderSigning(walletName)) {
-      const answer = await ask(rl, `Or sign inside the contract with ${walletName} instead? [y/N, Enter to wait for the payment]: `);
+      const answer = await ask(
+        rl,
+        `Or sign inside the contract with ${walletName} instead? [y/N, Enter to wait for the payment]: `,
+      );
       if (answer.toLowerCase() === 'y') {
         path = 'cancelWithSig';
         continue;
@@ -290,9 +325,14 @@ const run = async (): Promise<void> => {
   }
   if ((values.txid === undefined) === (values.address === undefined)) throw new CliExit(USAGE, 2);
   const network = values.network;
-  if (network !== 'mainnet' && network !== 'chipnet') throw new CliExit('--network must be mainnet or chipnet.', 2);
-  say(`AtPrice Recover (terminal), ${network}${network === 'mainnet' ? '. Use --network chipnet for test coins.' : ': test coins.'}`);
-  say('This talks only to the Bitcoin Cash server you pick and to your wallet. It never asks for a private key.');
+  if (network !== 'mainnet' && network !== 'chipnet')
+    throw new CliExit('--network must be mainnet or chipnet.', 2);
+  say(
+    `AtPrice Recover (terminal), ${network}${network === 'mainnet' ? '. Use --network chipnet for test coins.' : ': test coins.'}`,
+  );
+  say(
+    'This talks only to the Bitcoin Cash server you pick and to your wallet. It never asks for a private key.',
+  );
 
   const rl = stdin.isTTY ? createInterface({ input: stdin, output: stdout }) : null;
   const wallet = new RecoverWallet({ network });
@@ -303,7 +343,8 @@ const run = async (): Promise<void> => {
     const server = await connectServer({
       network,
       endpoint,
-      factory: (net, ep, onEvent) => createNodeChainClient(net, { endpoints: [ep], onEvent, application: 'atprice-recover-cli' }),
+      factory: (net, ep, onEvent) =>
+        createNodeChainClient(net, { endpoints: [ep], onEvent, application: 'atprice-recover-cli' }),
       onEvent: () => undefined,
     });
     chain = server.chain;
@@ -315,13 +356,18 @@ const run = async (): Promise<void> => {
       say('Nothing to cancel.');
       return;
     }
-    if (order.fundingHeight <= 0) say('The funding is not confirmed yet. Your cancel confirms in the same block as the funding or after it.');
+    if (order.fundingHeight <= 0)
+      say(
+        'The funding is not confirmed yet. Your cancel confirms in the same block as the funding or after it.',
+      );
 
     const owner = await pairOwner(rl, wallet, order);
     const { cancel } = await buildPlan(rl, chain, order, owner.walletName);
     say();
     say(`You get back       ${heldLines(order, cancel.refund).join(' + ')} to ${owner.address}`);
-    say(`Network fee        ${feeText(cancel.fee)} at ${cancel.feePerByte} sat/byte (the network's minimum relay fee), ${cancel.size} bytes`);
+    say(
+      `Network fee        ${feeText(cancel.fee)} at ${cancel.feePerByte} sat/byte (the network's minimum relay fee), ${cancel.size} bytes`,
+    );
     say(
       `Authorized by      ${cancel.ownerCoin === null ? "the owner wallet's signature inside the contract" : `a coin at the owner address, ${bchText(cancel.ownerCoin.satoshis)}, returned in the same transaction`}`,
     );
@@ -333,7 +379,13 @@ const run = async (): Promise<void> => {
       }
     }
 
-    const { status } = await readOrderStatus(chain, order.record, order.lockingBytecode, order.funding, order.fundingOutput);
+    const { status } = await readOrderStatus(
+      chain,
+      order.record,
+      order.lockingBytecode,
+      order.funding,
+      order.fundingOutput,
+    );
     if (status.kind !== 'unspent') {
       printOrder({ ...order, status }, server.tip.height);
       say('The order output was spent while you were deciding. Nothing to cancel.');
@@ -356,7 +408,8 @@ const run = async (): Promise<void> => {
     try {
       signed = checkSignedCancel(cancel, order, signedHex);
     } catch (error) {
-      if (error instanceof CancelCheckError) throw new CliExit(cancelBuildInvalidMessage(error.rule, 'terminal'), 1);
+      if (error instanceof CancelCheckError)
+        throw new CliExit(cancelBuildInvalidMessage(error.rule, 'terminal'), 1);
       throw error;
     }
     say(`Sending to ${server.host}: ${signed.txid}`);

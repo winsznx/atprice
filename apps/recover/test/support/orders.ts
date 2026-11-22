@@ -1,9 +1,4 @@
-import {
-  encodeOrderRecord,
-  orderLockingBytecode,
-  SUPPORTED_MARKETS,
-  type OrderParams,
-} from '@atprice/core';
+import { encodeOrderRecord, orderLockingBytecode, SUPPORTED_MARKETS, type OrderParams } from '@atprice/core';
 import {
   binToHex,
   encodeLockingBytecodeP2pkh,
@@ -26,7 +21,13 @@ export const keyFixture = (seed: number) => {
   const publicKey = secp256k1.derivePublicKeyCompressed(privateKey);
   if (typeof publicKey === 'string') throw new Error(publicKey);
   const pkh = hash160(publicKey);
-  return { privateKey, publicKey, pkh, lockingBytecode: encodeLockingBytecodeP2pkh(pkh), signer: new SignatureTemplate(privateKey) };
+  return {
+    privateKey,
+    publicKey,
+    pkh,
+    lockingBytecode: encodeLockingBytecodeP2pkh(pkh),
+    signer: new SignatureTemplate(privateKey),
+  };
 };
 
 export const OWNER = keyFixture(1);
@@ -65,7 +66,14 @@ export const fundingTransaction = (
   const transaction = {
     version: 2,
     locktime: 0,
-    inputs: [{ outpointTransactionHash: hexToBin(SOURCE_TXID), outpointIndex: 0, sequenceNumber: 0xffffffff, unlockingBytecode: new Uint8Array() }],
+    inputs: [
+      {
+        outpointTransactionHash: hexToBin(SOURCE_TXID),
+        outpointIndex: 0,
+        sequenceNumber: 0xffffffff,
+        unlockingBytecode: new Uint8Array(),
+      },
+    ],
     outputs: [
       orderOutput,
       { lockingBytecode: options.recordBytecode ?? encodeOrderRecord(params), valueSatoshis: 0n },
@@ -93,6 +101,8 @@ export const seedUnspentOrder = (chain: FakeChain, params: OrderParams, fundingH
     },
   ]);
   chain.setHistory(locking, [{ txid: funding.txid, height: fundingHeight }]);
-  chain.setHistory(encodeLockingBytecodeP2pkh(params.ownerPkh), [{ txid: funding.txid, height: fundingHeight }]);
+  chain.setHistory(encodeLockingBytecodeP2pkh(params.ownerPkh), [
+    { txid: funding.txid, height: fundingHeight },
+  ]);
   return funding.txid;
 };

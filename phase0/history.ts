@@ -7,6 +7,10 @@ for (const host of ['chipnet.bch.ninja', 'chipnet.imaginary.cash']) {
   const lb = cashAddressToLockingBytecode(addr);
   if (typeof lb === 'string') throw new Error(lb);
   const sh = binToHex(sha256.hash(lb.bytecode).slice().reverse());
-  console.log(host, JSON.stringify(await c.request('blockchain.scripthash.get_history', sh)), JSON.stringify(await c.request('blockchain.scripthash.get_balance', sh)));
+  console.log(
+    host,
+    JSON.stringify(await c.request('blockchain.scripthash.get_history', sh)),
+    JSON.stringify(await c.request('blockchain.scripthash.get_balance', sh)),
+  );
   await c.disconnect();
 }

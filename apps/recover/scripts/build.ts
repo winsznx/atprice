@@ -41,7 +41,10 @@ const networksToBuild = (): readonly Network[] => {
   const value = process.env.ATPRICE_NETWORK?.trim() ?? '';
   if (value === '') return NETWORKS;
   if (value === 'mainnet' || value === 'chipnet') return [value];
-  throw new BuildConfigError('ATPRICE_NETWORK_INVALID', `ATPRICE_NETWORK must be mainnet or chipnet, got ${value}`);
+  throw new BuildConfigError(
+    'ATPRICE_NETWORK_INVALID',
+    `ATPRICE_NETWORK must be mainnet or chipnet, got ${value}`,
+  );
 };
 
 const FONT_FEATURES = ['kern', 'tnum', 'lnum', 'ccmp', 'locl', 'calt', 'liga', 'mark', 'mkmk'];
@@ -80,7 +83,10 @@ const buildFontFaces = async (): Promise<{ css: string; base64Bytes: number }> =
     );
   }
   if (base64Bytes > FONT_BUDGET_BYTES) {
-    throw new BuildConfigError('RECOVER_FONT_BUDGET', `fonts take ${base64Bytes} bytes, budget ${FONT_BUDGET_BYTES}`);
+    throw new BuildConfigError(
+      'RECOVER_FONT_BUDGET',
+      `fonts take ${base64Bytes} bytes, budget ${FONT_BUDGET_BYTES}`,
+    );
   }
   return { css: rules.join(''), base64Bytes };
 };
@@ -113,7 +119,10 @@ const zodShimPlugin = async (): Promise<esbuild.Plugin> => {
   );
   const missing = missingZodMembers(sources);
   if (missing.length > 0) {
-    throw new BuildConfigError('RECOVER_ZOD_SHIM', `packages/chain uses z.${missing.join(', z.')}, add them to the shim`);
+    throw new BuildConfigError(
+      'RECOVER_ZOD_SHIM',
+      `packages/chain uses z.${missing.join(', z.')}, add them to the shim`,
+    );
   }
   const shimPath = join(root, 'src/browser/zod-shim.virtual.ts');
   const shimSource = `import { ${ZOD_SHIM_MEMBERS.map((member) => (member === 'enum' ? 'enum as zodEnum' : member)).join(', ')} } from 'zod';\nexport const z = { ${ZOD_SHIM_MEMBERS.map((member) => (member === 'enum' ? 'enum: zodEnum' : member)).join(', ')} };\n`;
@@ -123,7 +132,11 @@ const zodShimPlugin = async (): Promise<esbuild.Plugin> => {
       build.onResolve({ filter: /^zod$/ }, (args) => {
         if (args.pluginData === 'real') return undefined;
         if (args.importer === shimPath) {
-          return build.resolve('zod', { resolveDir: join(repo, 'packages/chain'), kind: args.kind, pluginData: 'real' });
+          return build.resolve('zod', {
+            resolveDir: join(repo, 'packages/chain'),
+            kind: args.kind,
+            pluginData: 'real',
+          });
         }
         return { path: shimPath, namespace: 'atprice-zod-shim' };
       });
@@ -200,7 +213,10 @@ const main = async (): Promise<void> => {
     const html = renderRecoverDocument(parts);
     const bytes = Buffer.byteLength(html, 'utf8');
     if (bytes > FILE_BUDGET_BYTES) {
-      throw new BuildConfigError('RECOVER_FILE_BUDGET', `${network} file is ${bytes} bytes, budget ${FILE_BUDGET_BYTES}`);
+      throw new BuildConfigError(
+        'RECOVER_FILE_BUDGET',
+        `${network} file is ${bytes} bytes, budget ${FILE_BUDGET_BYTES}`,
+      );
     }
     const file = `atprice-recover-${network}-${pkg.version}.html`;
     await writeFile(join(dist, file), html, 'utf8');

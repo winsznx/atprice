@@ -23,7 +23,8 @@ export class FakeChain implements RecoverChain {
 
   setUtxos(lockingBytecode: Uint8Array, utxos: ChainUtxo[]): void {
     this.utxos.set(binToHex(lockingBytecode), utxos);
-    for (const listener of this.addressListeners.get(binToHex(lockingBytecode)) ?? []) listener(`status-${utxos.length}`);
+    for (const listener of this.addressListeners.get(binToHex(lockingBytecode)) ?? [])
+      listener(`status-${utxos.length}`);
   }
 
   setHistory(lockingBytecode: Uint8Array, entries: HistoryEntry[]): void {
@@ -56,7 +57,10 @@ export class FakeChain implements RecoverChain {
     return this.broadcastResult(hex);
   }
 
-  async subscribeAddress(lockingBytecode: Uint8Array, listener: (status: string | null) => void): Promise<() => Promise<void>> {
+  async subscribeAddress(
+    lockingBytecode: Uint8Array,
+    listener: (status: string | null) => void,
+  ): Promise<() => Promise<void>> {
     const key = binToHex(lockingBytecode);
     const listeners = this.addressListeners.get(key) ?? new Set();
     listeners.add(listener);

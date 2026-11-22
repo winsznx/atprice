@@ -13,7 +13,9 @@ export const toCashScriptUtxo = (utxo: ChainUtxo): Utxo => ({
     token: {
       category: utxo.token.category,
       amount: utxo.token.amount,
-      ...(utxo.token.nft && { nft: { capability: utxo.token.nft.capability, commitment: utxo.token.nft.commitment } }),
+      ...(utxo.token.nft && {
+        nft: { capability: utxo.token.nft.capability, commitment: utxo.token.nft.commitment },
+      }),
     },
   }),
 });

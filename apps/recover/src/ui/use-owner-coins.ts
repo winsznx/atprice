@@ -25,7 +25,12 @@ export const useOwnerCoins = (
       if (chain === null) return;
       chain.getUtxos(encodeLockingBytecodeP2pkh(order.record.ownerPkh)).then(
         (utxos) => {
-          if (isCurrent()) setCoins((previous) => ({ kind: 'ready', utxos, since: previous.kind === 'ready' ? previous.since : Date.now() }));
+          if (isCurrent())
+            setCoins((previous) => ({
+              kind: 'ready',
+              utxos,
+              since: previous.kind === 'ready' ? previous.since : Date.now(),
+            }));
         },
         (error: unknown) => {
           if (isCurrent()) setCoins({ kind: 'error', error });

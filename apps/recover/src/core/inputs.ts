@@ -3,7 +3,8 @@ import type { Network } from '@atprice/core';
 import { decodeCashAddress, encodeCashAddress } from '@bitauth/libauth';
 import { CASH_ADDRESS_PREFIX } from '../config';
 
-export type Validated<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly reason: string };
+export type Validated<T> =
+  { readonly ok: true; readonly value: T } | { readonly ok: false; readonly reason: string };
 
 const TXID = /^[0-9a-f]{64}$/;
 

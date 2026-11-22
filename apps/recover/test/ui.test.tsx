@@ -52,7 +52,14 @@ describe('ConnectBlock', () => {
 
   it('shows the pairing code with its label, copy, deep link and cancel', () => {
     const now = Date.now();
-    renderBlock({ kind: 'pairing', uri: 'wiz://?p=abc&s=def', qrUri: 'WIZ://%3FP%3DABC', shownAt: now, warningSince: null, deadline: now + 300_000 });
+    renderBlock({
+      kind: 'pairing',
+      uri: 'wiz://?p=abc&s=def',
+      qrUri: 'WIZ://%3FP%3DABC',
+      shownAt: now,
+      warningSince: null,
+      deadline: now + 300_000,
+    });
     expect(screen.getByRole('heading', { name: 'Pair the wallet that created this order' })).toBeTruthy();
     expect(screen.getByRole('img', { name: QR_LABEL })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Copy pairing link' })).toBeTruthy();
@@ -66,7 +73,14 @@ describe('ConnectBlock', () => {
     const wallet = new RecoverWallet(CONFIG);
     const keepWaiting = vi.spyOn(wallet, 'keepWaiting').mockReturnValue();
     renderBlock(
-      { kind: 'pairing', uri: 'wiz://?p=a', qrUri: 'WIZ://A', shownAt: now - 270_000, warningSince: now, deadline: now + 30_000 },
+      {
+        kind: 'pairing',
+        uri: 'wiz://?p=a',
+        qrUri: 'WIZ://A',
+        shownAt: now - 270_000,
+        warningSince: now,
+        deadline: now + 30_000,
+      },
       wallet,
     );
     expect(screen.getByText('This page stops waiting in 0:30.').getAttribute('role')).toBe('status');
@@ -80,7 +94,12 @@ describe('ConnectBlock', () => {
     rerender(
       <ConnectBlock
         wallet={wallet}
-        state={{ kind: 'connected', wallet: WALLET_ID, owner: { ownerPkh: OWNER.pkh, address: 'bchtest:q' }, reconnectingSince: null }}
+        state={{
+          kind: 'connected',
+          wallet: WALLET_ID,
+          owner: { ownerPkh: OWNER.pkh, address: 'bchtest:q' },
+          reconnectingSince: null,
+        }}
         ownerPkh={OWNER.pkh}
         network="chipnet"
       />,
@@ -89,42 +108,70 @@ describe('ConnectBlock', () => {
   });
 
   it('names a wallet that is not the owner and offers only Disconnect', () => {
-    renderBlock({ kind: 'connected', wallet: WALLET_ID, owner: { ownerPkh: STRANGER.pkh, address: 'bchtest:q' }, reconnectingSince: null });
+    renderBlock({
+      kind: 'connected',
+      wallet: WALLET_ID,
+      owner: { ownerPkh: STRANGER.pkh, address: 'bchtest:q' },
+      reconnectingSince: null,
+    });
     expect(screen.getByRole('heading', { name: "This wallet isn't the owner" })).toBeTruthy();
     expect(screen.getByText(/Connect the wallet that created it/)).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Disconnect' })).toBeTruthy();
   });
 
   it('explains a wallet on another network', () => {
-    renderBlock({ kind: 'wrong_network', wallet: WALLET_ID, walletNetwork: 'mainnet', reconnectingSince: null });
+    renderBlock({
+      kind: 'wrong_network',
+      wallet: WALLET_ID,
+      walletNetwork: 'mainnet',
+      reconnectingSince: null,
+    });
     expect(
-      screen.getByText('Your wallet is on mainnet. This file recovers chipnet orders. Switch your wallet, then connect again.'),
+      screen.getByText(
+        'Your wallet is on mainnet. This file recovers chipnet orders. Switch your wallet, then connect again.',
+      ),
     ).toBeTruthy();
   });
 
   it('reads a protocol mismatch in plain words and offers Connect again', () => {
     renderBlock({ kind: 'disconnected', reason: 'protocol_mismatch', message: null });
-    expect(screen.getByText("Your wallet doesn't support the hdwalletv1 protocol AtPrice uses.")).toBeTruthy();
+    expect(
+      screen.getByText("Your wallet doesn't support the hdwalletv1 protocol AtPrice uses."),
+    ).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Connect again' })).toBeTruthy();
   });
 
   it('says when the relay itself is unreachable and points to Other ways', () => {
     renderBlock({ kind: 'error', message: 'ECONNREFUSED', relayUnreachable: true });
     const alert = screen.getByRole('alert');
-    expect(within(alert).getByText(/Couldn't reach the wallet connection relay \(ECONNREFUSED\)/)).toBeTruthy();
+    expect(
+      within(alert).getByText(/Couldn't reach the wallet connection relay \(ECONNREFUSED\)/),
+    ).toBeTruthy();
     expect(within(alert).getByRole('link', { name: 'Other ways' }).getAttribute('href')).toBe('#other-ways');
     expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
   });
 
   it('shows the reconnecting line with Disconnect', () => {
-    renderBlock({ kind: 'connected', wallet: WALLET_ID, owner: { ownerPkh: OWNER.pkh, address: 'bchtest:q' }, reconnectingSince: Date.now() });
+    renderBlock({
+      kind: 'connected',
+      wallet: WALLET_ID,
+      owner: { ownerPkh: OWNER.pkh, address: 'bchtest:q' },
+      reconnectingSince: Date.now(),
+    });
     expect(screen.getByRole('heading', { name: 'Reconnecting' })).toBeTruthy();
     expect(screen.getByText(/Requests resume when it answers/)).toBeTruthy();
   });
 });
 
 describe('Sign cancel in wallet', () => {
-  const connected = { kind: 'connected', host: 'h', endpoint: { host: 'h', port: 1, transport: 'wss' }, chain: new FakeChain(), tip: 1, lost: false } as const;
+  const connected = {
+    kind: 'connected',
+    host: 'h',
+    endpoint: { host: 'h', port: 1, transport: 'wss' },
+    chain: new FakeChain(),
+    tip: 1,
+    lost: false,
+  } as const;
   const ready = { kind: 'invalid', rule: 'x' } as const;
   const base = {
     server: connected,
@@ -147,20 +194,38 @@ describe('Sign cancel in wallet', () => {
     expect(signBlocker({ ...base, wallet: ownerWallet, ownerMatches: true })).toBe(
       'Reconnecting to your wallet (0:05). Requests resume when it answers.',
     );
-    expect(signBlocker({ ...base, wallet: { ...ownerWallet, reconnectingSince: null }, ownerMatches: true })).toBe('Building the cancel.');
-    expect(signBlocker({ ...base, wallet: { ...ownerWallet, reconnectingSince: null }, ownerMatches: true, plan: ready })).toBe(
-      "The cancel failed a safety check, so it can't be signed.",
-    );
+    expect(
+      signBlocker({ ...base, wallet: { ...ownerWallet, reconnectingSince: null }, ownerMatches: true }),
+    ).toBe('Building the cancel.');
+    expect(
+      signBlocker({
+        ...base,
+        wallet: { ...ownerWallet, reconnectingSince: null },
+        ownerMatches: true,
+        plan: ready,
+      }),
+    ).toBe("The cancel failed a safety check, so it can't be signed.");
   });
 
   it('heads the cancel block with the state the owner is in', () => {
     const coins = { kind: 'ready', utxos: [], since: 0 } as const;
-    expect(cancelHeading(coins, { kind: 'no_owner_utxo', reason: 'owner_address_empty', requiredSatoshis: 546n, askSatoshis: 1_500n, largestSatoshis: 0n }, { kind: 'idle' }, null)).toBe(
-      'The owner wallet needs a coin',
-    );
-    expect(cancelHeading(coins, null, { kind: 'awaiting', since: 0, controller: new AbortController() }, null)).toBe(
-      'Approve the cancel in your wallet',
-    );
+    expect(
+      cancelHeading(
+        coins,
+        {
+          kind: 'no_owner_utxo',
+          reason: 'owner_address_empty',
+          requiredSatoshis: 546n,
+          askSatoshis: 1_500n,
+          largestSatoshis: 0n,
+        },
+        { kind: 'idle' },
+        null,
+      ),
+    ).toBe('The owner wallet needs a coin');
+    expect(
+      cancelHeading(coins, null, { kind: 'awaiting', since: 0, controller: new AbortController() }, null),
+    ).toBe('Approve the cancel in your wallet');
     expect(cancelHeading(coins, null, { kind: 'idle' }, { txid: 'a', height: 0 })).toBe('Cancel sent');
     expect(cancelHeading(coins, null, { kind: 'idle' }, { txid: 'a', height: 5 })).toBe('Cancelled');
   });
@@ -195,16 +260,22 @@ describe('App with a fake server', () => {
     const chain = new FakeChain();
     const params = buyParams();
     const txid = seedUnspentOrder(chain, params);
-    chain.setUtxos(encodeLockingBytecodeP2pkh(OWNER.pkh), [{ txid: 'cd'.repeat(32), vout: 2, satoshis: 1_000n, height: 342_300 }]);
+    chain.setUtxos(encodeLockingBytecodeP2pkh(OWNER.pkh), [
+      { txid: 'cd'.repeat(32), vout: 2, satoshis: 1_000n, height: 342_300 },
+    ]);
     const session = new ServerSession('chipnet', () => chain);
     const wallet = new RecoverWallet(CONFIG);
     wallet.start();
-    render(<App config={CONFIG} session={session} wallet={wallet} fileHash={'ab'.repeat(32)} prefill={null} />);
+    render(
+      <App config={CONFIG} session={session} wallet={wallet} fileHash={'ab'.repeat(32)} prefill={null} />,
+    );
 
     // #when the user picks a server and searches
     fireEvent.change(screen.getByLabelText('Bitcoin Cash server'), { target: { value: '0' } });
     await screen.findByText('Connected');
-    fireEvent.change(screen.getByRole('textbox', { name: 'Funding transaction id' }), { target: { value: txid } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Funding transaction id' }), {
+      target: { value: txid },
+    });
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Find order' }));
     });
@@ -230,7 +301,9 @@ describe('App with a fake server', () => {
     render(<App config={CONFIG} session={session} wallet={wallet} fileHash={null} prefill={null} />);
     fireEvent.change(screen.getByLabelText('Bitcoin Cash server'), { target: { value: '0' } });
     await screen.findByText('Connected');
-    fireEvent.change(screen.getByRole('textbox', { name: 'Funding transaction id' }), { target: { value: txid } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Funding transaction id' }), {
+      target: { value: txid },
+    });
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Find order' }));
     });
@@ -238,19 +311,28 @@ describe('App with a fake server', () => {
     expect(screen.getByText(/0\.00001500 BCH \(1,500 sat\)/)).toBeTruthy();
     expect(screen.getByText('Show QR')).toBeTruthy();
     // #when the top-up lands #then the cancel is rebuilt
-    act(() => chain.setUtxos(encodeLockingBytecodeP2pkh(OWNER.pkh), [{ txid: 'ef'.repeat(32), vout: 0, satoshis: 1_500n, height: 0 }]));
+    act(() =>
+      chain.setUtxos(encodeLockingBytecodeP2pkh(OWNER.pkh), [
+        { txid: 'ef'.repeat(32), vout: 0, satoshis: 1_500n, height: 0 },
+      ]),
+    );
     expect(await screen.findByRole('heading', { name: 'Ready to cancel' })).toBeTruthy();
   });
 
   it('shows the empty state for a transaction without a record', async () => {
     const chain = new FakeChain();
-    chain.addTransaction('ab'.repeat(32), '0200000001' + 'ab'.repeat(32) + '000000000000000000' + '01' + '0000000000000000' + '00' + '00000000');
+    chain.addTransaction(
+      'ab'.repeat(32),
+      '0200000001' + 'ab'.repeat(32) + '000000000000000000' + '01' + '0000000000000000' + '00' + '00000000',
+    );
     const session = new ServerSession('chipnet', () => chain);
     const wallet = new RecoverWallet(CONFIG);
     render(<App config={CONFIG} session={session} wallet={wallet} fileHash={null} prefill={null} />);
     fireEvent.change(screen.getByLabelText('Bitcoin Cash server'), { target: { value: '0' } });
     await screen.findByText('Connected');
-    fireEvent.change(screen.getByRole('textbox', { name: 'Funding transaction id' }), { target: { value: 'ab'.repeat(32) } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Funding transaction id' }), {
+      target: { value: 'ab'.repeat(32) },
+    });
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Find order' }));
     });

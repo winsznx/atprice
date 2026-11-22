@@ -49,7 +49,9 @@ interface Key {
 }
 
 const loadKey = (role: string): Key => {
-  const file = JSON.parse(readFileSync(new URL(`../.local/chipnet-${role}.json`, import.meta.url), 'utf8')) as {
+  const file = JSON.parse(
+    readFileSync(new URL(`../.local/chipnet-${role}.json`, import.meta.url), 'utf8'),
+  ) as {
     wif: string;
     address: string;
     tokenAddress: string;
@@ -58,7 +60,12 @@ const loadKey = (role: string): Key => {
   if (typeof decoded === 'string') throw new Error(`wif for ${role}: ${decoded}`);
   const pub = secp256k1.derivePublicKeyCompressed(decoded.privateKey);
   if (typeof pub === 'string') throw new Error(pub);
-  return { signer: new SignatureTemplate(file.wif), pkh: hash160(pub), address: file.address, tokenAddress: file.tokenAddress };
+  return {
+    signer: new SignatureTemplate(file.wif),
+    pkh: hash160(pub),
+    address: file.address,
+    tokenAddress: file.tokenAddress,
+  };
 };
 
 const record = (event: Record<string, unknown>): void => {
@@ -72,16 +79,30 @@ const record = (event: Record<string, unknown>): void => {
 const walletUtxos = async (key: Key): Promise<WalletUtxo[]> => {
   const utxos = await provider.getUtxos(key.tokenAddress);
   const locking = binToHex(ownerLockingBytecode(key.pkh));
-  return utxos.map((u) => ({ ...u, lockingBytecode: locking, pathName: 'receive' as const, addressIndex: 0 }));
+  return utxos.map((u) => ({
+    ...u,
+    lockingBytecode: locking,
+    pathName: 'receive' as const,
+    addressIndex: 0,
+  }));
 };
 
-const broadcast = async (label: string, hex: string, extra: Record<string, unknown> = {}): Promise<string | undefined> => {
+const broadcast = async (
+  label: string,
+  hex: string,
+  extra: Record<string, unknown> = {},
+): Promise<string | undefined> => {
   try {
     const txid = await provider.sendRawTransaction(hex);
     record({ label, outcome: 'broadcast_ok', txid, ...extra });
     return txid;
   } catch (error) {
-    record({ label, outcome: 'broadcast_rejected', reason: error instanceof Error ? error.message : String(error), ...extra });
+    record({
+      label,
+      outcome: 'broadcast_rejected',
+      reason: error instanceof Error ? error.message : String(error),
+      ...extra,
+    });
     return undefined;
   }
 };
@@ -107,7 +128,12 @@ const signDraft = (draft: FundingDraft, key: Key, utxos: readonly WalletUtxo[]):
               category: binToHex(output.token.category),
               amount: output.token.amount,
               ...(output.token.nft
-                ? { nft: { capability: output.token.nft.capability, commitment: binToHex(output.token.nft.commitment) } }
+                ? {
+                    nft: {
+                      capability: output.token.nft.capability,
+                      commitment: binToHex(output.token.nft.commitment),
+                    },
+                  }
                 : {}),
             },
           }
@@ -136,18 +162,31 @@ const livePools = async (): Promise<CauldronPoolUtxo[]> => {
   for (const row of rows) {
     const pkh = hexToBin(row.owner_pkh);
     const locking = poolLockingBytecode(pkh);
-    const encoded = lockingBytecodeToCashAddress({ bytecode: locking, prefix: 'bchtest', tokenSupport: true });
+    const encoded = lockingBytecodeToCashAddress({
+      bytecode: locking,
+      prefix: 'bchtest',
+      tokenSupport: true,
+    });
     if (typeof encoded === 'string') throw new Error(`pool address: ${encoded}`);
     const address = encoded.address;
     for (const utxo of await provider.getUtxos(address)) {
       if (utxo.token?.category !== TOKEN || utxo.token.nft || utxo.token.amount <= 0n) continue;
-      pools.push({ ...utxo, token: { amount: utxo.token.amount, category: TOKEN }, ownerPkh: pkh, lockingBytecode: binToHex(locking) });
+      pools.push({
+        ...utxo,
+        token: { amount: utxo.token.amount, category: TOKEN },
+        ownerPkh: pkh,
+        lockingBytecode: binToHex(locking),
+      });
     }
   }
   return pools;
 };
 
-const bestPool = (pools: readonly CauldronPoolUtxo[], side: 'buy' | 'sell', amount: bigint): { pool: CauldronPoolUtxo; out: bigint } => {
+const bestPool = (
+  pools: readonly CauldronPoolUtxo[],
+  side: 'buy' | 'sell',
+  amount: bigint,
+): { pool: CauldronPoolUtxo; out: bigint } => {
   let best: { pool: CauldronPoolUtxo; out: bigint } | undefined;
   for (const pool of pools) {
     const reserves = { sats: pool.satoshis, tokens: pool.token.amount };
@@ -184,12 +223,28 @@ const fund = async (side: 'buy' | 'sell', amount: bigint, mode: string): Promise
   // executable: 3% below the current quote, so it fills now. unreachable: twice the quote.
   const target = mode === 'unreachable' ? out * 2n : (out * 97n) / 100n;
   // A sell fill pays its miner fee out of bchOut, so leave room for it below the quote.
-  const minOut = side === 'buy' ? target : sellMinOutFromNetProceeds(mode === 'unreachable' ? target : target - 1000n).minOut;
+  const minOut =
+    side === 'buy'
+      ? target
+      : sellMinOutFromNetProceeds(mode === 'unreachable' ? target : target - 1000n).minOut;
   const params = newParams(side, owner, minOut);
   const utxos = await walletUtxos(owner);
-  const draft = buildFundingTransaction({ params, amount, minimumAmount: 1n, walletUtxos: utxos, network: NETWORK, provider });
+  const draft = buildFundingTransaction({
+    params,
+    amount,
+    minimumAmount: 1n,
+    walletUtxos: utxos,
+    network: NETWORK,
+    provider,
+  });
   const hex = signDraft(draft, owner, utxos);
-  await broadcast(`fund-${side}-${mode}`, hex, { quotePool: `${pool.txid}:${pool.vout}`, quotedOut: out, minOut, amount, orderAddress: draft.orderAddress });
+  await broadcast(`fund-${side}-${mode}`, hex, {
+    quotePool: `${pool.txid}:${pool.vout}`,
+    quotedOut: out,
+    minOut,
+    amount,
+    orderAddress: draft.orderAddress,
+  });
 };
 
 // Rebuilds the order from the funding transaction alone, as the keeper and the recovery tool do.
@@ -206,18 +261,27 @@ const orderFromChain = async (fundingTxid: string) => {
     txid: fundingTxid,
     vout: 0,
     satoshis: orderOutput.valueSatoshis,
-    ...(orderOutput.token ? { token: { category: binToHex(orderOutput.token.category), amount: orderOutput.token.amount } } : {}),
+    ...(orderOutput.token
+      ? { token: { category: binToHex(orderOutput.token.category), amount: orderOutput.token.amount } }
+      : {}),
   };
   return { params, order, utxo };
 };
 
 const execute = async (fundingTxid: string, mutate: boolean): Promise<void> => {
   const { params, order, utxo } = await orderFromChain(fundingTxid);
-  const amount = params.side === 'buy' ? utxo.satoshis - 1000n - params.maxNetworkFee : (utxo.token?.amount ?? 0n);
+  const amount =
+    params.side === 'buy' ? utxo.satoshis - 1000n - params.maxNetworkFee : (utxo.token?.amount ?? 0n);
   const { pool } = bestPool(await livePools(), params.side, amount);
   const built = buildExecuteTransaction(order, utxo, pool);
   if (!mutate) {
-    await broadcast('execute', built.hex, { fundingTxid, pool: `${pool.txid}:${pool.vout}`, size: built.size, fee: built.fee, execution: built.execution });
+    await broadcast('execute', built.hex, {
+      fundingTxid,
+      pool: `${pool.txid}:${pool.vout}`,
+      size: built.size,
+      fee: built.fee,
+      execution: built.execution,
+    });
     return;
   }
   // Pay the recipient one unit less than the contract allows and leave it in the pool.
@@ -246,24 +310,41 @@ const cancel = async (fundingTxid: string, withSig: boolean): Promise<void> => {
   const owner = loadKey('funder');
   const { order, utxo } = await orderFromChain(fundingTxid);
   if (withSig) {
-    const signed = buildSignedCancelWithSigTransaction({ orders: [{ order, utxo }], ownerSigner: owner.signer });
+    const signed = buildSignedCancelWithSigTransaction({
+      orders: [{ order, utxo }],
+      ownerSigner: owner.signer,
+    });
     await broadcast('cancel-with-sig', signed.hex, { fundingTxid });
     return;
   }
-  const ownerUtxo = (await provider.getUtxos(owner.tokenAddress)).filter((u) => !u.token).sort((a, b) => (b.satoshis > a.satoshis ? 1 : -1))[0];
-  if (!ownerUtxo) throw new Error('owner address holds no token-free UTXO; send at least 1500 sats to it first');
-  const signed = buildSignedCancelTransaction({ owner: { utxos: [ownerUtxo] }, orders: [{ order, utxo }], ownerSigner: owner.signer });
+  const ownerUtxo = (await provider.getUtxos(owner.tokenAddress))
+    .filter((u) => !u.token)
+    .sort((a, b) => (b.satoshis > a.satoshis ? 1 : -1))[0];
+  if (!ownerUtxo)
+    throw new Error('owner address holds no token-free UTXO; send at least 1500 sats to it first');
+  const signed = buildSignedCancelTransaction({
+    owner: { utxos: [ownerUtxo] },
+    orders: [{ order, utxo }],
+    ownerSigner: owner.signer,
+  });
   await broadcast('cancel', signed.hex, { fundingTxid });
 };
 
 const race = async (fundingTxid: string): Promise<void> => {
   const owner = loadKey('funder');
   const { params, order, utxo } = await orderFromChain(fundingTxid);
-  const amount = params.side === 'buy' ? utxo.satoshis - 1000n - params.maxNetworkFee : (utxo.token?.amount ?? 0n);
+  const amount =
+    params.side === 'buy' ? utxo.satoshis - 1000n - params.maxNetworkFee : (utxo.token?.amount ?? 0n);
   const { pool } = bestPool(await livePools(), params.side, amount);
   const exec = buildExecuteTransaction(order, utxo, pool);
-  const cancelTx = buildSignedCancelWithSigTransaction({ orders: [{ order, utxo }], ownerSigner: owner.signer });
-  await Promise.all([broadcast('race-execute', exec.hex, { fundingTxid }), broadcast('race-cancel', cancelTx.hex, { fundingTxid })]);
+  const cancelTx = buildSignedCancelWithSigTransaction({
+    orders: [{ order, utxo }],
+    ownerSigner: owner.signer,
+  });
+  await Promise.all([
+    broadcast('race-execute', exec.hex, { fundingTxid }),
+    broadcast('race-cancel', cancelTx.hex, { fundingTxid }),
+  ]);
 };
 
 const status = async (): Promise<void> => {
@@ -275,7 +356,10 @@ const status = async (): Promise<void> => {
     console.log(role, key.address, `utxos=${utxos.length} sats=${sats} tokens=${tokens}`);
   }
   const pools = await livePools();
-  console.log(`live pools for ${TOKEN.slice(0, 8)}…: ${pools.length}`, pools.slice(0, 3).map((p) => `${p.txid.slice(0, 8)}:${p.vout} ${p.satoshis}/${p.token.amount}`));
+  console.log(
+    `live pools for ${TOKEN.slice(0, 8)}…: ${pools.length}`,
+    pools.slice(0, 3).map((p) => `${p.txid.slice(0, 8)}:${p.vout} ${p.satoshis}/${p.token.amount}`),
+  );
 };
 
 const [command, arg1, arg2] = process.argv.slice(2);
@@ -305,6 +389,8 @@ switch (command) {
     await race(arg1 ?? '');
     break;
   default:
-    console.log('usage: onchain.ts status | fund-buy <sats> [executable|unreachable] | fund-sell <tokens> [..] | execute <txid> | bad-execute <txid> | cancel <txid> | cancel-sig <txid> | race <txid>');
+    console.log(
+      'usage: onchain.ts status | fund-buy <sats> [executable|unreachable] | fund-sell <tokens> [..] | execute <txid> | bad-execute <txid> | cancel <txid> | cancel-sig <txid> | race <txid>',
+    );
 }
 process.exit(0);

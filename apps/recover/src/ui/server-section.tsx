@@ -9,7 +9,8 @@ import { SectionHeading } from './section';
 
 const CUSTOM = 'custom';
 
-const sameEndpoint = (a: ElectrumEndpoint, b: ElectrumEndpoint): boolean => a.host === b.host && a.port === b.port;
+const sameEndpoint = (a: ElectrumEndpoint, b: ElectrumEndpoint): boolean =>
+  a.host === b.host && a.port === b.port;
 
 /** Step 1 of 4: the server the page talks to, which the user can see and change (recover.md hard rule 2). */
 export function ServerSection({
@@ -141,8 +142,8 @@ function ServerStatus({ state, network }: { state: ServerState; network: Recover
           </p>
           {state.lost ? (
             <p className={cx('text-body-sm text-fg-secondary')}>
-              The connection to {state.host} dropped. This page reconnects to the same server; pick another one if it
-              stays down.
+              The connection to {state.host} dropped. This page reconnects to the same server; pick another
+              one if it stays down.
             </p>
           ) : null}
         </div>

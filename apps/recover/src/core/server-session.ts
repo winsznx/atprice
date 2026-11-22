@@ -16,7 +16,12 @@ export type ServerState =
       /** The socket dropped; `packages/chain` is reconnecting to the same server. */
       readonly lost: boolean;
     }
-  | { readonly kind: 'error'; readonly host: string; readonly endpoint: ElectrumEndpoint; readonly error: RecoverError };
+  | {
+      readonly kind: 'error';
+      readonly host: string;
+      readonly endpoint: ElectrumEndpoint;
+      readonly error: RecoverError;
+    };
 
 /**
  * The one server connection of the page: the user picks it, sees it, and can change it at any time
@@ -68,10 +73,21 @@ export class ServerSession {
         await connected.chain.close();
         return false;
       }
-      this.setState({ kind: 'connected', host, endpoint, chain: connected.chain, tip: connected.tip.height, lost: false });
+      this.setState({
+        kind: 'connected',
+        host,
+        endpoint,
+        chain: connected.chain,
+        tip: connected.tip.height,
+        lost: false,
+      });
       this.stopHeaders = await connected.chain
         .subscribeHeaders((header) => {
-          if (generation === this.generation && this.state.kind === 'connected' && header.height !== this.state.tip) {
+          if (
+            generation === this.generation &&
+            this.state.kind === 'connected' &&
+            header.height !== this.state.tip
+          ) {
             this.setState({ ...this.state, tip: header.height });
           }
         })
@@ -85,7 +101,10 @@ export class ServerSession {
       const failure =
         error instanceof RecoverError
           ? error
-          : new RecoverError('ELECTRUM_UNREACHABLE', `Couldn't reach ${host} (ELECTRUM_UNREACHABLE). Pick another server.`);
+          : new RecoverError(
+              'ELECTRUM_UNREACHABLE',
+              `Couldn't reach ${host} (ELECTRUM_UNREACHABLE). Pick another server.`,
+            );
       this.setState({ kind: 'error', host, endpoint, error: failure });
       return false;
     }
@@ -95,7 +114,8 @@ export class ServerSession {
     const previous = this.state;
     const stop = this.stopHeaders;
     this.stopHeaders = undefined;
-    if (stop !== undefined) await stop().catch((error: unknown) => console.error('Header unsubscribe failed:', error));
+    if (stop !== undefined)
+      await stop().catch((error: unknown) => console.error('Header unsubscribe failed:', error));
     if (previous.kind === 'connected') await previous.chain.close();
   }
 
