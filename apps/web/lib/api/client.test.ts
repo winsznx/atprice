@@ -45,10 +45,7 @@ describe('api client', () => {
   });
 
   it('carries the server reason of an error envelope', async () => {
-    vi.stubGlobal(
-      'fetch',
-      respond(429, { error: 'intent_capacity', message: 'too many open intents' }),
-    );
+    vi.stubGlobal('fetch', respond(429, { error: 'intent_capacity', message: 'too many open intents' }));
     const error = await failure(api.registerOrder('a'.repeat(64)));
     expect(error.code).toBe('API_ERROR');
     expect(error.status).toBe(429);

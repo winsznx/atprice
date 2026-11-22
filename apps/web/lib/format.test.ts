@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { formatAge, formatBch, formatFee, formatPercent, formatRate, formatToken, shortUnits } from './format';
+import {
+  formatAge,
+  formatBch,
+  formatFee,
+  formatPercent,
+  formatRate,
+  formatToken,
+  shortUnits,
+} from './format';
 
 describe('DD 4 amount modes', () => {
   it.each([

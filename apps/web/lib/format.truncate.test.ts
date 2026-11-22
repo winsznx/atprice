@@ -8,6 +8,8 @@ describe('truncateMiddle', () => {
   });
 
   it('keeps the txid of an outpoint instead of cutting it at the colon', () => {
-    expect(truncateMiddle('9e9da9395ae2533a88c170d9560da630d96959c6d76974c2d21792e04321141a:0')).toBe('9e9da939…141a:0');
+    expect(truncateMiddle('9e9da9395ae2533a88c170d9560da630d96959c6d76974c2d21792e04321141a:0')).toBe(
+      '9e9da939…141a:0',
+    );
   });
 });
