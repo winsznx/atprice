@@ -4,6 +4,21 @@
   "private": true,
   "type": "module",
   "description": "Playwright checks and review screenshots of the AtPrice web app, run against a local build only",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/e2e",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "e2e"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "playwright",
+    "screenshots",
+    "e2e"
+  ],
   "scripts": {
     "screens": "playwright test --project=screens",
     "typecheck": "tsc -p tsconfig.json --noEmit"

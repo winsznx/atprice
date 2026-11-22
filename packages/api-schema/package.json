@@ -4,6 +4,22 @@
   "private": true,
   "type": "module",
   "description": "The AtPrice HTTP API contract: zod schemas for every response, shared by apps/server and apps/web",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/packages/api-schema",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "packages/api-schema"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "atprice",
+    "api",
+    "zod",
+    "schema"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {

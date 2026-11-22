@@ -4,6 +4,23 @@
   "private": true,
   "type": "module",
   "description": "AtPrice order covenants (CashScript sources and compiled artifacts)",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/packages/contracts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "packages/contracts"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "cashscript",
+    "covenant",
+    "limit-order",
+    "cauldron"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

@@ -4,6 +4,23 @@
   "private": true,
   "type": "module",
   "description": "AtPrice API and keeper: two processes from one package",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/apps/server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "apps/server"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "keeper",
+    "fastify",
+    "postgres",
+    "limit-order"
+  ],
   "files": [
     "dist",
     "migrations"

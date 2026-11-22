@@ -2,6 +2,26 @@
   "name": "atprice",
   "private": true,
   "type": "module",
+  "description": "Non-custodial limit orders for Bitcoin Cash, filled through Cauldron pools by an on-chain covenant",
+  "license": "MIT",
+  "homepage": "https://atprice.cash",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "bch",
+    "cashtokens",
+    "cashscript",
+    "covenant",
+    "limit-orders",
+    "cauldron",
+    "non-custodial"
+  ],
   "packageManager": "pnpm@12.16.1",
   "engines": {
     "node": ">=24"

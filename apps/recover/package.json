@@ -4,6 +4,23 @@
   "private": true,
   "type": "module",
   "description": "AtPrice Recover: one self-contained HTML file and a Node CLI that cancel any AtPrice order without AtPrice servers",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/apps/recover",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "apps/recover"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "recovery",
+    "wizardconnect",
+    "self-contained",
+    "offline"
+  ],
   "exports": {
     "./manifest": "./dist/manifest.json"
   },

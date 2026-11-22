@@ -4,6 +4,23 @@
   "private": true,
   "type": "module",
   "description": "Isomorphic AtPrice domain logic: order params, record codec, quote maths, transaction builders",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/packages/core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "cashtokens",
+    "limit-order",
+    "transaction-builder",
+    "cauldron"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {

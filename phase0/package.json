@@ -3,6 +3,22 @@
   "private": true,
   "type": "module",
   "description": "Phase 0 feasibility harness: chipnet proofs for PRD Q1-Q4",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/phase0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "phase0"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "chipnet",
+    "cashscript",
+    "feasibility"
+  ],
   "dependencies": {
     "@bitauth/libauth": "3.1.0-next.8",
     "@cashlab/cauldron": "1.0.3",

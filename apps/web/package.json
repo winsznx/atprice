@@ -4,6 +4,23 @@
   "private": true,
   "type": "module",
   "description": "AtPrice web app: Next.js app router, Tailwind 4 tokens, TanStack Query, WizardConnect",
+  "license": "MIT",
+  "homepage": "https://atprice.cash",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "apps/web"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "nextjs",
+    "wizardconnect",
+    "limit-order",
+    "dapp"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

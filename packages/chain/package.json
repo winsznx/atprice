@@ -4,6 +4,23 @@
   "private": true,
   "type": "module",
   "description": "Isomorphic chain access for AtPrice: Electrum client with failover, Cauldron indexer and Rostrum clients, broadcast and explorer links",
+  "license": "MIT",
+  "homepage": "https://github.com/winsznx/atprice/tree/main/packages/chain",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winsznx/atprice.git",
+    "directory": "packages/chain"
+  },
+  "bugs": {
+    "url": "https://github.com/winsznx/atprice/issues"
+  },
+  "keywords": [
+    "bitcoin-cash",
+    "electrum",
+    "rostrum",
+    "cauldron",
+    "indexer"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
