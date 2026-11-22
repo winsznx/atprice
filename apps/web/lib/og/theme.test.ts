@@ -26,7 +26,7 @@ describe('generated image theme', () => {
   });
 
   it('renders the favicon, which is byte for byte the design mark', () => {
-    const designMark = readFileSync(join(WEB_ROOT, '..', '..', 'internal', 'design', 'mark.svg'), 'utf8');
+    const designMark = readFileSync(join(WEB_ROOT, '..', '..', 'docs', 'assets', 'brand', 'mark.svg'), 'utf8');
     expect(MARK_SVG).toBe(designMark);
   });
 });
