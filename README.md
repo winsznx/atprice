@@ -13,6 +13,7 @@ AtPrice is a non-custodial limit order service for Bitcoin Cash. You lock BCH (t
 - Web app: https://atprice.cash
 - Keeper health: https://api.atprice.cash/api/v1/health
 - Source: https://github.com/winsznx/atprice
+- Presentation (BCH BLAZE 2026): https://docs.google.com/presentation/d/1-6l7XZqbBpaASZQKb3wadb8j0LWVOQk_/edit?usp=sharing
 
 Mainnet markets are PUSD (ParyonUSD) and RES (Real Estate Superstable). Chipnet runs PUSDTEST. The allowlist is in [`packages/core/src/markets.ts`](packages/core/src/markets.ts).
 
