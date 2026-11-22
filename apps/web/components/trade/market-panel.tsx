@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { BchAmount, Rate, TokenAmount } from '@/components/amount';
 import { HashChip } from '@/components/hash-chip';
 import { LocalTime } from '@/components/local-time';
-import { DisabledReason, ErrorState, FUNDS_STILL_SAFE } from '@/components/states';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { ErrorState, FUNDS_STILL_SAFE } from '@/components/states';
+import { buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { EvidenceOrder, MarketDetail } from '@/lib/api/schemas';
 import { formatBch, formatBlockHeight, formatPercent, formatToken, orientRate } from '@/lib/format';
@@ -103,31 +103,13 @@ export type RecentFillsView =
   | { readonly kind: 'ready'; readonly fills: readonly EvidenceOrder[] };
 
 /**
- * Rate history and recent fills. `GET /markets/:tokenId/history` and `GET /activity` are not in
- * architecture.md r5 yet (DD 10.3), so the chart shows its named unavailable state and recent fills
- * come from `GET /evidence`, AtPrice's list of completed real transactions, filtered to this market.
+ * Recent fills for this market, from `GET /evidence` (AtPrice's completed real transactions). No rate
+ * chart is drawn: the API serves no rate history, and PRD 7.1 asks for a chart only when reliable data
+ * exists.
  */
 export function MarketHistory({ market, fills }: { market: MarketDefinition; fills: RecentFillsView }) {
   return (
     <div className="flex flex-col gap-6">
-      <section aria-labelledby="history-title" className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="history-title" className="font-display text-heading-3 text-fg">
-            Rate, last 24h
-          </h2>
-          <span className="flex flex-col items-end gap-1">
-            <Button variant="ghost" size="compact" aria-disabled aria-describedby="history-show-data-reason">
-              Show data
-            </Button>
-            <DisabledReason id="history-show-data-reason">No data points yet.</DisabledReason>
-          </span>
-        </div>
-        <p className="rounded-md bg-surface-sunken p-4 text-body-sm text-fg-secondary">
-          Not enough rate history yet. AtPrice’s server doesn’t serve its recorded pool snapshots in this
-          release, so no chart is drawn.{' '}
-          <span className="hash text-mono-sm text-fg-muted">HISTORY_NOT_SERVED</span>
-        </p>
-      </section>
       <section aria-labelledby="fills-title" className="flex flex-col gap-3">
         <h2 id="fills-title" className="font-display text-heading-3 text-fg">
           Recent fills on AtPrice
