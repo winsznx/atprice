@@ -42,12 +42,31 @@ function Box({ box }: { box: DiagramBox }) {
   const top = box.y + box.h / 2 - (box.lines.length * 18) / 2;
   return (
     <g>
-      <rect x={box.x} y={box.y} width={box.w} height={box.h} rx={12} strokeWidth={1.5} className={TONE[box.tone]} />
-      <text x={cx} y={top} textAnchor="middle" className="num fill-fg-muted font-sans text-[12px] font-medium">
+      <rect
+        x={box.x}
+        y={box.y}
+        width={box.w}
+        height={box.h}
+        rx={12}
+        strokeWidth={1.5}
+        className={TONE[box.tone]}
+      />
+      <text
+        x={cx}
+        y={top}
+        textAnchor="middle"
+        className="num fill-fg-muted font-sans text-[12px] font-medium"
+      >
         {box.label}
       </text>
       {box.lines.map((line, index) => (
-        <text key={line} x={cx} y={top + 20 + index * 18} textAnchor="middle" className="fill-fg font-sans text-[15px] font-semibold">
+        <text
+          key={line}
+          x={cx}
+          y={top + 20 + index * 18}
+          textAnchor="middle"
+          className="fill-fg font-sans text-[15px] font-semibold"
+        >
           {line}
         </text>
       ))}
@@ -56,13 +75,30 @@ function Box({ box }: { box: DiagramBox }) {
 }
 
 function Arrow({ d, marker }: { d: string; marker: string }) {
-  return <path d={d} fill="none" strokeWidth={2} strokeLinecap="round" markerEnd={`url(#${marker})`} className="stroke-border-strong" />;
+  return (
+    <path
+      d={d}
+      fill="none"
+      strokeWidth={2}
+      strokeLinecap="round"
+      markerEnd={`url(#${marker})`}
+      className="stroke-border-strong"
+    />
+  );
 }
 
 function ArrowMarker({ id }: { id: string }) {
   return (
     <defs>
-      <marker id={id} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <marker
+        id={id}
+        viewBox="0 0 10 10"
+        refX="8"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
         <path d="M0 0 L10 5 L0 10 z" className="fill-border-strong" />
       </marker>
     </defs>
@@ -74,7 +110,15 @@ function TxBox({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
   const cy = y + h / 2;
   return (
     <g>
-      <rect x={x} y={y} width={w} height={h} rx={16} strokeWidth={1.5} className="fill-surface-sunken stroke-border-input" />
+      <rect
+        x={x}
+        y={y}
+        width={w}
+        height={h}
+        rx={16}
+        strokeWidth={1.5}
+        className="fill-surface-sunken stroke-border-input"
+      />
       <text x={cx} y={cy - 4} textAnchor="middle" className="fill-fg font-sans text-[15px] font-semibold">
         Settlement
       </text>
@@ -91,7 +135,15 @@ function WideDiagram() {
     { x: 8, y: 20, w: 196, h: 84, label: 'Input 0', lines: ['Cauldron pool'], tone: 'pool' },
     { x: 8, y: 156, w: 196, h: 84, label: 'Input 1', lines: ['Your order contract'], tone: 'order' },
     { x: 516, y: 20, w: 196, h: 84, label: 'Output 0', lines: ['Pool, continued'], tone: 'pool' },
-    { x: 516, y: 156, w: 196, h: 84, label: 'Output 1', lines: ['Your tokens,', 'to your wallet'], tone: 'payout' },
+    {
+      x: 516,
+      y: 156,
+      w: 196,
+      h: 84,
+      label: 'Output 1',
+      lines: ['Your tokens,', 'to your wallet'],
+      tone: 'payout',
+    },
   ];
   return (
     <svg aria-hidden="true" focusable="false" viewBox="0 0 720 260" className="hidden h-auto w-full md:block">
@@ -114,7 +166,15 @@ function NarrowDiagram() {
     { x: 4, y: 4, w: 148, h: 80, label: 'Input 0', lines: ['Cauldron pool'], tone: 'pool' },
     { x: 168, y: 4, w: 148, h: 80, label: 'Input 1', lines: ['Your order', 'contract'], tone: 'order' },
     { x: 4, y: 284, w: 148, h: 80, label: 'Output 0', lines: ['Pool,', 'continued'], tone: 'pool' },
-    { x: 168, y: 284, w: 148, h: 80, label: 'Output 1', lines: ['Your tokens,', 'to your wallet'], tone: 'payout' },
+    {
+      x: 168,
+      y: 284,
+      w: 148,
+      h: 80,
+      label: 'Output 1',
+      lines: ['Your tokens,', 'to your wallet'],
+      tone: 'payout',
+    },
   ];
   return (
     <svg aria-hidden="true" focusable="false" viewBox="0 0 320 368" className="h-auto w-full md:hidden">
@@ -148,7 +208,9 @@ export function HowItWorks() {
           <WideDiagram />
           <NarrowDiagram />
           <figcaption className="flex flex-col gap-2 text-body-sm text-fg-secondary">
-            <span className="text-label font-semibold text-fg">The fill transaction, as the contract requires it</span>
+            <span className="text-label font-semibold text-fg">
+              The fill transaction, as the contract requires it
+            </span>
             <span className="sr-only">
               Inputs: input 0 is the Cauldron pool, input 1 is your order contract. Outputs: output 0 is the
               pool, continued, output 1 is your tokens, paid to your wallet.
@@ -156,7 +218,8 @@ export function HowItWorks() {
             <span>
               Exactly two inputs and two outputs. There is no signature from you and no input, output or key
               for AtPrice. The contract checks that output 1 pays your address at least your minimum, and that
-              the network fee stays within the cap you agreed to. A buy is shown. A sell pays BCH the same way.
+              the network fee stays within the cap you agreed to. A buy is shown. A sell pays BCH the same
+              way.
             </span>
           </figcaption>
         </figure>

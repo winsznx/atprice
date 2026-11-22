@@ -66,13 +66,26 @@ interface PageSeo {
  * parent's instead of merging, so every page sets the whole object. The image comes from the route's
  * own `opengraph-image.tsx`; a page that calls this without one loses the root card.
  */
-export const pageMetadata = ({ title, shareTitle, description, path, indexable = true }: PageSeo): Metadata => {
+export const pageMetadata = ({
+  title,
+  shareTitle,
+  description,
+  path,
+  indexable = true,
+}: PageSeo): Metadata => {
   const share = shareTitle ?? `${title} · ${SITE_NAME}`;
   return {
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { title: share, description, url: path, siteName: SITE_NAME, locale: SITE_LOCALE, type: 'website' },
+    openGraph: {
+      title: share,
+      description,
+      url: path,
+      siteName: SITE_NAME,
+      locale: SITE_LOCALE,
+      type: 'website',
+    },
     twitter: { card: 'summary_large_image', title: share, description },
     ...(indexable ? {} : { robots: NOINDEX }),
   };
@@ -89,7 +102,10 @@ export interface SitemapMarkets {
  * Every indexable page. `/trade` is left out because it redirects to a market, and `/orders`,
  * `/orders/[id]` and `/wallet` because they are noindex. A test network lists nothing.
  */
-export const buildSitemap = (network: Network, { marketSlugs, tradeSlugs }: SitemapMarkets): MetadataRoute.Sitemap => {
+export const buildSitemap = (
+  network: Network,
+  { marketSlugs, tradeSlugs }: SitemapMarkets,
+): MetadataRoute.Sitemap => {
   if (!isIndexedNetwork(network)) return [];
   const entry = (
     path: string,

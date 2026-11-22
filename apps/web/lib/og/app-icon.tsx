@@ -14,21 +14,19 @@ const MARK_SCALE: Readonly<Record<AppIconVariant, number>> = { any: 1, apple: 1,
 export function renderAppIcon(size: number, variant: AppIconVariant): ImageResponse {
   const markSize = Math.round(size * MARK_SCALE[variant]);
   return new ImageResponse(
-    (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '100%',
-          background: variant === 'any' ? 'transparent' : OG_COLOURS.brand,
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders plain img elements only. */}
-        <img alt="" height={markSize} src={MARK_DATA_URI} width={markSize} />
-      </div>
-    ),
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+        background: variant === 'any' ? 'transparent' : OG_COLOURS.brand,
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders plain img elements only. */}
+      <img alt="" height={markSize} src={MARK_DATA_URI} width={markSize} />
+    </div>,
     { width: size, height: size },
   );
 }

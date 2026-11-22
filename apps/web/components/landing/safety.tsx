@@ -63,7 +63,10 @@ export function Safety() {
       </div>
       <ul className="grid gap-4 md:grid-cols-2 md:gap-6">
         {CARDS.map(({ icon: Icon, title, body }) => (
-          <li key={title} className="flex flex-col gap-3 rounded-lg border border-border p-(--space-panel) lg:p-(--space-panel-lg)">
+          <li
+            key={title}
+            className="flex flex-col gap-3 rounded-lg border border-border p-(--space-panel) lg:p-(--space-panel-lg)"
+          >
             <Icon aria-hidden="true" weight="duotone" className="size-10 text-brand duotone-brand-subtle" />
             <h3 className="font-display text-heading-3 text-fg">{title}</h3>
             <p className="text-body text-fg-secondary">{body}</p>
@@ -83,7 +86,10 @@ export function Safety() {
           <h3 className="text-label font-semibold text-fg">Limits</h3>
           <ul className="flex flex-wrap gap-2">
             {LIMITS.map((limit) => (
-              <li key={limit} className="rounded-full bg-surface-sunken px-3 py-1 text-body-sm text-fg-secondary">
+              <li
+                key={limit}
+                className="rounded-full bg-surface-sunken px-3 py-1 text-body-sm text-fg-secondary"
+              >
                 {limit}
               </li>
             ))}

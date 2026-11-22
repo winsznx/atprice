@@ -2,13 +2,7 @@ import { SELL_ORDER_SATS } from '@atprice/core';
 import { InfoIcon } from '@phosphor-icons/react/dist/ssr';
 import type { ReactNode } from 'react';
 import type { CancelSettlement, FillSettlement, Order } from '@/lib/api/schemas';
-import {
-  formatBch,
-  formatBlockHeight,
-  formatFee,
-  formatPercent,
-  formatSignedUnits,
-} from '@/lib/format';
+import { formatBch, formatBlockHeight, formatFee, formatPercent, formatSignedUnits } from '@/lib/format';
 import {
   aboveMinimum,
   bchText,

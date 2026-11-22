@@ -38,12 +38,19 @@ const MISSING_RECEIVE =
 
 const EMPTY: Readonly<Record<OrderTab, { readonly title: string; readonly body: string }>> = {
   open: { title: 'No open orders.', body: 'Orders you fund appear here while they wait for a fill.' },
-  pending: { title: 'Nothing pending.', body: 'Funding, fills and cancels waiting for confirmation show here.' },
+  pending: {
+    title: 'Nothing pending.',
+    body: 'Funding, fills and cancels waiting for confirmation show here.',
+  },
   history: { title: 'No filled or cancelled orders yet.', body: '' },
 };
 
 /** `bch-pusd` → `BCH/PUSD`, the draft's market as the notice names it. */
-export const pairFromSlug = (slug: string): string => slug.split('-').map((part) => part.toUpperCase()).join('/');
+export const pairFromSlug = (slug: string): string =>
+  slug
+    .split('-')
+    .map((part) => part.toUpperCase())
+    .join('/');
 
 /** My orders (orders.md). The page `<h1>` takes focus after connecting and after `Dismiss`. */
 export function OrdersScreen() {
@@ -140,7 +147,13 @@ function OrdersLoading() {
   );
 }
 
-function DraftNotice({ draft, headingRef }: { draft: UnfundedDraft; headingRef: RefObject<HTMLHeadingElement | null> }) {
+function DraftNotice({
+  draft,
+  headingRef,
+}: {
+  draft: UnfundedDraft;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+}) {
   return (
     <div role="status" className="flex gap-3 rounded-md bg-status-pending-subtle p-4 text-body-sm text-fg">
       <HourglassMediumIcon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-status-pending" />
@@ -170,7 +183,13 @@ function DraftNotice({ draft, headingRef }: { draft: UnfundedDraft; headingRef: 
   );
 }
 
-function OwnerOrders({ owner, headingRef }: { owner: OwnerIdentity; headingRef: RefObject<HTMLHeadingElement | null> }) {
+function OwnerOrders({
+  owner,
+  headingRef,
+}: {
+  owner: OwnerIdentity;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -180,7 +199,9 @@ function OwnerOrders({ owner, headingRef }: { owner: OwnerIdentity; headingRef: 
   const orders = useQuery({
     ...queries.ordersByAddress(owner.address),
     refetchInterval: (query) =>
-      refreshIntervalFor(defaultTab(requested, query.state.data === undefined ? null : splitOrders(query.state.data))),
+      refreshIntervalFor(
+        defaultTab(requested, query.state.data === undefined ? null : splitOrders(query.state.data)),
+      ),
     refetchOnWindowFocus: true,
     retry: shouldRetry,
   });
@@ -191,7 +212,9 @@ function OwnerOrders({ owner, headingRef }: { owner: OwnerIdentity; headingRef: 
   const split: OrdersByTab | null = orders.data === undefined ? null : splitOrders(orders.data);
   const tab = defaultTab(requested, split);
   const draftFunded =
-    draft !== null && orders.data !== undefined && orders.data.some((order) => order.contractAddress === draft.contractAddress);
+    draft !== null &&
+    orders.data !== undefined &&
+    orders.data.some((order) => order.contractAddress === draft.contractAddress);
 
   // sessionStorage is the external system: once the owner's list shows the draft's contract, the
   // signed transaction is the record and the draft pointer goes (funding-confirmation.md "Draft").

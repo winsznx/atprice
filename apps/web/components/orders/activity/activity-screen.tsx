@@ -37,7 +37,15 @@ import { ToneBadge } from '@/components/status-badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ConnectWalletButton } from '@/components/wallet/wallet-button';
 import { isApiError } from '@/lib/api/errors';
@@ -113,7 +121,13 @@ function StateCell({ row }: { row: ActivityRow }) {
   );
 }
 
-function OrderLink({ row, linkRef }: { row: ActivityRow; linkRef?: RefObject<HTMLAnchorElement | null> | undefined }) {
+function OrderLink({
+  row,
+  linkRef,
+}: {
+  row: ActivityRow;
+  linkRef?: RefObject<HTMLAnchorElement | null> | undefined;
+}) {
   return (
     <span className="flex flex-col gap-0.5">
       <Link
@@ -190,7 +204,11 @@ function ActivityTable({
               <StateCell row={row} />
             </TableCell>
             <TableCell className="px-3 align-top">
-              <HashChip value={row.txid} kind="tx" label={`${KIND_LABEL[row.kind]} transaction ${row.txid}`} />
+              <HashChip
+                value={row.txid}
+                kind="tx"
+                label={`${KIND_LABEL[row.kind]} transaction ${row.txid}`}
+              />
             </TableCell>
           </TableRow>
         ))}
@@ -215,7 +233,9 @@ function ActivityCards({
         <li key={row.key} className="flex min-w-0 flex-col gap-2 rounded-lg border border-border p-4">
           <div className="flex flex-wrap items-center gap-2">
             <KindBadge kind={row.kind} />
-            <span className="num text-num-sm text-fg-muted">{formatShortDateTime(row.event.firstSeenAt, hydrated)}</span>
+            <span className="num text-num-sm text-fg-muted">
+              {formatShortDateTime(row.event.firstSeenAt, hydrated)}
+            </span>
             <span className="ml-auto">
               <StateCell row={row} />
             </span>
@@ -231,7 +251,11 @@ function ActivityCards({
 
 function RowsLoading({ onRetry }: { onRetry?: () => void }) {
   return (
-    <LoadingRegion thing="transactions" className="flex flex-col gap-3" {...(onRetry === undefined ? {} : { onRetry })}>
+    <LoadingRegion
+      thing="transactions"
+      className="flex flex-col gap-3"
+      {...(onRetry === undefined ? {} : { onRetry })}
+    >
       {[0, 1, 2, 3].map((row) => (
         <Skeleton key={row} className="h-20 w-full" />
       ))}
@@ -281,7 +305,12 @@ function RowList({
   return (
     <>
       <div className="hidden lg:block">
-        <ActivityTable rows={rows} caption={caption} firstNewIndex={firstNewIndex} firstNewRef={firstNewRef} />
+        <ActivityTable
+          rows={rows}
+          caption={caption}
+          firstNewIndex={firstNewIndex}
+          firstNewRef={firstNewRef}
+        />
       </div>
       <div className="lg:hidden">
         <ActivityCards rows={rows} firstNewIndex={firstNewIndex} firstNewRef={firstNewRef} />
@@ -290,7 +319,13 @@ function RowList({
   );
 }
 
-function MineList({ kind, headingRef }: { kind: KindFilter; headingRef: RefObject<HTMLHeadingElement | null> }) {
+function MineList({
+  kind,
+  headingRef,
+}: {
+  kind: KindFilter;
+  headingRef: RefObject<HTMLHeadingElement | null>;
+}) {
   const wallet = useWalletState();
   const owner = wallet.kind === 'connected' ? wallet.owner : null;
   const orders = useQuery({
@@ -310,8 +345,8 @@ function MineList({ kind, headingRef }: { kind: KindFilter; headingRef: RefObjec
         return (
           <InlineAlert tone="info">
             <p>
-              Your wallet didn’t share the receive key path AtPrice uses to own orders, so AtPrice can’t list your
-              transactions.
+              Your wallet didn’t share the receive key path AtPrice uses to own orders, so AtPrice can’t list
+              your transactions.
             </p>
           </InlineAlert>
         );
@@ -331,7 +366,9 @@ function MineList({ kind, headingRef }: { kind: KindFilter; headingRef: RefObjec
     }
   }
   if (orders.isError && orders.data === undefined) {
-    return <ListError error={orders.error} onRetry={() => void orders.refetch()} retrying={orders.isFetching} />;
+    return (
+      <ListError error={orders.error} onRetry={() => void orders.refetch()} retrying={orders.isFetching} />
+    );
   }
   if (orders.data === undefined) return <RowsLoading onRetry={() => void orders.refetch()} />;
   return (
@@ -425,16 +462,17 @@ function AllList({ kind }: { kind: KindFilter }) {
   );
 }
 
-const NOTICE_ICON: Readonly<Record<NoticeIcon, { readonly icon: PhosphorIcon; readonly className: string }>> = {
-  hourglass: { icon: HourglassMediumIcon, className: 'text-status-pending' },
-  send: { icon: PaperPlaneTiltIcon, className: 'text-status-pending' },
-  filled: { icon: SealCheckIcon, className: 'text-status-filled' },
-  cancelled: { icon: ProhibitInsetIcon, className: 'text-status-cancelled' },
-  failed: { icon: WarningOctagonIcon, className: 'text-status-failed' },
-  review: { icon: GitDiffIcon, className: 'text-status-review' },
-  link: { icon: PlugsConnectedIcon, className: 'text-fg-secondary' },
-  unlink: { icon: PlugsIcon, className: 'text-fg-secondary' },
-};
+const NOTICE_ICON: Readonly<Record<NoticeIcon, { readonly icon: PhosphorIcon; readonly className: string }>> =
+  {
+    hourglass: { icon: HourglassMediumIcon, className: 'text-status-pending' },
+    send: { icon: PaperPlaneTiltIcon, className: 'text-status-pending' },
+    filled: { icon: SealCheckIcon, className: 'text-status-filled' },
+    cancelled: { icon: ProhibitInsetIcon, className: 'text-status-cancelled' },
+    failed: { icon: WarningOctagonIcon, className: 'text-status-failed' },
+    review: { icon: GitDiffIcon, className: 'text-status-review' },
+    link: { icon: PlugsConnectedIcon, className: 'text-fg-secondary' },
+    unlink: { icon: PlugsIcon, className: 'text-fg-secondary' },
+  };
 
 const DELIVERY: Readonly<Record<RecordedNotification['delivery'], string>> = {
   raised: 'Shown as a notification',
@@ -466,12 +504,18 @@ function SessionList({ entries }: { entries: readonly RecordedNotification[] }) 
               </div>
               <p className="num text-body-sm text-fg-secondary">{entry.body}</p>
               <p className="text-caption text-fg-muted">
-                {entry.meta === null ? DELIVERY[entry.delivery] : `${entry.meta} · ${DELIVERY[entry.delivery]}`}
+                {entry.meta === null
+                  ? DELIVERY[entry.delivery]
+                  : `${entry.meta} · ${DELIVERY[entry.delivery]}`}
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 {entry.txid === null ? null : <HashChip value={entry.txid} kind="tx" />}
                 {entry.actions.map((action) => (
-                  <Link key={action.label} href={action.href} className="text-body-sm text-link underline underline-offset-4">
+                  <Link
+                    key={action.label}
+                    href={action.href}
+                    className="text-body-sm text-link underline underline-offset-4"
+                  >
                     {action.label}
                   </Link>
                 ))}
@@ -537,7 +581,10 @@ export function ActivityScreen() {
           <TabsList aria-label="Activity lists" className="self-start">
             <TabsTrigger value="mine">My transactions</TabsTrigger>
             <TabsTrigger value="all">All AtPrice</TabsTrigger>
-            <TabsTrigger value="session" aria-label={`This session, ${entries.length} ${entries.length === 1 ? 'notification' : 'notifications'}`}>
+            <TabsTrigger
+              value="session"
+              aria-label={`This session, ${entries.length} ${entries.length === 1 ? 'notification' : 'notifications'}`}
+            >
               This session
               <span className="num">{entries.length}</span>
             </TabsTrigger>
@@ -575,4 +622,3 @@ export function ActivityScreen() {
     </div>
   );
 }
-

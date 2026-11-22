@@ -7,7 +7,8 @@ export const contentType = 'image/png';
 export default function Image() {
   return renderOgCard({
     title: 'Connect your wallet',
-    description: 'Pair a WizardConnect wallet by QR code. Your keys stay in your wallet, and you approve each transaction there.',
+    description:
+      'Pair a WizardConnect wallet by QR code. Your keys stay in your wallet, and you approve each transaction there.',
     label: 'Wallet',
     path: '/wallet',
     note: 'Non-custodial',

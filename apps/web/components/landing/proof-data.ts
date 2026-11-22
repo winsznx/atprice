@@ -17,7 +17,8 @@ export type FilledOrder = EvidenceOrder & { readonly settlement: FillSettlement 
 const isFill = (order: EvidenceOrder): order is FilledOrder => order.settlement.kind === 'fill';
 
 /** The newest completed fill in the list (the API lists newest first), or null when none is listed. */
-export const latestFill = (orders: readonly EvidenceOrder[]): FilledOrder | null => orders.find(isFill) ?? null;
+export const latestFill = (orders: readonly EvidenceOrder[]): FilledOrder | null =>
+  orders.find(isFill) ?? null;
 
 export interface ProofCounts {
   /** Completed orders the counts below were taken from. */
@@ -44,7 +45,8 @@ export const proofCounts = (orders: readonly EvidenceOrder[], nextCursor: string
     fillsAboveMinimum: fills.filter((order) => aboveMinimum(order, order.settlement.received) > 0n).length,
     keeperFills: fills.filter((order) => order.settlement.filledBy === 'atprice_keeper').length,
     newestBlock: orders.reduce<number | null>(
-      (newest, order) => (newest === null || order.settlementBlock.height > newest ? order.settlementBlock.height : newest),
+      (newest, order) =>
+        newest === null || order.settlementBlock.height > newest ? order.settlementBlock.height : newest,
       null,
     ),
   };
@@ -55,7 +57,9 @@ export const proofCounts = (orders: readonly EvidenceOrder[], nextCursor: string
  * set (DD 4.1 `minProceeds`, so a sell's 2,000 sat reserve is not counted as price). The percentage is
  * null for an order without a positive minimum.
  */
-export const aboveMinimumParts = (order: FilledOrder): { readonly amount: string; readonly percent: string | null } => {
+export const aboveMinimumParts = (
+  order: FilledOrder,
+): { readonly amount: string; readonly percent: string | null } => {
   const surplus = aboveMinimum(order, order.settlement.received);
   const market = marketOf(order.tokenCategory);
   const decimals = order.side === 'buy' ? (market?.decimals ?? 0) : 8;

@@ -75,4 +75,3 @@ export const fundedText = (order: Order): string => {
 /** `Status: Open. Funded 22 Nov 2026.` */
 export const openGraphDescription = (order: Order, statusLabel: string): string =>
   `Status: ${statusLabel}. ${fundedText(order)}`;
-

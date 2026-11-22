@@ -27,7 +27,11 @@ describe('landing FAQ structured data', () => {
   it('spells out the fee figures the page sets in tabular numerals', () => {
     const cost = FAQS[0];
     expect(cost?.question).toBe('What does it cost?');
-    expect(faqAnswerText(cost?.answer ?? [])).toMatch(/^AtPrice charges 0% in this pilot, and the contract has no fee output/);
-    expect(faqAnswerText(cost?.answer ?? [])).toMatch(/\d[\d,]* sat on AtPrice orders, and never more than \d[\d,]* sat for any order/);
+    expect(faqAnswerText(cost?.answer ?? [])).toMatch(
+      /^AtPrice charges 0% in this pilot, and the contract has no fee output/,
+    );
+    expect(faqAnswerText(cost?.answer ?? [])).toMatch(
+      /\d[\d,]* sat on AtPrice orders, and never more than \d[\d,]* sat for any order/,
+    );
   });
 });

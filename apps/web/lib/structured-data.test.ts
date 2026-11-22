@@ -11,7 +11,12 @@ describe('homeStructuredData', () => {
 
     // #then each node is present with the fields search engines read
     expect(data['@context']).toBe('https://schema.org');
-    expect(graph.map((node) => node['@type'])).toEqual(['Organization', 'WebSite', 'SoftwareApplication', 'FAQPage']);
+    expect(graph.map((node) => node['@type'])).toEqual([
+      'Organization',
+      'WebSite',
+      'SoftwareApplication',
+      'FAQPage',
+    ]);
     expect(graph[1]).toMatchObject({ name: 'AtPrice', url: 'https://atprice.cash' });
     expect(graph[2]).toMatchObject({
       applicationCategory: 'FinanceApplication',

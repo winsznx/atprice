@@ -116,7 +116,8 @@ const spentOutput = (funding: TransactionCommon, vout: number): SpentOrderOutput
 /** Compares the decoded ATPR record with the terms the API listed. */
 const recordDifferences = (record: OrderRecord, order: EvidenceOrder): string[] => {
   const differences: string[] = [];
-  if (record.side !== order.side) differences.push(`the record says ${record.side}, the list says ${order.side}`);
+  if (record.side !== order.side)
+    differences.push(`the record says ${record.side}, the list says ${order.side}`);
   if (record.tokenCategory !== order.tokenCategory)
     differences.push('the record names a different token category');
   if (record.minOut !== order.minOut)
@@ -136,7 +137,10 @@ const recordDifferences = (record: OrderRecord, order: EvidenceOrder): string[] 
  * `classifyOrderSpend` re-derives the payout and the pool owner from the settlement's own inputs and
  * outputs; for a cancel it confirms the cancel path. Every disagreement is listed, never hidden.
  */
-export const verifyEvidenceOrder = async (chain: ChainAccess, order: EvidenceOrder): Promise<VerifyResult> => {
+export const verifyEvidenceOrder = async (
+  chain: ChainAccess,
+  order: EvidenceOrder,
+): Promise<VerifyResult> => {
   const host = (): string => chain.endpointLabel ?? UNKNOWN_HOST;
   try {
     const [tip, fundingStatus, settlementStatus] = await Promise.all([
@@ -157,7 +161,9 @@ export const verifyEvidenceOrder = async (chain: ChainAccess, order: EvidenceOrd
       return {
         kind: 'mismatch',
         host: host(),
-        differences: [`a transaction it returned does not decode (${error instanceof Error ? error.message : String(error)})`],
+        differences: [
+          `a transaction it returned does not decode (${error instanceof Error ? error.message : String(error)})`,
+        ],
       };
     }
 
@@ -178,7 +184,10 @@ export const verifyEvidenceOrder = async (chain: ChainAccess, order: EvidenceOrd
     } else {
       differences.push(...recordDifferences(record, order));
       const orderOutput = funding.outputs[order.funding.vout];
-      if (orderOutput === undefined || !bytesEqual(orderOutput.lockingBytecode, orderLockingBytecode(record))) {
+      if (
+        orderOutput === undefined ||
+        !bytesEqual(orderOutput.lockingBytecode, orderLockingBytecode(record))
+      ) {
         differences.push(`funding output ${order.funding.vout} is not the contract its record describes`);
       }
     }
@@ -212,7 +221,9 @@ export const verifyEvidenceOrder = async (chain: ChainAccess, order: EvidenceOrd
         }
       } else if (spend.path !== 'cancel') {
         differences.push(
-          spend.path === 'execute' ? 'the chain shows a fill, not a cancel' : `the spend is not a valid cancel (${spend.reason})`,
+          spend.path === 'execute'
+            ? 'the chain shows a fill, not a cancel'
+            : `the spend is not a valid cancel (${spend.reason})`,
         );
       }
     }
@@ -239,7 +250,8 @@ export const verifyResultText = (result: VerifyResult): string => {
   switch (result.kind) {
     case 'confirmed': {
       const confirmations = `${result.confirmations.toLocaleString('en-US')} ${result.confirmations === 1 ? 'confirmation' : 'confirmations'}`;
-      const match = result.settlement === 'fill' && result.payoutAndPoolMatch ? ', payout and pool owner match' : '';
+      const match =
+        result.settlement === 'fill' && result.payoutAndPoolMatch ? ', payout and pool owner match' : '';
       return `Verified in your browser via ${result.host}: ${result.settlement} confirmed in block ${formatBlockHeight(result.blockHeight)}, ${confirmations}${match}.`;
     }
     case 'mismatch':

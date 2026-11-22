@@ -106,13 +106,17 @@ function SortSelect({ sort, onChange }: { sort: MarketSort; onChange: (sort: Mar
 function HowChosen() {
   return (
     <section aria-labelledby={HOW_CHOSEN_ID} className="flex max-w-[64ch] flex-col gap-2">
-      <h2 id={HOW_CHOSEN_ID} tabIndex={-1} className="scroll-mt-20 text-label font-semibold text-fg outline-none">
+      <h2
+        id={HOW_CHOSEN_ID}
+        tabIndex={-1}
+        className="scroll-mt-20 text-label font-semibold text-fg outline-none"
+      >
         How markets are chosen
       </h2>
       <p className="text-body-sm text-fg-secondary">
         A token is listed when its category id is verified and it has at least one Cauldron pool. Orders open
-        when the pools hold enough liquidity for the minimum order to fill. A market is paused when pool data is
-        stale or the token can’t be verified.
+        when the pools hold enough liquidity for the minimum order to fill. A market is paused when pool data
+        is stale or the token can’t be verified.
       </p>
     </section>
   );
@@ -191,7 +195,9 @@ export function MarketsPage({ initialMarkets }: { initialMarkets: readonly Marke
       <header className="flex flex-col gap-2">
         <h1 className="font-display text-heading-2 text-fg md:text-heading-1">Markets</h1>
         {markets.data === undefined ? (
-          <p className="max-w-[64ch] text-body text-fg-secondary">Bitcoin Cash token markets backed by Cauldron pools.</p>
+          <p className="max-w-[64ch] text-body text-fg-secondary">
+            Bitcoin Cash token markets backed by Cauldron pools.
+          </p>
         ) : (
           <Subline markets={markets.data} />
         )}

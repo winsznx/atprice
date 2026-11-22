@@ -3,7 +3,8 @@ import { cache } from 'react';
 import { api } from '@/lib/api/client';
 import type { MarketDetail, MarketSummary } from '@/lib/api/schemas';
 
-export type Loaded<T> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: unknown };
+export type Loaded<T> =
+  { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: unknown };
 
 const load = async <T>(read: () => Promise<T>, what: string): Promise<Loaded<T>> => {
   try {
@@ -22,8 +23,10 @@ const load = async <T>(read: () => Promise<T>, what: string): Promise<Loaded<T>>
  * it). A failure here is not fatal: the client island owns the visible error state and Retry. Each read
  * is deduplicated per request, so `generateMetadata` and the page share one.
  */
-export const loadMarkets = cache((): Promise<Loaded<readonly MarketSummary[]>> => load(() => api.markets(), 'markets'));
+export const loadMarkets = cache((): Promise<Loaded<readonly MarketSummary[]>> =>
+  load(() => api.markets(), 'markets'),
+);
 
-export const loadMarket = cache(
-  (tokenId: string): Promise<Loaded<MarketDetail>> => load(() => api.market(tokenId), `market ${tokenId}`),
+export const loadMarket = cache((tokenId: string): Promise<Loaded<MarketDetail>> =>
+  load(() => api.market(tokenId), `market ${tokenId}`),
 );

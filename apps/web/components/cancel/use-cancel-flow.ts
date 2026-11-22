@@ -42,7 +42,6 @@ import {
   type ServerCheck,
 } from './cancel-rules';
 
-
 export type CancelFlowState =
   | { readonly kind: 'reading' }
   | { readonly kind: 'review'; readonly built: BuiltCancel; readonly server: ServerCheck }
@@ -162,12 +161,10 @@ export function useCancelFlow({ order, ownerPkhHex, refundText, onSent }: Cancel
       .then((prepared): ServerCheck =>
         compareWithServer(built.draft.unsignedHex, prepared.unsignedHex, built.ruleContext),
       )
-      .catch(
-        (error: unknown): ServerCheck => ({
-          kind: 'unavailable',
-          code: isApiError(error) ? error.displayCode : 'API_ERROR',
-        }),
-      )
+      .catch((error: unknown): ServerCheck => ({
+        kind: 'unavailable',
+        code: isApiError(error) ? error.displayCode : 'API_ERROR',
+      }))
       .then((server) => {
         if (run.current !== token) return;
         setState((current) =>

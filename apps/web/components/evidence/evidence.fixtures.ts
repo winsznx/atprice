@@ -5,7 +5,12 @@ import {
   orderLockingBytecode,
   type OrderParams,
 } from '@atprice/core';
-import { binToHex, encodeLockingBytecodeP2pkh, encodeTransactionBch, hashTransaction } from '@bitauth/libauth';
+import {
+  binToHex,
+  encodeLockingBytecodeP2pkh,
+  encodeTransactionBch,
+  hashTransaction,
+} from '@bitauth/libauth';
 import { MockNetworkProvider } from 'cashscript';
 import type { EvidenceOrder } from '@/lib/api/schemas';
 import type { ChainAccess, TransactionStatus } from '@/lib/chain/types';
@@ -82,7 +87,9 @@ export const buildChain = (params: OrderParams = buyParams()): Chain => {
 
 const TIME = '2026-11-22T13:58:00.000Z';
 
-export const evidenceOrder = (overrides: Partial<EvidenceOrder> & { fundingTxid?: string } = {}): EvidenceOrder => {
+export const evidenceOrder = (
+  overrides: Partial<EvidenceOrder> & { fundingTxid?: string } = {},
+): EvidenceOrder => {
   const fundingTxid = overrides.fundingTxid ?? binToHex(new Uint8Array(32).fill(0x3f));
   return {
     id: `${fundingTxid}:0`,

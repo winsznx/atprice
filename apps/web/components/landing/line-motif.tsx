@@ -13,7 +13,16 @@ export function LineMotif({ className }: { className?: string | undefined }) {
       height={64}
       width="100%"
     >
-      <line x1="0" y1="32" x2="1200" y2="32" className="stroke-border-strong" strokeWidth="2" strokeDasharray="2 8" strokeLinecap="round" />
+      <line
+        x1="0"
+        y1="32"
+        x2="1200"
+        y2="32"
+        className="stroke-border-strong"
+        strokeWidth="2"
+        strokeDasharray="2 8"
+        strokeLinecap="round"
+      />
       <path
         d="M0 56 C 90 54 130 18 210 22 S 330 58 410 50 S 500 12 548 20 S 584 34 600 32"
         className="fill-none stroke-chart-line"

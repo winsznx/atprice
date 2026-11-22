@@ -4,12 +4,7 @@ import { redirect } from 'next/navigation';
 import { ProhibitInsetIcon } from '@/components/client-icons';
 import { ErrorState, EmptyState, FUNDS_STILL_SAFE } from '@/components/states';
 import { PairLogos, TokenLogo } from '@/components/token-logo';
-import {
-  marketByCategory,
-  marketSlug,
-  pairText,
-  tradeMarkets,
-} from '@/components/trade/market';
+import { marketByCategory, marketSlug, pairText, tradeMarkets } from '@/components/trade/market';
 import { buttonVariants } from '@/components/ui/button';
 import { api } from '@/lib/api/client';
 import { isApiError } from '@/lib/api/errors';

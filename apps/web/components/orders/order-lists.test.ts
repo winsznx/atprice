@@ -107,7 +107,10 @@ describe('row sub-lines', () => {
     expect(settlementTxid(makeOrder())).toBeNull();
     const pending = makeOrder({
       status: 'EXECUTION_PENDING',
-      events: [event(), event({ txid: SETTLEMENT_TXID, kind: 'execute', networkState: 'seen', confirmations: 0 })],
+      events: [
+        event(),
+        event({ txid: SETTLEMENT_TXID, kind: 'execute', networkState: 'seen', confirmations: 0 }),
+      ],
     });
     expect(settlementTxid(pending)).toBe(SETTLEMENT_TXID);
     const lost = makeOrder({

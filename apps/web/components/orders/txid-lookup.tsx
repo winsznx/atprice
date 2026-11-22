@@ -44,7 +44,9 @@ export function TxidLookup() {
           Look it up
         </Button>
       </div>
-      {txid === null ? <DisabledReason id={reasonId}>Enter a 64-character transaction id.</DisabledReason> : null}
+      {txid === null ? (
+        <DisabledReason id={reasonId}>Enter a 64-character transaction id.</DisabledReason>
+      ) : null}
     </form>
   );
 }

@@ -8,7 +8,9 @@ import { cn } from '@/lib/utils';
 import { changeOf, shortSymbol, tokensPerBch, type AvailabilityDisplay } from './market-logic';
 
 /** DD 7.6: `CircleCheck` open, `TriangleAlert` low liquidity, `CircleSlash` paused. */
-const AVAILABILITY_TONE: Readonly<Record<Availability, { readonly tone: StatusTone; readonly icon?: PhosphorIcon }>> = {
+const AVAILABILITY_TONE: Readonly<
+  Record<Availability, { readonly tone: StatusTone; readonly icon?: PhosphorIcon }>
+> = {
   open: { tone: 'filled' },
   low_liquidity: { tone: 'pending', icon: WarningIcon },
   paused: { tone: 'cancelled' },
@@ -64,7 +66,11 @@ export function ChangeValue({
     <span
       className={cn(
         'inline-flex items-center gap-1 num whitespace-nowrap',
-        display.direction === 'up' ? 'text-buy' : display.direction === 'down' ? 'text-sell' : 'text-fg-secondary',
+        display.direction === 'up'
+          ? 'text-buy'
+          : display.direction === 'down'
+            ? 'text-sell'
+            : 'text-fg-secondary',
         className,
       )}
     >

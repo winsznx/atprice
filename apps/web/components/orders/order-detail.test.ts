@@ -14,7 +14,14 @@ import {
   raceLost,
   unexpectedSpend,
 } from './order-detail';
-import { fundedText, isOrderId, openGraphDescription, openGraphTitle, orderHeadline, titleBlock } from './order-title';
+import {
+  fundedText,
+  isOrderId,
+  openGraphDescription,
+  openGraphTitle,
+  orderHeadline,
+  titleBlock,
+} from './order-title';
 import { event, FUNDING_TXID, makeOrder, makeSellOrder, OWNER_PKH, SETTLEMENT_TXID } from './test-fixtures';
 
 const MATCH: NetworkCheck = { status: 'match' };
@@ -55,7 +62,10 @@ describe('order-detail.md route and title block', () => {
   });
 
   it('keeps the <h1> to words and puts the figure, with units, under it', () => {
-    expect(titleBlock(makeOrder())).toEqual({ heading: 'Buy PUSDTEST', figure: 'Limit 460.00 PUSDTEST per BCH' });
+    expect(titleBlock(makeOrder())).toEqual({
+      heading: 'Buy PUSDTEST',
+      figure: 'Limit 460.00 PUSDTEST per BCH',
+    });
     expect(titleBlock(makeOrder({ status: 'FILLED', settlement: fill }))).toEqual({
       heading: 'Bought PUSDTEST',
       figure: '230.62 PUSDTEST for 0.50 BCH',
@@ -103,8 +113,10 @@ describe('owner and cancel rules', () => {
     expect(ownershipOf({ kind: 'idle' }, OWNER_PKH).kind).toBe('disconnected');
     expect(ownershipOf({ kind: 'loading' }, OWNER_PKH).kind).toBe('unknown');
     expect(
-      ownershipOf({ kind: 'missing_receive', wallet: { name: 'x', icon: null }, reconnectingSince: null }, OWNER_PKH)
-        .kind,
+      ownershipOf(
+        { kind: 'missing_receive', wallet: { name: 'x', icon: null }, reconnectingSince: null },
+        OWNER_PKH,
+      ).kind,
     ).toBe('missing_receive');
   });
 
@@ -133,13 +145,20 @@ describe('owner and cancel rules', () => {
 
   it('disables cancel on a network mismatch and while the wallet reconnects', () => {
     const owner = ownershipOf(connected(OWNER_PKH), OWNER_PKH);
-    const mismatch = cancelAvailability(
-      { status: 'OPEN' },
-      owner,
-      { status: 'mismatch', web: 'chipnet', api: 'mainnet', reason: 'network' },
+    const mismatch = cancelAvailability({ status: 'OPEN' }, owner, {
+      status: 'mismatch',
+      web: 'chipnet',
+      api: 'mainnet',
+      reason: 'network',
+    });
+    expect(mismatch.kind === 'disabled' && mismatch.reason).toContain(
+      'this page is on chipnet but the server is on mainnet',
     );
-    expect(mismatch.kind === 'disabled' && mismatch.reason).toContain('this page is on chipnet but the server is on mainnet');
-    const reconnecting = cancelAvailability({ status: 'OPEN' }, ownershipOf(connected(OWNER_PKH, 1), OWNER_PKH), MATCH);
+    const reconnecting = cancelAvailability(
+      { status: 'OPEN' },
+      ownershipOf(connected(OWNER_PKH, 1), OWNER_PKH),
+      MATCH,
+    );
     expect(reconnecting).toEqual({ kind: 'disabled', reason: 'reconnecting', reconnecting: true });
   });
 });
@@ -155,7 +174,12 @@ describe('execution condition and keeper freshness', () => {
 
   it('says met when the best quote for the whole order reaches minOut', () => {
     const order = makeOrder({
-      keeperCheck: { checkedAt: '2026-11-22T14:03:10.000Z', poolOutpoint: null, bestOutput: 23_000n, outcome: 'x' },
+      keeperCheck: {
+        checkedAt: '2026-11-22T14:03:10.000Z',
+        poolOutpoint: null,
+        bestOutput: 23_000n,
+        outcome: 'x',
+      },
     });
     expect(executionCondition(order, spot450).kind).toBe('met');
   });
@@ -191,8 +215,12 @@ describe('refresh, review and race', () => {
   it('polls by state and stops terminal orders after 6 confirmations', () => {
     expect(orderRefreshInterval(makeOrder({ status: 'EXECUTION_PENDING' }))).toBe(5_000);
     expect(orderRefreshInterval(makeOrder())).toBe(15_000);
-    expect(orderRefreshInterval(makeOrder({ status: 'FILLED', settlement: { ...fill, confirmations: 5 } }))).toBe(15_000);
-    expect(orderRefreshInterval(makeOrder({ status: 'FILLED', settlement: { ...fill, confirmations: 6 } }))).toBe(false);
+    expect(
+      orderRefreshInterval(makeOrder({ status: 'FILLED', settlement: { ...fill, confirmations: 5 } })),
+    ).toBe(15_000);
+    expect(
+      orderRefreshInterval(makeOrder({ status: 'FILLED', settlement: { ...fill, confirmations: 6 } })),
+    ).toBe(false);
   });
 
   it('names the unexpected spend for the reconciliation alert', () => {

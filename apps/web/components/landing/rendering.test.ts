@@ -94,12 +94,16 @@ describe('evidence card', () => {
 
   it('names the card heading for screen readers', () => {
     const html = render(createElement(EvidenceCard, { order: evidenceOrder() }));
-    expect(html).toContain('aria-label="Filled: buy PUSDTEST on BCH / PUSDTEST, 22 November 2026, 13:58 UTC"');
+    expect(html).toContain(
+      'aria-label="Filled: buy PUSDTEST on BCH / PUSDTEST, 22 November 2026, 13:58 UTC"',
+    );
   });
 
   it('shows a mismatch in review style, never hidden', () => {
     const html = render(
-      createElement(VerifyLine, { result: { kind: 'mismatch', host: 'e.test:1', differences: ['the pool owner key hash differs'] } }),
+      createElement(VerifyLine, {
+        result: { kind: 'mismatch', host: 'e.test:1', differences: ['the pool owner key hash differs'] },
+      }),
     );
     expect(html).toContain('bg-status-review-subtle');
     expect(text(html)).toBe('e.test:1 reports something different: the pool owner key hash differs.');
@@ -131,15 +135,23 @@ describe('markets list', () => {
 
   it('prints missing data as Not available with the reason in its accessible name', () => {
     const visible = text(render(createElement(VolumeValue, { market: market() })));
-    expect(visible).toBe('Not available 24 hour volume not available: Cauldron indexer does not report volume');
-    expect(text(render(createElement(ChangeValue, { change: market().change24h })))).toContain('24h change not yet');
+    expect(visible).toBe(
+      'Not available 24 hour volume not available: Cauldron indexer does not report volume',
+    );
+    expect(text(render(createElement(ChangeValue, { change: market().change24h })))).toContain(
+      '24h change not yet',
+    );
   });
 
   it('gives low liquidity its warning icon and word', () => {
     const html = render(
-      createElement(AvailabilityBadge, { display: { availability: 'low_liquidity', label: 'Low liquidity', reason: null } }),
+      createElement(AvailabilityBadge, {
+        display: { availability: 'low_liquidity', label: 'Low liquidity', reason: null },
+      }),
     );
-    const warningGlyph = renderToStaticMarkup(createElement(WarningIcon, { weight: 'duotone' })).match(/ d="[^"]+"/g)?.at(-1);
+    const warningGlyph = renderToStaticMarkup(createElement(WarningIcon, { weight: 'duotone' }))
+      .match(/ d="[^"]+"/g)
+      ?.at(-1);
     expect(warningGlyph).toBeDefined();
     expect(html).toContain(warningGlyph);
     expect(text(html)).toBe('Low liquidity');

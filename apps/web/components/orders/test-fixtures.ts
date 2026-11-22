@@ -3,9 +3,11 @@ import type { Order, TransactionEvent } from '@/lib/api/schemas';
 
 /** Test data in the API's parsed shape, on the chipnet market the test build runs against. */
 
-export const CHIPNET_MARKET = SUPPORTED_MARKETS.chipnet[0] ?? (() => {
-  throw new Error('the chipnet allowlist is empty');
-})();
+export const CHIPNET_MARKET =
+  SUPPORTED_MARKETS.chipnet[0] ??
+  (() => {
+    throw new Error('the chipnet allowlist is empty');
+  })();
 
 export const FUNDING_TXID = '3f9a2b7c'.padEnd(58, '0') + 'e1c21d';
 export const SETTLEMENT_TXID = 'b7e1'.padEnd(60, '1') + '90aa';

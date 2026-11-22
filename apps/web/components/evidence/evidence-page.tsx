@@ -33,7 +33,10 @@ export function evidenceIntro(openOrders: number | null | undefined): string {
 export const listFailure = (error: unknown): { what: string; code: string } => {
   const failure = apiFailure(error, 'The list can’t load.');
   return isUnreachable(error)
-    ? { what: `AtPrice’s server is not responding (${failure.code}), so the list can’t load.`, code: failure.code }
+    ? {
+        what: `AtPrice’s server is not responding (${failure.code}), so the list can’t load.`,
+        code: failure.code,
+      }
     : failure;
 };
 
@@ -218,13 +221,13 @@ export function EvidencePage({ orderTxid }: { orderTxid: string | null }) {
 
       <div className={cn('flex max-w-[64ch] flex-col gap-3 text-body-sm text-fg-secondary')}>
         <p>
-          Any party may fill an order at exactly its limit. AtPrice’s keeper uses the best single public pool; that
-          is AtPrice’s policy, not a contract guarantee. “Filled by” says which fills AtPrice’s own keeper sent;
-          the chain itself doesn’t record the filler.
+          Any party may fill an order at exactly its limit. AtPrice’s keeper uses the best single public pool;
+          that is AtPrice’s policy, not a contract guarantee. “Filled by” says which fills AtPrice’s own
+          keeper sent; the chain itself doesn’t record the filler.
         </p>
         <p>
-          How to check this yourself: open any transaction in an explorer. The funding transaction carries an ATPR
-          record that Recover decodes without AtPrice’s server. The contract source is in the repository.
+          How to check this yourself: open any transaction in an explorer. The funding transaction carries an
+          ATPR record that Recover decodes without AtPrice’s server. The contract source is in the repository.
         </p>
       </div>
     </div>

@@ -7,7 +7,8 @@ export const contentType = 'image/png';
 export default function Image() {
   return renderOgCard({
     title: 'Bitcoin Cash token markets',
-    description: 'Live rates, liquidity and availability for every market AtPrice can fill through Cauldron pools.',
+    description:
+      'Live rates, liquidity and availability for every market AtPrice can fill through Cauldron pools.',
     label: 'Markets',
     path: '/markets',
     note: 'Backed by Cauldron pools',

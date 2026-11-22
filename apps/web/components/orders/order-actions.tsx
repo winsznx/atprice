@@ -34,7 +34,11 @@ export function ShareButton({ url }: { url: string }) {
         <ShareNetworkIcon aria-hidden="true" />
         Share order
       </Button>
-      <span role="status" aria-live="polite" className={state === 'copied' ? 'text-caption text-fg-muted' : 'sr-only'}>
+      <span
+        role="status"
+        aria-live="polite"
+        className={state === 'copied' ? 'text-caption text-fg-muted' : 'sr-only'}
+      >
         {state === 'copied' ? 'Link copied' : ''}
       </span>
       {shareError === null ? null : <span className="text-body-sm text-status-failed">{shareError}</span>}
@@ -50,8 +54,16 @@ export function CopyOrderIdButton({ txid }: { txid: string }) {
         {state === 'copied' ? <CheckIcon aria-hidden="true" /> : <CopyIcon aria-hidden="true" />}
         Copy order id
       </Button>
-      <span role="status" aria-live="polite" className={state === 'failed' ? 'text-body-sm text-status-failed' : 'sr-only'}>
-        {state === 'copied' ? 'Order id copied' : state === 'failed' ? 'Copy failed. Select the order id instead.' : ''}
+      <span
+        role="status"
+        aria-live="polite"
+        className={state === 'failed' ? 'text-body-sm text-status-failed' : 'sr-only'}
+      >
+        {state === 'copied'
+          ? 'Order id copied'
+          : state === 'failed'
+            ? 'Copy failed. Select the order id instead.'
+            : ''}
       </span>
     </span>
   );
@@ -102,7 +114,9 @@ export function CancelAction({
     case 'disconnected':
       return (
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-body-sm text-fg-secondary">Connect the wallet that created this order to cancel it.</p>
+          <p className="text-body-sm text-fg-secondary">
+            Connect the wallet that created this order to cancel it.
+          </p>
           <ConnectWalletButton
             size="compact"
             variant="outline"
@@ -111,7 +125,9 @@ export function CancelAction({
         </div>
       );
     case 'not_owner':
-      return message('This order belongs to a different wallet. Only the wallet that created it can cancel it.');
+      return message(
+        'This order belongs to a different wallet. Only the wallet that created it can cancel it.',
+      );
     case 'missing_receive':
       return (
         <div className="flex flex-col items-start gap-2">

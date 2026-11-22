@@ -13,7 +13,10 @@ export function generateStaticParams(): { name: string }[] {
   return Object.keys(ICONS).map((name) => ({ name }));
 }
 
-export async function GET(_request: Request, { params }: { params: Promise<{ name: string }> }): Promise<Response> {
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ name: string }> },
+): Promise<Response> {
   const icon = ICONS[(await params).name];
   if (icon === undefined) return new Response('Not found', { status: 404 });
   return renderAppIcon(icon.size, icon.variant);

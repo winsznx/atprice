@@ -18,10 +18,25 @@ import { EmptyState, ErrorState, InlineAlert, LoadingRegion, DisabledReason } fr
 import { StaleBadge, ToneBadge } from '@/components/status-badge';
 import { Button, buttonVariants, CONTROL_TRANSITION } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { queries } from '@/lib/api/queries';
 import type { MarketDetail, Pool } from '@/lib/api/schemas';
-import { formatAge, formatBlockHeight, formatBch, formatToken, orientRate, truncateMiddle } from '@/lib/format';
+import {
+  formatAge,
+  formatBlockHeight,
+  formatBch,
+  formatToken,
+  orientRate,
+  truncateMiddle,
+} from '@/lib/format';
 import { useNetworkCheck } from '@/lib/hooks/use-network-check';
 import { useNow } from '@/lib/hooks/use-now';
 import { cn } from '@/lib/utils';
@@ -57,7 +72,10 @@ function Panel({
   return (
     <section
       aria-labelledby={headingId}
-      className={cn('flex min-w-0 flex-col gap-(--space-stack) rounded-lg border border-border p-(--space-panel)', className)}
+      className={cn(
+        'flex min-w-0 flex-col gap-(--space-stack) rounded-lg border border-border p-(--space-panel)',
+        className,
+      )}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id={headingId} className="font-display text-heading-3 text-fg">
@@ -73,7 +91,8 @@ function Panel({
 function TradeButtons({ identity, pools }: { identity: MarketIdentity; pools: readonly Pool[] | undefined }) {
   const reasonId = useId();
   const symbol = shortSymbol(identity.symbol);
-  const reason = pools === undefined ? 'Loading pools.' : pools.length === 0 ? 'No pool to fill against.' : null;
+  const reason =
+    pools === undefined ? 'Loading pools.' : pools.length === 0 ? 'No pool to fill against.' : null;
   if (reason !== null) {
     return (
       <div className="flex flex-col gap-2">
@@ -108,7 +127,11 @@ function TokenLine({ identity }: { identity: MarketIdentity }) {
         {identity.name}
       </span>
       <span aria-hidden="true">category</span>
-      <HashChip value={identity.tokenId} kind="token" label={`${identity.symbol} token category ${identity.tokenId}`} />
+      <HashChip
+        value={identity.tokenId}
+        kind="token"
+        label={`${identity.symbol} token category ${identity.tokenId}`}
+      />
       <span aria-hidden="true" className="num">
         {decimals}
       </span>
@@ -117,18 +140,14 @@ function TokenLine({ identity }: { identity: MarketIdentity }) {
   );
 }
 
-function RatePanel({
-  detail,
-  stale,
-}: {
-  detail: MarketDetail | undefined;
-  stale: boolean;
-}) {
+function RatePanel({ detail, stale }: { detail: MarketDetail | undefined; stale: boolean }) {
   const headingId = useId();
   const historyId = useId();
   const now = useNow();
   const age =
-    stale && detail !== undefined && detail.observedAt !== null && now !== null ? formatAge(now - Date.parse(detail.observedAt)) : undefined;
+    stale && detail !== undefined && detail.observedAt !== null && now !== null
+      ? formatAge(now - Date.parse(detail.observedAt))
+      : undefined;
   return (
     <Panel title="Rate now" headingId={headingId} aside={stale ? <StaleBadge age={age} /> : undefined}>
       {detail === undefined ? (
@@ -162,7 +181,10 @@ function RatePanel({
           Rate history
         </h3>
         <InlineAlert tone="info" icon={ChartLineIcon}>
-          <p>AtPrice’s API doesn’t serve rate history, so no chart is drawn. The rate above is the latest pool observation.</p>
+          <p>
+            AtPrice’s API doesn’t serve rate history, so no chart is drawn. The rate above is the latest pool
+            observation.
+          </p>
           <p className="hash text-mono-sm text-fg">HISTORY_ENDPOINT_MISSING</p>
         </InlineAlert>
       </div>
@@ -175,7 +197,13 @@ const poolRate = (pool: Pool, decimals: number) => orientRate(pool.spotRate, dec
 function PoolRateValue({ pool, identity }: { pool: Pool; identity: MarketIdentity }) {
   const rate = poolRate(pool, identity.decimals);
   if (pool.spotRate.numerator === 0n) return <span className="text-fg-muted">Not available</span>;
-  return <Rate numerator={rate.numerator} denominator={rate.denominator} unit={`${shortSymbol(identity.symbol)} per BCH`} />;
+  return (
+    <Rate
+      numerator={rate.numerator}
+      denominator={rate.denominator}
+      unit={`${shortSymbol(identity.symbol)} per BCH`}
+    />
+  );
 }
 
 const outpointOf = (pool: Pool): string => `${pool.outpoint.txid}:${pool.outpoint.vout}`;
@@ -238,7 +266,11 @@ function PoolsPanel({
                 {pools.map((pool) => (
                   <TableRow key={outpointOf(pool)}>
                     <TableCell className="px-3">
-                      <HashChip value={outpointOf(pool)} kind="outpoint" label={`Pool outpoint ${outpointOf(pool)}`} />
+                      <HashChip
+                        value={outpointOf(pool)}
+                        kind="outpoint"
+                        label={`Pool outpoint ${outpointOf(pool)}`}
+                      />
                     </TableCell>
                     <TableCell className={cn('px-3 text-right text-num-sm', stale && 'text-fg-muted')}>
                       <span className="num" aria-label={`${formatBch(pool.sats, 'compact')} BCH`}>
@@ -264,10 +296,19 @@ function PoolsPanel({
           <ul className="flex flex-col gap-3 lg:hidden" aria-label={`Cauldron pools for ${identity.symbol}`}>
             {pools.map((pool) => (
               <li key={outpointOf(pool)} className="flex flex-col gap-2 rounded-md bg-surface-sunken p-3">
-                <HashChip value={outpointOf(pool)} kind="outpoint" label={`Pool outpoint ${outpointOf(pool)}`} />
+                <HashChip
+                  value={outpointOf(pool)}
+                  kind="outpoint"
+                  label={`Pool outpoint ${outpointOf(pool)}`}
+                />
                 <p className="flex flex-wrap gap-x-4 gap-y-1 text-num-sm text-fg">
                   <BchAmount sats={pool.sats} mode="compact" />
-                  <TokenAmount units={pool.tokens} decimals={identity.decimals} symbol={symbol} mode="compact" />
+                  <TokenAmount
+                    units={pool.tokens}
+                    decimals={identity.decimals}
+                    symbol={symbol}
+                    mode="compact"
+                  />
                   <PoolRateValue pool={pool} identity={identity} />
                 </p>
               </li>
@@ -283,7 +324,12 @@ function PoolsPanel({
               <BchAmount sats={detail.liquidity.sats} mode="compact" />
               <span aria-hidden="true"> · </span>
               <span className="sr-only"> and </span>
-              <TokenAmount units={detail.liquidity.tokens} decimals={identity.decimals} symbol={symbol} mode="compact" />
+              <TokenAmount
+                units={detail.liquidity.tokens}
+                decimals={identity.decimals}
+                symbol={symbol}
+                mode="compact"
+              />
             </dd>
           </div>
           <div className="flex flex-wrap justify-between gap-x-4">
@@ -292,7 +338,12 @@ function PoolsPanel({
               <BchAmount sats={detail.minOrder.buy} mode="compact" />
               <span aria-hidden="true"> / </span>
               <span className="sr-only"> to buy, or </span>
-              <TokenAmount units={detail.minOrder.sell} decimals={identity.decimals} symbol={symbol} mode="compact" />
+              <TokenAmount
+                units={detail.minOrder.sell}
+                decimals={identity.decimals}
+                symbol={symbol}
+                mode="compact"
+              />
               <span className="sr-only"> to sell</span>
             </dd>
           </div>
@@ -386,7 +437,9 @@ function ActivityPanel({ identity }: { identity: MarketIdentity }) {
   }
   return (
     <Panel title="Recent AtPrice activity" headingId={headingId}>
-      <p className="text-body-sm text-fg-muted">Completed orders in this market: each fill or cancel and its funding.</p>
+      <p className="text-body-sm text-fg-muted">
+        Completed orders in this market: each fill or cancel and its funding.
+      </p>
       {body}
     </Panel>
   );
@@ -406,7 +459,10 @@ function Breadcrumb({ identity }: { identity: MarketIdentity }) {
       </ol>
       <Link
         href="/markets"
-        className={cn('inline-flex min-h-(--size-control) items-center gap-1 text-link md:hidden', CONTROL_TRANSITION)}
+        className={cn(
+          'inline-flex min-h-(--size-control) items-center gap-1 text-link md:hidden',
+          CONTROL_TRANSITION,
+        )}
       >
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         Markets
@@ -431,7 +487,8 @@ export function MarketDetailView({
   const health = useQuery({ ...queries.health(), refetchInterval: MARKET_REFRESH_MS });
   const network = useNetworkCheck();
   const stale = poolDataStale(health.data);
-  const availability = detail.data === undefined ? null : availabilityOf(detail.data, network.status === 'mismatch');
+  const availability =
+    detail.data === undefined ? null : availabilityOf(detail.data, network.status === 'mismatch');
 
   return (
     <div className="flex flex-col gap-6">
@@ -457,7 +514,9 @@ export function MarketDetailView({
         </div>
         {availability === null ? null : <AvailabilityReason display={availability} />}
         <TokenLine identity={identity} />
-        {detail.data?.verified === false ? <ToneBadge tone="pending" label="Unverified token" className="self-start" /> : null}
+        {detail.data?.verified === false ? (
+          <ToneBadge tone="pending" label="Unverified token" className="self-start" />
+        ) : null}
       </div>
       {detail.isError && detail.data === undefined ? (
         <ErrorState

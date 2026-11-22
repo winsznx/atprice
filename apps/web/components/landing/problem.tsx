@@ -44,9 +44,24 @@ const ATPRICE: readonly Step[] = [
   { text: 'One transaction pays your wallet. You sign nothing.', you: false },
 ];
 
-function Timeline({ title, steps, footer, accent }: { title: string; steps: readonly Step[]; footer: string; accent: boolean }) {
+function Timeline({
+  title,
+  steps,
+  footer,
+  accent,
+}: {
+  title: string;
+  steps: readonly Step[];
+  footer: string;
+  accent: boolean;
+}) {
   return (
-    <div className={cn('flex flex-col gap-4 rounded-lg border bg-surface p-(--space-panel) lg:p-(--space-panel-lg)', accent ? 'border-brand' : 'border-border')}>
+    <div
+      className={cn(
+        'flex flex-col gap-4 rounded-lg border bg-surface p-(--space-panel) lg:p-(--space-panel-lg)',
+        accent ? 'border-brand' : 'border-border',
+      )}
+    >
       <h3 className="font-display text-heading-3 text-fg">{title}</h3>
       <ol className="flex flex-col">
         {steps.map((step, index) => (
@@ -61,7 +76,9 @@ function Timeline({ title, steps, footer, accent }: { title: string; steps: read
               >
                 {index + 1}
               </span>
-              {index < steps.length - 1 ? <span aria-hidden="true" className="w-px flex-1 bg-border" /> : null}
+              {index < steps.length - 1 ? (
+                <span aria-hidden="true" className="w-px flex-1 bg-border" />
+              ) : null}
             </span>
             <p className="pt-0.5 pb-4 text-body-sm text-fg-secondary">
               {step.text}
@@ -89,7 +106,11 @@ export function Problem() {
       <ul className="grid gap-6 md:grid-cols-3">
         {PAINS.map(({ icon: Icon, title, text }) => (
           <li key={title} className="flex flex-col gap-2">
-            <Icon aria-hidden="true" weight="duotone" className="size-8 text-fg-secondary duotone-surface-muted" />
+            <Icon
+              aria-hidden="true"
+              weight="duotone"
+              className="size-8 text-fg-secondary duotone-surface-muted"
+            />
             <h3 className="font-display text-heading-3 text-fg">{title}</h3>
             <p className="text-body text-fg-secondary">{text}</p>
           </li>
@@ -98,7 +119,10 @@ export function Problem() {
       <div className="flex flex-col gap-4">
         <p className="flex flex-wrap items-center gap-x-5 gap-y-2 text-body-sm text-fg-muted">
           <span className="inline-flex items-center gap-2">
-            <span aria-hidden="true" className="size-3 rounded-full bg-surface-muted ring-1 ring-border-input" />
+            <span
+              aria-hidden="true"
+              className="size-3 rounded-full bg-surface-muted ring-1 ring-border-input"
+            />
             Steps you do
           </span>
           <span className="inline-flex items-center gap-2">
@@ -107,8 +131,18 @@ export function Problem() {
           </span>
         </p>
         <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-          <Timeline title="A manual swap" steps={MANUAL} footer="You sign once per attempt, and only while you’re there." accent={false} />
-          <Timeline title="An AtPrice order" steps={ATPRICE} footer="You sign once, to fund it. Cancelling takes one more signature." accent />
+          <Timeline
+            title="A manual swap"
+            steps={MANUAL}
+            footer="You sign once per attempt, and only while you’re there."
+            accent={false}
+          />
+          <Timeline
+            title="An AtPrice order"
+            steps={ATPRICE}
+            footer="You sign once, to fund it. Cancelling takes one more signature."
+            accent
+          />
         </div>
       </div>
     </Band>

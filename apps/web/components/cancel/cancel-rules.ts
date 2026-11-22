@@ -78,7 +78,10 @@ const tokenEqual = (output: Output, coin: CoinFacts): boolean => {
 };
 
 /** The first rule the transaction breaks, or null when it passes rule R for its path. */
-export const checkCancelRules = (transaction: TransactionCommon, context: CancelRuleContext): CancelRule | null => {
+export const checkCancelRules = (
+  transaction: TransactionCommon,
+  context: CancelRuleContext,
+): CancelRule | null => {
   const orderIndex = spends(transaction, context.order);
   if (orderIndex < 0) return 'order_input_missing';
   const refund = transaction.outputs[orderIndex];
@@ -123,7 +126,9 @@ export const signedDifference = (built: TransactionCommon, signed: TransactionCo
     built.outputs.length === signed.outputs.length &&
     built.outputs.every((output, index) => {
       const other = signed.outputs[index];
-      return other !== undefined && bytesEqual(encodeTransactionOutput(output), encodeTransactionOutput(other));
+      return (
+        other !== undefined && bytesEqual(encodeTransactionOutput(output), encodeTransactionOutput(other))
+      );
     });
   return sameOutputs ? null : 'outputs';
 };

@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import robots from '@/app/robots';
 import sitemap from '@/app/sitemap';
-import { buildRobots, buildSitemap, NOINDEX, notFoundMetadata, pageMetadata, siteRobots, SITE_URL } from './seo';
+import {
+  buildRobots,
+  buildSitemap,
+  NOINDEX,
+  notFoundMetadata,
+  pageMetadata,
+  siteRobots,
+  SITE_URL,
+} from './seo';
 
 const MARKETS = { marketSlugs: ['pusd'], tradeSlugs: ['bch-pusd'] };
 
@@ -36,7 +44,9 @@ describe('buildSitemap', () => {
   it('gives the home page the top priority and every entry a change frequency', () => {
     const entries = buildSitemap('mainnet', MARKETS);
     expect(entries[0]).toMatchObject({ url: SITE_URL, priority: 1, changeFrequency: 'weekly' });
-    expect(entries.every((entry) => entry.changeFrequency !== undefined && entry.priority !== undefined)).toBe(true);
+    expect(
+      entries.every((entry) => entry.changeFrequency !== undefined && entry.priority !== undefined),
+    ).toBe(true);
   });
 
   it('encodes slugs into the path', () => {
@@ -105,7 +115,11 @@ describe('pageMetadata', () => {
 
 describe('siteRobots', () => {
   it('indexes the mainnet site with large image previews and keeps chipnet out of search', () => {
-    expect(siteRobots('mainnet')).toMatchObject({ index: true, follow: true, googleBot: { 'max-image-preview': 'large' } });
+    expect(siteRobots('mainnet')).toMatchObject({
+      index: true,
+      follow: true,
+      googleBot: { 'max-image-preview': 'large' },
+    });
     expect(siteRobots('chipnet')).toEqual(NOINDEX);
   });
 });

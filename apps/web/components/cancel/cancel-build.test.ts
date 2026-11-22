@@ -6,7 +6,12 @@ import {
   hashTransactionUiOrder,
   hexToBin,
 } from '@bitauth/libauth';
-import { encodeOrderRecord, orderLockingBytecode, ownerLockingBytecode, type OrderParams } from '@atprice/core';
+import {
+  encodeOrderRecord,
+  orderLockingBytecode,
+  ownerLockingBytecode,
+  type OrderParams,
+} from '@atprice/core';
 import { describe, expect, it } from 'vitest';
 import type { ChainAccess, ChainUtxo } from '@/lib/chain/types';
 import { CHIPNET_MARKET } from '@/components/orders/test-fixtures';
@@ -91,7 +96,10 @@ describe('readOrderFromChain', () => {
     // #when
     const result = await readOrderFromChain(fakeChain(), FUNDING_TXID, OWNER_HEX);
     // #then
-    expect(result.kind === 'ready' && result.onChain.orderUtxo).toMatchObject({ txid: FUNDING_TXID, vout: 0 });
+    expect(result.kind === 'ready' && result.onChain.orderUtxo).toMatchObject({
+      txid: FUNDING_TXID,
+      vout: 0,
+    });
   });
 
   it('stops at a different wallet before building anything', async () => {
@@ -169,9 +177,10 @@ describe('rule R and the server comparison', () => {
     // #when
     const tampered = {
       ...transaction,
-      outputs: [transaction.outputs[0], { ...refund, lockingBytecode: encodeLockingBytecodeP2pkh(new Uint8Array(20)) }].filter(
-        (output) => output !== undefined,
-      ),
+      outputs: [
+        transaction.outputs[0],
+        { ...refund, lockingBytecode: encodeLockingBytecodeP2pkh(new Uint8Array(20)) },
+      ].filter((output) => output !== undefined),
     };
     // #then
     expect(checkCancelRules(tampered, built.ruleContext)).toBe('refund_address');
@@ -197,7 +206,9 @@ describe('rule R and the server comparison', () => {
 
   it('reads an identical server build as the same cancel', async () => {
     const built = await builtCancel();
-    expect(compareWithServer(built.draft.unsignedHex, built.draft.unsignedHex, built.ruleContext)).toEqual({ kind: 'same' });
+    expect(compareWithServer(built.draft.unsignedHex, built.draft.unsignedHex, built.ruleContext)).toEqual({
+      kind: 'same',
+    });
   });
 
   it('reads a server build with another refund as different, without blocking anything', async () => {

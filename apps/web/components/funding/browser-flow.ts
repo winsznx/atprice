@@ -21,7 +21,13 @@ import type { AppNotification } from '@/lib/notifications/types';
 import { scanWallet } from '@/lib/wallet/scan';
 import { broadcastSigned, signDraft } from '@/lib/wallet/sign';
 import { getWalletConnector, walletScanKey } from '@/lib/wallet/store';
-import { deleteDraft, dropSignedHex, keepSignedHex, saveDraft, type StoredDraft } from '@/lib/orders/draft-store';
+import {
+  deleteDraft,
+  dropSignedHex,
+  keepSignedHex,
+  saveDraft,
+  type StoredDraft,
+} from '@/lib/orders/draft-store';
 import { previewFunding } from './fees';
 import { FundingFlow, type FundingPhase } from './flow';
 import type { DerivedOrder } from './order-terms';

@@ -6,7 +6,15 @@ import { HashChip } from '@/components/hash-chip';
 import { LocalTime } from '@/components/local-time';
 import { SideBadge, StatusBadge } from '@/components/status-badge';
 import { orderInputAsset, PairLogos, WithAssetLogo } from '@/components/token-logo';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import type { Order, Ratio } from '@/lib/api/schemas';
 import { truncateMiddle } from '@/lib/format';
 import { useNow } from '@/lib/hooks/use-now';
@@ -34,7 +42,11 @@ const shortPair = (tokenCategory: string): string => {
 
 function TxChip({ role, txid }: { role: 'Funding' | 'Settlement'; txid: string | null }) {
   if (txid === null) {
-    return <span aria-label={`${role}: none yet`} className="text-body-sm text-fg-muted">None yet</span>;
+    return (
+      <span aria-label={`${role}: none yet`} className="text-body-sm text-fg-muted">
+        None yet
+      </span>
+    );
   }
   return (
     <HashChip
@@ -209,7 +221,9 @@ export function OrderCards({
               <dt className="text-fg-muted">Limit</dt>
               <dd className="num min-w-0">
                 {limit === null ? 'Not available' : `${limit}`}
-                {distance === null ? null : <span className="block text-caption text-fg-muted">{distance}</span>}
+                {distance === null ? null : (
+                  <span className="block text-caption text-fg-muted">{distance}</span>
+                )}
               </dd>
               <dt className="text-fg-muted">Created</dt>
               <dd className="num">{formatShortDateTime(order.createdAt, hydrated)}</dd>

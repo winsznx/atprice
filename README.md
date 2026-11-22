@@ -217,7 +217,7 @@ Other root scripts: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm re
 
 ## Tests
 
-`pnpm test` at the root, measured on 2026-11-22: 77 test files and 1,248 tests, all passing.
+`pnpm test` at the root, measured on 2026-11-22: 82 test files and 1,272 tests, all passing.
 
 | Package               | Files | Tests |
 | --------------------- | ----- | ----- |
@@ -227,7 +227,7 @@ Other root scripts: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm re
 | `packages/api-schema` | 1     | 3     |
 | `apps/server`         | 11    | 206   |
 | `apps/recover`        | 3     | 47    |
-| `apps/web`            | 34    | 359   |
+| `apps/web`            | 39    | 383   |
 
 Contract tests run the compiled artifacts against the real Cauldron V0 template in libauth's `BCH_2026_05` VM. The adversarial suite in [`packages/contracts/test/adversarial`](packages/contracts/test/adversarial) covers underpayment, fee over cap, value left in the pool, redirected payout, fake pools, the pool's withdraw branch, wrong token category and extra inputs or outputs.
 

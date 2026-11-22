@@ -33,7 +33,8 @@ import { titleBlock } from './order-title';
 import { OrderTerms } from './order-terms';
 import { isUnknownOrderError, resolveOrder } from './resolve-order';
 
-const PAGE = 'mx-auto w-full max-w-(--container-content) px-(--space-gutter) py-8 md:px-(--space-gutter-md) lg:px-(--space-gutter-lg) lg:py-12';
+const PAGE =
+  'mx-auto w-full max-w-(--container-content) px-(--space-gutter) py-8 md:px-(--space-gutter-md) lg:px-(--space-gutter-lg) lg:py-12';
 
 const recoverHref = (txid: string): string => `/recover?txid=${txid}`;
 
@@ -89,8 +90,8 @@ export function OrderDetailScreen({ txid, initialOrder }: { txid: string; initia
             </div>
           }
         >
-          If you funded it, it still exists on chain. Recover can find it from the funding transaction and cancel it
-          without AtPrice’s server.
+          If you funded it, it still exists on chain. Recover can find it from the funding transaction and
+          cancel it without AtPrice’s server.
         </EmptyState>
       </div>
     );
@@ -145,7 +146,10 @@ function OrderDetailView({ order }: { order: Order }) {
   const terminal = order.status === 'FILLED' || order.status === 'CANCELLED';
   const showCondition = order.status === 'OPEN' || order.status === 'FUNDING_PENDING';
   const spend = order.status === 'RECONCILIATION_REQUIRED' ? unexpectedSpend(order) : null;
-  const shareUrl = typeof window === 'undefined' ? `/orders/${order.funding.txid}` : `${window.location.origin}/orders/${order.funding.txid}`;
+  const shareUrl =
+    typeof window === 'undefined'
+      ? `/orders/${order.funding.txid}`
+      : `${window.location.origin}/orders/${order.funding.txid}`;
   const owner = wallet.kind === 'connected' ? wallet : null;
 
   return (
@@ -167,7 +171,9 @@ function OrderDetailView({ order }: { order: Order }) {
       <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex min-w-0 flex-col gap-2">
           <h1 className="font-display text-heading-2 text-fg md:text-heading-1">{heading}</h1>
-          {figure === null ? null : <p className="num text-num-xl text-fg [overflow-wrap:normal]">{figure}</p>}
+          {figure === null ? null : (
+            <p className="num text-num-xl text-fg [overflow-wrap:normal]">{figure}</p>
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <h2 ref={statusRef} tabIndex={-1} className="text-label text-fg-muted">
               Status
@@ -203,7 +209,9 @@ function OrderDetailView({ order }: { order: Order }) {
       {spend === null ? null : (
         <InlineAlert tone="warning" icon={GitDiffIcon} role="alert" title="Needs review">
           <p>{`AtPrice saw something it didn’t expect: ${spend.reason}. The chain is the source of truth.`}</p>
-          {spend.txid === null ? null : <HashChip value={spend.txid} kind="tx" label={`Spending transaction ${spend.txid}`} />}
+          {spend.txid === null ? null : (
+            <HashChip value={spend.txid} kind="tx" label={`Spending transaction ${spend.txid}`} />
+          )}
           <Link
             href={recoverHref(order.funding.txid)}
             className={cn(buttonVariants({ variant: 'outline', size: 'compact' }), 'mt-1 self-start')}
@@ -254,7 +262,9 @@ function OrderDetailView({ order }: { order: Order }) {
             setCancelOpen(false);
             if (changed) void queryClient.invalidateQueries({ queryKey: queryKeys.orders() });
           }}
-          returnFocusTo={(changed) => (changed ? statusRef.current : cancelRef.current ?? statusRef.current)}
+          returnFocusTo={(changed) =>
+            changed ? statusRef.current : (cancelRef.current ?? statusRef.current)
+          }
         />
       ) : null}
     </div>

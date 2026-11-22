@@ -10,7 +10,6 @@ import type { FundingPreview } from './fees';
  * transition is tested without a browser. React reads it through `useSyncExternalStore`.
  */
 
-
 /** `register failed` retries this often while the tab is open (funding-confirmation.md). */
 export const REGISTER_RETRY_MS = 15_000;
 

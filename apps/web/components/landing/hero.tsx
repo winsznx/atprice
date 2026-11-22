@@ -8,7 +8,12 @@ import { CONTAINER } from './section';
 /** The first child of `<main>`: the page's `<h1>`, one sentence, the two actions, and the latest real fill. */
 export function Hero() {
   return (
-    <div className={cn(CONTAINER, 'grid gap-10 pt-10 pb-(--space-section) md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-12 lg:pt-20 lg:pb-(--space-section-lg)')}>
+    <div
+      className={cn(
+        CONTAINER,
+        'grid gap-10 pt-10 pb-(--space-section) md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-12 lg:pt-20 lg:pb-(--space-section-lg)',
+      )}
+    >
       <div className="flex flex-col items-start gap-6">
         <h1 className="max-w-[18ch] font-display text-heading-1 text-balance text-fg xs:text-display-lg">
           Set your price. Trade when the market meets it.

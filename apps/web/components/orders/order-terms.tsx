@@ -55,9 +55,9 @@ function Receive({ order }: { order: Order }) {
       <Num size="md">{`at least ${minimumText(order, 'exact')}`}</Num>
       {minimum.kind === 'sats' ? (
         <span className="text-fg-muted">
-          Paid in one output of at least <Num>{bchText(minimum.sats + SELL_ORDER_SATS, 'exact')}</Num>: your proceeds
-          plus the {formatSats(SELL_ORDER_SATS)} sat reserve you locked. The network fee comes out of the pool’s BCH,
-          not out of this.
+          Paid in one output of at least <Num>{bchText(minimum.sats + SELL_ORDER_SATS, 'exact')}</Num>: your
+          proceeds plus the {formatSats(SELL_ORDER_SATS)} sat reserve you locked. The network fee comes out of
+          the pool’s BCH, not out of this.
         </span>
       ) : null}
     </span>
@@ -98,14 +98,22 @@ export function OrderTerms({ order, isOwner }: { order: Order; isOwner: boolean 
           <Locked order={order} />
         </Term>
         <Term label="Limit price">
-          {limit === null ? <span className="text-fg-muted">Not available</span> : <Num size="md">{limit}</Num>}
+          {limit === null ? (
+            <span className="text-fg-muted">Not available</span>
+          ) : (
+            <Num size="md">{limit}</Num>
+          )}
         </Term>
         <Term label="You receive">
           <Receive order={order} />
         </Term>
         {isOwner ? (
           <Term label="Paid to">
-            <HashChip value={order.recipientAddress} kind="address" label={`Paid to ${order.recipientAddress}`} />
+            <HashChip
+              value={order.recipientAddress}
+              kind="address"
+              label={`Paid to ${order.recipientAddress}`}
+            />
           </Term>
         ) : null}
         <Term label="Network fee cap">
@@ -113,7 +121,11 @@ export function OrderTerms({ order, isOwner }: { order: Order; isOwner: boolean 
         </Term>
         <Term label="Contract">
           <span className="flex flex-wrap items-center gap-2">
-            <HashChip value={order.contractAddress} kind="address" label={`Contract ${order.contractAddress}`} />
+            <HashChip
+              value={order.contractAddress}
+              kind="address"
+              label={`Contract ${order.contractAddress}`}
+            />
             <span className="num text-fg-muted">{`v${order.contractVersion}`}</span>
           </span>
         </Term>

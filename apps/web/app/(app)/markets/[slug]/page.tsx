@@ -44,7 +44,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     rate === null
       ? `${pair} limit orders on AtPrice, filled through Cauldron pools.`
       : `${formatRateText(rate.numerator, rate.denominator)} ${shortSymbol(summary.symbol)} per BCH${
-          summary.observedAt === null ? '' : `, observed ${new Date(summary.observedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`
+          summary.observedAt === null
+            ? ''
+            : `, observed ${new Date(summary.observedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`
         }. Limit orders on AtPrice, filled through Cauldron pools.`;
   return pageMetadata({ title: pair, shareTitle: `${pair} on AtPrice`, description, path });
 }
@@ -55,12 +57,14 @@ export default async function MarketDetailRoute({ params }: Params) {
   if (resolved.kind === 'missing') notFound();
   const detail = resolved.kind === 'found' ? await loadMarket(resolved.summary.tokenId) : null;
   const identity =
-    resolved.kind !== 'found'
-      ? null
-      : identityOf(detail?.ok === true ? detail.value : resolved.summary);
+    resolved.kind !== 'found' ? null : identityOf(detail?.ok === true ? detail.value : resolved.summary);
   return (
     <div className="mx-auto w-full max-w-(--container-app) px-(--space-gutter) py-8 md:px-(--space-gutter-md) lg:px-(--space-gutter-lg) lg:py-12">
-      <MarketDetailPage slug={slug} identity={identity} initialDetail={detail?.ok === true ? detail.value : null} />
+      <MarketDetailPage
+        slug={slug}
+        identity={identity}
+        initialDetail={detail?.ok === true ? detail.value : null}
+      />
     </div>
   );
 }

@@ -31,7 +31,10 @@ export function ExecutionCondition({
   const condition = executionCondition(order, spot);
   const stale = now !== null && keeperStale(order.keeperCheck, health, now);
   return (
-    <section aria-labelledby="condition-title" className="flex flex-col gap-3 rounded-lg border border-border p-5 lg:p-6">
+    <section
+      aria-labelledby="condition-title"
+      className="flex flex-col gap-3 rounded-lg border border-border p-5 lg:p-6"
+    >
       <h2 id="condition-title" className="font-display text-heading-3 text-fg">
         Execution condition
       </h2>
@@ -44,8 +47,9 @@ export function ExecutionCondition({
       {stale && order.keeperCheck !== null ? (
         <InlineAlert tone="warning">
           <p>
-            AtPrice’s keeper hasn’t checked this order since <LocalTime iso={order.keeperCheck.checkedAt} withDate />.
-            Another filler can still fill it, and you can still cancel.
+            AtPrice’s keeper hasn’t checked this order since{' '}
+            <LocalTime iso={order.keeperCheck.checkedAt} withDate />. Another filler can still fill it, and
+            you can still cancel.
           </p>
         </InlineAlert>
       ) : null}
@@ -140,7 +144,10 @@ export function KeeperChecks({ order }: { order: Order }) {
             </p>
           ) : (
             <ul className="flex flex-col">
-              <li aria-hidden="true" className="hidden grid-cols-[6rem_1fr_1fr_14rem] gap-3 border-b border-border pb-2 text-eyebrow text-fg-muted uppercase lg:grid">
+              <li
+                aria-hidden="true"
+                className="hidden grid-cols-[6rem_1fr_1fr_14rem] gap-3 border-b border-border pb-2 text-eyebrow text-fg-muted uppercase lg:grid"
+              >
                 <span>Time</span>
                 <span>Outcome</span>
                 <span>Best quote for the whole order</span>

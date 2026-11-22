@@ -8,7 +8,15 @@ import { HashChip } from '@/components/hash-chip';
 import { PairLogos, type TokenLogoSize } from '@/components/token-logo';
 import { CONTROL_TRANSITION } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import type { MarketSummary } from '@/lib/api/schemas';
 import { formatBch, shortUnits } from '@/lib/format';
 import { cn } from '@/lib/utils';
@@ -37,7 +45,9 @@ function PairName({
     <>
       <PairLogos tokenCategory={tokenId} symbol={symbol} size={logoSize} className="mr-1.5 align-middle" />
       BCH /<wbr /> {shortSymbol(symbol)}
-      {symbol.length > shortSymbol(symbol).length ? <span className="sr-only">{`, full symbol ${symbol}`}</span> : null}
+      {symbol.length > shortSymbol(symbol).length ? (
+        <span className="sr-only">{`, full symbol ${symbol}`}</span>
+      ) : null}
     </>
   );
 }
@@ -135,7 +145,13 @@ export function MarketsTable({
           <SortHeader label="Pair" column="pair" sort={sort} onSort={onSort} />
           <TableHead className="px-3 text-right">Rate (per BCH)</TableHead>
           <SortHeader label="24h change" column="change" sort={sort} onSort={onSort} className="text-right" />
-          <SortHeader label="Liquidity" column="liquidity" sort={sort} onSort={onSort} className="text-right" />
+          <SortHeader
+            label="Liquidity"
+            column="liquidity"
+            sort={sort}
+            onSort={onSort}
+            className="text-right"
+          />
           <TableHead className="px-3 text-right">24h volume</TableHead>
           <TableHead className="px-3">Availability</TableHead>
         </tr>
@@ -154,7 +170,10 @@ export function MarketsTable({
                 <div className="flex flex-col items-start gap-1">
                   <Link
                     href={href}
-                    className={cn('text-num-sm font-semibold text-fg underline-offset-4 hover:underline', CONTROL_TRANSITION)}
+                    className={cn(
+                      'text-num-sm font-semibold text-fg underline-offset-4 hover:underline',
+                      CONTROL_TRANSITION,
+                    )}
                   >
                     <PairName tokenId={market.tokenId} symbol={market.symbol} logoSize={16} />
                   </Link>
@@ -220,7 +239,10 @@ export function MarketCards({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Link
                 href={href}
-                className={cn('text-num-md font-semibold text-fg underline-offset-4 hover:underline', CONTROL_TRANSITION)}
+                className={cn(
+                  'text-num-md font-semibold text-fg underline-offset-4 hover:underline',
+                  CONTROL_TRANSITION,
+                )}
               >
                 <PairName tokenId={market.tokenId} symbol={market.symbol} logoSize={20} />
               </Link>
@@ -238,7 +260,11 @@ export function MarketCards({
                 <span className="sr-only">{liquidityExact(market)}</span>
               </span>
             </p>
-            <HashChip value={market.tokenId} kind="token" label={`${market.symbol} token category ${market.tokenId}`} />
+            <HashChip
+              value={market.tokenId}
+              kind="token"
+              label={`${market.symbol} token category ${market.tokenId}`}
+            />
           </li>
         );
       })}
@@ -255,11 +281,13 @@ export function MarketsTableSkeleton() {
       {COLUMNS}
       <TableHeader>
         <tr>
-          {['Pair', 'Rate (per BCH)', '24h change', 'Liquidity', '24h volume', 'Availability'].map((label) => (
-            <TableHead key={label} className="px-3">
-              {label}
-            </TableHead>
-          ))}
+          {['Pair', 'Rate (per BCH)', '24h change', 'Liquidity', '24h volume', 'Availability'].map(
+            (label) => (
+              <TableHead key={label} className="px-3">
+                {label}
+              </TableHead>
+            ),
+          )}
         </tr>
       </TableHeader>
       <TableBody>

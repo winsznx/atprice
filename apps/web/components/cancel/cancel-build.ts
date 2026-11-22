@@ -100,12 +100,17 @@ export const findOrderSpend = async (
     if (entry.txid === funding.txid) continue;
     const transaction = decodeTransactionHex(await chain.getRawTransaction(entry.txid));
     const inputIndex = transaction.inputs.findIndex(
-      (input) => binToHex(input.outpointTransactionHash) === funding.txid && input.outpointIndex === funding.vout,
+      (input) =>
+        binToHex(input.outpointTransactionHash) === funding.txid && input.outpointIndex === funding.vout,
     );
     if (inputIndex < 0) continue;
     const spend = classifyOrderSpend(transaction, inputIndex, params, funding.coin);
     if (spend.path === 'execute') {
-      return { path: 'execute', txid: entry.txid, delivered: params.side === 'buy' ? spend.delivered : spend.payoutSatoshis };
+      return {
+        path: 'execute',
+        txid: entry.txid,
+        delivered: params.side === 'buy' ? spend.delivered : spend.payoutSatoshis,
+      };
     }
     return { path: spend.path, txid: entry.txid };
   }
@@ -160,7 +165,10 @@ export const readOrderFromChain = async (
             },
           }),
     };
-    return { kind: 'spent', spend: await findOrderSpend(chain, params, { txid: fundingTxid, vout: fundingVout, coin }) };
+    return {
+      kind: 'spent',
+      spend: await findOrderSpend(chain, params, { txid: fundingTxid, vout: fundingVout, coin }),
+    };
   }
   return {
     kind: 'ready',
@@ -208,7 +216,12 @@ export type BuildResult =
   /** `OwnerUtxoRequiredError`: no token-free owner coin large enough for `cancel()`. */
   | { readonly kind: 'needs_coin'; readonly requiredSatoshis: bigint; readonly largestSatoshis: bigint };
 
-const finish = (onChain: OrderOnChain, path: CancelPath, draft: UnsignedTransactionDraft, ownerCoin: Utxo | null): BuiltCancel => {
+const finish = (
+  onChain: OrderOnChain,
+  path: CancelPath,
+  draft: UnsignedTransactionDraft,
+  ownerCoin: Utxo | null,
+): BuiltCancel => {
   const ruleContext: CancelRuleContext = {
     path,
     ownerLockingBytecode: onChain.ownerLocking,

@@ -20,20 +20,33 @@ import { cn } from '@/lib/utils';
 import { orderTitle } from '@/components/evidence/evidence-logic';
 import { aboveMinimumParts, latestFill, useProofEvidence, type FilledOrder } from './proof-data';
 
-const CARD = 'flex flex-col gap-5 rounded-lg border border-border bg-surface p-(--space-panel) lg:p-(--space-panel-lg)';
+const CARD =
+  'flex flex-col gap-5 rounded-lg border border-border bg-surface p-(--space-panel) lg:p-(--space-panel-lg)';
 const HEADING_ID = 'latest-fill';
 
-function Row({ label, children, emphasis = false }: { label: string; children: ReactNode; emphasis?: boolean }) {
+function Row({
+  label,
+  children,
+  emphasis = false,
+}: {
+  label: string;
+  children: ReactNode;
+  emphasis?: boolean;
+}) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
       <dt className="text-body-sm text-fg-muted">{label}</dt>
-      <dd className={cn('min-w-0 text-right text-fg', emphasis ? 'text-num-lg' : 'text-num-md')}>{children}</dd>
+      <dd className={cn('min-w-0 text-right text-fg', emphasis ? 'text-num-lg' : 'text-num-md')}>
+        {children}
+      </dd>
     </div>
   );
 }
 
 const confirmationsText = (count: number): string =>
-  count === 0 ? 'Not yet confirmed' : `${count.toLocaleString('en-US')} ${count === 1 ? 'confirmation' : 'confirmations'}`;
+  count === 0
+    ? 'Not yet confirmed'
+    : `${count.toLocaleString('en-US')} ${count === 1 ? 'confirmation' : 'confirmations'}`;
 
 function Receipt({ order }: { order: FilledOrder }) {
   const fill = order.settlement;
@@ -68,7 +81,9 @@ function Receipt({ order }: { order: FilledOrder }) {
           </WithAssetLogo>
         </Row>
         <Row label="Above your minimum">
-          <Num className="text-status-filled">{above.percent === null ? above.amount : `${above.amount} (${above.percent})`}</Num>
+          <Num className="text-status-filled">
+            {above.percent === null ? above.amount : `${above.amount} (${above.percent})`}
+          </Num>
         </Row>
         <Row label="Your limit">
           {limit === null ? <span className="text-fg-muted">Not available</span> : <Num>{limit}</Num>}
@@ -159,7 +174,8 @@ export function HeroReceipt() {
             </Link>
           }
         >
-          When an AtPrice order fills, its receipt appears here with the pool, the amounts and the transaction.
+          When an AtPrice order fills, its receipt appears here with the pool, the amounts and the
+          transaction.
         </EmptyState>
       );
     }

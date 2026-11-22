@@ -55,15 +55,13 @@ export interface ActivityRow {
 export const activityRows = (orders: readonly Order[]): ActivityRow[] =>
   orders
     .flatMap((order) =>
-      order.events.map(
-        (event): ActivityRow => ({
-          key: `${order.id}:${event.txid}:${event.kind}`,
-          txid: event.txid,
-          kind: KIND_OF[event.kind],
-          order,
-          event,
-        }),
-      ),
+      order.events.map((event): ActivityRow => ({
+        key: `${order.id}:${event.txid}:${event.kind}`,
+        txid: event.txid,
+        kind: KIND_OF[event.kind],
+        order,
+        event,
+      })),
     )
     .sort((a, b) => b.event.firstSeenAt.localeCompare(a.event.firstSeenAt));
 
@@ -81,7 +79,10 @@ export const amountParts = (row: ActivityRow): { readonly first: string; readonl
   if (row.kind === 'cancel' && settlement?.kind === 'cancel' && settlement.txid === row.txid) {
     const bch = bchText(settlement.refundSats, 'compact');
     return order.side === 'sell' && settlement.refundTokens > 0n
-      ? { first: `${orderInputText({ ...order, amount: settlement.refundTokens }, 'compact')} and`, second: `${bch} refunded` }
+      ? {
+          first: `${orderInputText({ ...order, amount: settlement.refundTokens }, 'compact')} and`,
+          second: `${bch} refunded`,
+        }
       : { first: `${bch} refunded`, second: null };
   }
   return { first: input, second: null };
@@ -99,7 +100,9 @@ export const STATE_DISPLAY: Readonly<
 };
 
 /** The meta line under the state badge, and the spoken form that names attempt versus fact. */
-export const stateText = (event: TransactionEvent): { readonly meta: string | null; readonly spoken: string } => {
+export const stateText = (
+  event: TransactionEvent,
+): { readonly meta: string | null; readonly spoken: string } => {
   switch (event.networkState) {
     case 'seen':
       return { meta: 'not confirmed', spoken: 'Sent, not confirmed yet' };
@@ -120,8 +123,13 @@ export const stateText = (event: TransactionEvent): { readonly meta: string | nu
 const TXID = /^[0-9a-f]{64}$/;
 
 /** `This transaction was replaced by {txid}` when the API names the replacement. */
-export const replacement = (event: TransactionEvent): { readonly txid: string | null; readonly text: string | null } => {
-  if (event.networkState !== 'conflicted' && event.networkState !== 'replaced') return { txid: null, text: null };
+export const replacement = (
+  event: TransactionEvent,
+): { readonly txid: string | null; readonly text: string | null } => {
+  if (event.networkState !== 'conflicted' && event.networkState !== 'replaced')
+    return { txid: null, text: null };
   if (event.conflict === null) return { txid: null, text: null };
-  return TXID.test(event.conflict) ? { txid: event.conflict, text: null } : { txid: null, text: event.conflict };
+  return TXID.test(event.conflict)
+    ? { txid: event.conflict, text: null }
+    : { txid: null, text: event.conflict };
 };

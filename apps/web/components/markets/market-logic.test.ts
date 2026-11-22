@@ -45,20 +45,33 @@ describe('market sort (markets.md "Controls")', () => {
   });
 
   it('flips the active column and starts a new one in its natural direction', () => {
-    expect(nextSort({ key: 'liquidity', dir: 'desc' }, 'liquidity')).toEqual({ key: 'liquidity', dir: 'asc' });
+    expect(nextSort({ key: 'liquidity', dir: 'desc' }, 'liquidity')).toEqual({
+      key: 'liquidity',
+      dir: 'asc',
+    });
     expect(nextSort({ key: 'liquidity', dir: 'desc' }, 'pair')).toEqual({ key: 'pair', dir: 'asc' });
   });
 
   it('describes the order in the table caption', () => {
-    expect(sortCaption({ key: 'liquidity', dir: 'desc' })).toBe('Markets on AtPrice, sorted by liquidity, descending');
+    expect(sortCaption({ key: 'liquidity', dir: 'desc' })).toBe(
+      'Markets on AtPrice, sorted by liquidity, descending',
+    );
   });
 
   it('puts a null 24h change last in both directions', () => {
     const up = market({ symbol: 'UP', change24h: { value: { numerator: 42n, denominator: 10_000n } } });
     const down = market({ symbol: 'DOWN', change24h: { value: { numerator: -5n, denominator: 1_000n } } });
     const none = market({ symbol: 'NONE' });
-    expect(sortMarkets([none, down, up], { key: 'change', dir: 'desc' }).map((m) => m.symbol)).toEqual(['UP', 'DOWN', 'NONE']);
-    expect(sortMarkets([none, up, down], { key: 'change', dir: 'asc' }).map((m) => m.symbol)).toEqual(['DOWN', 'UP', 'NONE']);
+    expect(sortMarkets([none, down, up], { key: 'change', dir: 'desc' }).map((m) => m.symbol)).toEqual([
+      'UP',
+      'DOWN',
+      'NONE',
+    ]);
+    expect(sortMarkets([none, up, down], { key: 'change', dir: 'asc' }).map((m) => m.symbol)).toEqual([
+      'DOWN',
+      'UP',
+      'NONE',
+    ]);
   });
 });
 
@@ -77,8 +90,14 @@ describe('market values', () => {
   });
 
   it('pauses every market on a network mismatch', () => {
-    expect(availabilityOf(market({}), true)).toEqual({ availability: 'paused', label: 'Paused', reason: 'Network mismatch' });
-    expect(availabilityOf(market({ availability: 'paused', availabilityReason: 'pool data stale' }), false)).toEqual({
+    expect(availabilityOf(market({}), true)).toEqual({
+      availability: 'paused',
+      label: 'Paused',
+      reason: 'Network mismatch',
+    });
+    expect(
+      availabilityOf(market({ availability: 'paused', availabilityReason: 'pool data stale' }), false),
+    ).toEqual({
       availability: 'paused',
       label: 'Paused',
       reason: 'pool data stale',
@@ -92,7 +111,10 @@ describe('market values', () => {
 
   it('finds the latest observation and formats ages in whole units', () => {
     expect(
-      latestObservation([market({ observedAt: null }), market({ observedAt: '2026-11-22T14:00:00.000Z', blockHeight: 7 })]),
+      latestObservation([
+        market({ observedAt: null }),
+        market({ observedAt: '2026-11-22T14:00:00.000Z', blockHeight: 7 }),
+      ]),
     ).toEqual({ observedAt: '2026-11-22T14:00:00.000Z', blockHeight: 7 });
   });
 });
@@ -100,7 +122,11 @@ describe('market values', () => {
 describe('market identity and activity', () => {
   it('takes token identity from the bundled allowlist over the API', () => {
     const identity = identityOf(
-      market({ tokenId: 'dfe50223c8d5cba8dcef8dff6d92b61deb88a8ba44947367f2b746487b56039b', symbol: 'WRONG', decimals: 8 }),
+      market({
+        tokenId: 'dfe50223c8d5cba8dcef8dff6d92b61deb88a8ba44947367f2b746487b56039b',
+        symbol: 'WRONG',
+        decimals: 8,
+      }),
     );
     expect(identity).toMatchObject({ symbol: 'PUSDTEST', decimals: 2 });
     expect(sourceHosts(identity.sources)).toEqual(['indexer-chipnet.riften.net']);
@@ -115,6 +141,9 @@ describe('market identity and activity', () => {
     const rows = marketActivity([order, elsewhere], order.tokenCategory);
     expect(rows.map((row) => row.kind)).toEqual(['Fill', 'Funding']);
     const [latest] = rows;
-    expect(latest === undefined ? null : activityAmounts(latest)).toEqual({ from: 'Buy 0.05 BCH', to: '22.61 PUSDTEST' });
+    expect(latest === undefined ? null : activityAmounts(latest)).toEqual({
+      from: 'Buy 0.05 BCH',
+      to: '22.61 PUSDTEST',
+    });
   });
 });

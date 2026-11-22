@@ -26,7 +26,9 @@ describe('loadRecoverFile', () => {
       join(dist, 'manifest.json'),
       JSON.stringify({
         version: '1.0.0',
-        files: { chipnet: { file: 'atprice-recover-chipnet-1.0.0.html', sha256, bytes: HTML.length, csp: CSP } },
+        files: {
+          chipnet: { file: 'atprice-recover-chipnet-1.0.0.html', sha256, bytes: HTML.length, csp: CSP },
+        },
       }),
     );
   };

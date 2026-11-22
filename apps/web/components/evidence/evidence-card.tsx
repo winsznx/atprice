@@ -40,7 +40,8 @@ import {
   type VerifyResult,
 } from './evidence-logic';
 
-export const FILLED_BY_BASIS = 'AtPrice knows only which fills its own keeper sent. A fill carries no filler identity on chain.';
+export const FILLED_BY_BASIS =
+  'AtPrice knows only which fills its own keeper sent. A fill carries no filler identity on chain.';
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -71,7 +72,9 @@ function FilledByInfo() {
       >
         <InfoIcon aria-hidden="true" className="size-4" />
       </PopoverTrigger>
-      <PopoverContent className="max-w-[18rem] text-body-sm text-fg-secondary">{FILLED_BY_BASIS}</PopoverContent>
+      <PopoverContent className="max-w-[18rem] text-body-sm text-fg-secondary">
+        {FILLED_BY_BASIS}
+      </PopoverContent>
     </Popover>
   );
 }
@@ -127,7 +130,9 @@ function TermFields({ order }: { order: EvidenceOrder }) {
           </p>
         ) : null}
         <div className="flex flex-wrap gap-x-6 gap-y-2">
-          <Field label="Limit">{limit === null ? <span className="text-fg-muted">Not available</span> : <Num>{limit}</Num>}</Field>
+          <Field label="Limit">
+            {limit === null ? <span className="text-fg-muted">Not available</span> : <Num>{limit}</Num>}
+          </Field>
           <Field label="Filled at">
             {filledAt === null ? (
               <span className="text-fg-muted">Not available</span>
@@ -168,7 +173,9 @@ function TermFields({ order }: { order: EvidenceOrder }) {
           <Num>{minimumText(order, 'exact')}</Num>
         </Field>
       </div>
-      <Field label="Limit">{limit === null ? <span className="text-fg-muted">Not available</span> : <Num>{limit}</Num>}</Field>
+      <Field label="Limit">
+        {limit === null ? <span className="text-fg-muted">Not available</span> : <Num>{limit}</Num>}
+      </Field>
     </>
   );
 }
@@ -188,9 +195,21 @@ function TxRow({ label, txid, height }: { label: string; txid: string; height: n
 }
 
 const VERIFY_STYLE = {
-  confirmed: { icon: ShieldCheckIcon, className: 'bg-status-filled-subtle text-fg', iconClass: 'text-status-filled' },
-  mismatch: { icon: GitDiffIcon, className: 'bg-status-review-subtle text-fg', iconClass: 'text-status-review' },
-  unreachable: { icon: WifiSlashIcon, className: 'bg-surface-sunken text-fg-secondary', iconClass: 'text-fg-muted' },
+  confirmed: {
+    icon: ShieldCheckIcon,
+    className: 'bg-status-filled-subtle text-fg',
+    iconClass: 'text-status-filled',
+  },
+  mismatch: {
+    icon: GitDiffIcon,
+    className: 'bg-status-review-subtle text-fg',
+    iconClass: 'text-status-review',
+  },
+  unreachable: {
+    icon: WifiSlashIcon,
+    className: 'bg-surface-sunken text-fg-secondary',
+    iconClass: 'text-fg-muted',
+  },
 } as const;
 
 export function VerifyLine({ result }: { result: VerifyResult }) {
@@ -215,7 +234,10 @@ function CardHeading({ order, headingId }: { order: EvidenceOrder; headingId: st
       <Link
         id={headingId}
         href={orderPath(order)}
-        className={cn('inline-flex min-h-(--size-control) flex-wrap items-center gap-x-3 underline-offset-4 hover:underline', CONTROL_TRANSITION)}
+        className={cn(
+          'inline-flex min-h-(--size-control) flex-wrap items-center gap-x-3 underline-offset-4 hover:underline',
+          CONTROL_TRANSITION,
+        )}
         aria-label={`${settled}: ${orderTitle(order).replace(/^(Buy|Sell)/, (word) => word.toLowerCase())}, ${spokenDateTime(order.settlementBlock.time, hydrated)}`}
       >
         <span className="inline-flex items-center gap-1.5">
@@ -270,7 +292,10 @@ export function EvidenceCard({
   );
 
   return (
-    <article aria-labelledby={headingId} className="flex min-w-0 flex-col gap-4 rounded-lg border border-border p-(--space-panel)">
+    <article
+      aria-labelledby={headingId}
+      className="flex min-w-0 flex-col gap-4 rounded-lg border border-border p-(--space-panel)"
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 flex-wrap items-center gap-3">
           <StatusBadge status={settlement.kind === 'fill' ? 'FILLED' : 'CANCELLED'} />
@@ -294,12 +319,18 @@ export function EvidenceCard({
               />
             </Field>
             <Field label="Pool owner">
-              <HashChip value={settlement.poolPkh} kind="keyhash" label={`Pool owner key hash ${settlement.poolPkh}`} />
+              <HashChip
+                value={settlement.poolPkh}
+                kind="keyhash"
+                label={`Pool owner key hash ${settlement.poolPkh}`}
+              />
             </Field>
             <div className="flex flex-wrap items-center gap-x-2">
               <dt className="text-body-sm text-fg-muted">Filled by</dt>
               <dd className="flex items-center gap-1 text-body-sm text-fg">
-                {settlement.filledBy === 'atprice_keeper' ? 'AtPrice’s keeper' : 'Another filler, not AtPrice’s keeper'}
+                {settlement.filledBy === 'atprice_keeper'
+                  ? 'AtPrice’s keeper'
+                  : 'Another filler, not AtPrice’s keeper'}
                 <FilledByInfo />
               </dd>
             </div>

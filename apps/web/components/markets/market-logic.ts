@@ -1,4 +1,11 @@
-import type { Availability, EvidenceOrder, Health, MarketDetail, MarketSummary, SignedRatio } from '@/lib/api/schemas';
+import type {
+  Availability,
+  EvidenceOrder,
+  Health,
+  MarketDetail,
+  MarketSummary,
+  SignedRatio,
+} from '@/lib/api/schemas';
 import { formatBch, formatPercent, formatToken, orientRate } from '@/lib/format';
 import { marketOf, orderInputText, receivedText } from '@/lib/orders/display';
 
@@ -22,7 +29,8 @@ const isSortKey = (value: string | null | undefined): value is SortKey =>
 /** `?sort=liquidity|change|pair&dir=asc|desc`; anything else falls back to the default, never throws. */
 export const parseSort = (sort: string | null | undefined, dir: string | null | undefined): MarketSort => {
   const key = isSortKey(sort) ? sort : DEFAULT_SORT.key;
-  const direction = dir === 'asc' || dir === 'desc' ? dir : isSortKey(sort) ? initialDir(key) : DEFAULT_SORT.dir;
+  const direction =
+    dir === 'asc' || dir === 'desc' ? dir : isSortKey(sort) ? initialDir(key) : DEFAULT_SORT.dir;
   return { key, dir: direction };
 };
 
@@ -164,9 +172,7 @@ export const latestObservation = (
 };
 
 /** The oldest observation, which is what a staleness warning must speak for. */
-export const oldestObservation = (
-  markets: readonly Pick<MarketSummary, 'observedAt'>[],
-): string | null => {
+export const oldestObservation = (markets: readonly Pick<MarketSummary, 'observedAt'>[]): string | null => {
   let oldest: string | null = null;
   for (const market of markets) {
     if (market.observedAt === null) continue;
@@ -240,7 +246,11 @@ export interface ActivityRow {
  * settlement and its funding, newest first. Orders still open aren't in evidence, so their funding
  * isn't listed; the block says so.
  */
-export const marketActivity = (orders: readonly EvidenceOrder[], tokenId: string, limit = ACTIVITY_LIMIT): ActivityRow[] =>
+export const marketActivity = (
+  orders: readonly EvidenceOrder[],
+  tokenId: string,
+  limit = ACTIVITY_LIMIT,
+): ActivityRow[] =>
   orders
     .filter((order) => order.tokenCategory === tokenId)
     .flatMap((order): ActivityRow[] => [
@@ -268,6 +278,7 @@ export const activityAmounts = (row: ActivityRow): { from: string; to: string | 
   const side = order.side === 'buy' ? 'Buy' : 'Sell';
   const from = `${side} ${orderInputText(order, 'compact')}`;
   if (row.kind === 'Funding') return { from, to: null };
-  if (order.settlement.kind === 'fill') return { from, to: receivedText(order, order.settlement.received, 'compact') };
+  if (order.settlement.kind === 'fill')
+    return { from, to: receivedText(order, order.settlement.received, 'compact') };
   return { from, to: `refunded ${formatBch(order.settlement.refundSats, 'compact')} BCH` };
 };

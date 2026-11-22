@@ -3,7 +3,15 @@
 import { HashChip } from '@/components/hash-chip';
 import { StatusBadge } from '@/components/status-badge';
 import { PairLogos } from '@/components/token-logo';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import type { EvidenceOrder } from '@/lib/api/schemas';
 import { formatBlockHeight } from '@/lib/format';
 import { appNetwork } from '@/lib/network';
@@ -13,7 +21,8 @@ import { bchText, orderInputText, pairLabel, receivedText, tokenSymbol } from '@
 export const paidReceived = (order: EvidenceOrder): { paid: string; received: string } => {
   const paid = orderInputText(order, 'compact');
   const settlement = order.settlement;
-  if (settlement.kind === 'fill') return { paid, received: receivedText(order, settlement.received, 'compact') };
+  if (settlement.kind === 'fill')
+    return { paid, received: receivedText(order, settlement.received, 'compact') };
   const refund =
     order.side === 'sell' && settlement.refundTokens > 0n
       ? `${orderInputText({ ...order, amount: settlement.refundTokens }, 'compact')} + ${bchText(settlement.refundSats, 'compact')}`
@@ -65,7 +74,10 @@ export function RecentTransactionsTable({ orders }: { orders: readonly EvidenceO
                 </TableCell>
                 <TableCell className="text-num-sm">
                   <span className="inline-flex items-center gap-1.5">
-                    <PairLogos tokenCategory={order.tokenCategory} symbol={tokenSymbol(order.tokenCategory)} />
+                    <PairLogos
+                      tokenCategory={order.tokenCategory}
+                      symbol={tokenSymbol(order.tokenCategory)}
+                    />
                     {pairLabel(order.tokenCategory)}
                   </span>
                 </TableCell>
@@ -83,9 +95,15 @@ export function RecentTransactionsTable({ orders }: { orders: readonly EvidenceO
           </TableBody>
         </Table>
       </div>
-      <ul className="flex flex-col gap-3 md:hidden" aria-label={`Recent completed AtPrice orders on ${appNetwork.name}`}>
+      <ul
+        className="flex flex-col gap-3 md:hidden"
+        aria-label={`Recent completed AtPrice orders on ${appNetwork.name}`}
+      >
         {orders.map((order) => (
-          <li key={order.id} className="flex flex-col gap-2 rounded-lg border border-border p-(--space-panel)">
+          <li
+            key={order.id}
+            className="flex flex-col gap-2 rounded-lg border border-border p-(--space-panel)"
+          >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <StatusBadge status={resultOf(order)} />
               <span className="text-body-sm text-fg-secondary">

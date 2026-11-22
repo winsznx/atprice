@@ -1,12 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { event, makeOrder, SETTLEMENT_TXID } from '../test-fixtures';
-import { activityRows, amountParts, filterRows, parseKind, parseScope, replacement, stateText } from './activity-rows';
+import {
+  activityRows,
+  amountParts,
+  filterRows,
+  parseKind,
+  parseScope,
+  replacement,
+  stateText,
+} from './activity-rows';
 
 const filled = makeOrder({
   status: 'FILLED',
   events: [
     event(),
-    event({ txid: SETTLEMENT_TXID, kind: 'execute', firstSeenAt: '2026-11-22T13:58:00.000Z', blockHeight: 925_110 }),
+    event({
+      txid: SETTLEMENT_TXID,
+      kind: 'execute',
+      firstSeenAt: '2026-11-22T13:58:00.000Z',
+      blockHeight: 925_110,
+    }),
   ],
   settlement: {
     kind: 'fill',

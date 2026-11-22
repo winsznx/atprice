@@ -48,9 +48,34 @@ export const MARK_DATA_URI = `data:image/svg+xml;base64,${Buffer.from(MARK_SVG).
  * next/og would fetch the missing glyph from Google Fonts at render time.
  */
 export const OG_FONTS = [
-  { name: 'Bricolage Grotesque', data: readFileSync(join(process.cwd(), 'lib/og/fonts/bricolage-grotesque-400.ttf')), weight: 400 as const, style: 'normal' as const },
-  { name: 'Bricolage Grotesque', data: readFileSync(join(process.cwd(), 'lib/og/fonts/bricolage-grotesque-600.ttf')), weight: 600 as const, style: 'normal' as const },
-  { name: 'Inter', data: readFileSync(join(process.cwd(), 'lib/og/fonts/inter-500.ttf')), weight: 500 as const, style: 'normal' as const },
-  { name: 'Inter', data: readFileSync(join(process.cwd(), 'lib/og/fonts/inter-600.ttf')), weight: 600 as const, style: 'normal' as const },
-  { name: 'Geist Symbols', data: readFileSync(join(process.cwd(), 'lib/og/fonts/geist-symbols-400.ttf')), weight: 400 as const, style: 'normal' as const },
+  {
+    name: 'Bricolage Grotesque',
+    data: readFileSync(join(process.cwd(), 'lib/og/fonts/bricolage-grotesque-400.ttf')),
+    weight: 400 as const,
+    style: 'normal' as const,
+  },
+  {
+    name: 'Bricolage Grotesque',
+    data: readFileSync(join(process.cwd(), 'lib/og/fonts/bricolage-grotesque-600.ttf')),
+    weight: 600 as const,
+    style: 'normal' as const,
+  },
+  {
+    name: 'Inter',
+    data: readFileSync(join(process.cwd(), 'lib/og/fonts/inter-500.ttf')),
+    weight: 500 as const,
+    style: 'normal' as const,
+  },
+  {
+    name: 'Inter',
+    data: readFileSync(join(process.cwd(), 'lib/og/fonts/inter-600.ttf')),
+    weight: 600 as const,
+    style: 'normal' as const,
+  },
+  {
+    name: 'Geist Symbols',
+    data: readFileSync(join(process.cwd(), 'lib/og/fonts/geist-symbols-400.ttf')),
+    weight: 400 as const,
+    style: 'normal' as const,
+  },
 ];

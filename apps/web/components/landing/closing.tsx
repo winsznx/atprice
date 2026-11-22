@@ -10,7 +10,11 @@ export const FAQ_ID = 'faq';
 
 export function FinalCta() {
   return (
-    <Band labelledBy={CTA_ID} tone="brand" className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+    <Band
+      labelledBy={CTA_ID}
+      tone="brand"
+      className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between"
+    >
       <div className="flex max-w-[48ch] flex-col gap-3">
         <h2 id={CTA_ID} className={SECTION_HEADING}>
           Name your price, then get on with your day
@@ -48,7 +52,10 @@ export function Faq() {
             >
               {question}
               <PlusIcon aria-hidden="true" className="size-5 shrink-0 text-fg-muted group-open:hidden" />
-              <MinusIcon aria-hidden="true" className="hidden size-5 shrink-0 text-fg-muted group-open:block" />
+              <MinusIcon
+                aria-hidden="true"
+                className="hidden size-5 shrink-0 text-fg-muted group-open:block"
+              />
             </summary>
             <p className="max-w-[64ch] pb-5 text-body text-fg-secondary">
               {answer.map((part, index) =>

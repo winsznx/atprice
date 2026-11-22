@@ -2,7 +2,8 @@ import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 /** Home section headings: display-lg from lg, heading-2 below (DD 4 type scale), clear of the header. */
-export const SECTION_HEADING = 'scroll-mt-20 font-display text-heading-2 text-fg outline-none lg:text-display-lg';
+export const SECTION_HEADING =
+  'scroll-mt-20 font-display text-heading-2 text-fg outline-none lg:text-display-lg';
 
 export const CONTAINER =
   'mx-auto w-full max-w-(--container-app) px-(--space-gutter) md:px-(--space-gutter-md) lg:px-(--space-gutter-lg)';

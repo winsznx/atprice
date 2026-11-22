@@ -15,9 +15,14 @@ const TIP = 1_000;
 const CONFIRMATIONS = 10;
 const SETTLED_AT = TIP - CONFIRMATIONS + 1;
 
-const scenario = (adjust: (order: ReturnType<typeof evidenceOrder>) => ReturnType<typeof evidenceOrder> = (o) => o) => {
+const scenario = (
+  adjust: (order: ReturnType<typeof evidenceOrder>) => ReturnType<typeof evidenceOrder> = (o) => o,
+) => {
   const chain = buildChain();
-  const base = evidenceOrder({ fundingTxid: chain.fundingTxid, settlementBlock: { height: SETTLED_AT, time: '2026-11-22T13:58:00.000Z' } });
+  const base = evidenceOrder({
+    fundingTxid: chain.fundingTxid,
+    settlementBlock: { height: SETTLED_AT, time: '2026-11-22T13:58:00.000Z' },
+  });
   const order = adjust({
     ...base,
     minOut: 10n,
@@ -65,7 +70,11 @@ describe('verifyEvidenceOrder', () => {
   it('lists every difference instead of hiding it', async () => {
     const { order, access } = scenario((o) =>
       o.settlement.kind === 'fill'
-        ? { ...o, minOut: 11n, settlement: { ...o.settlement, received: o.settlement.received + 1n, poolPkh: '44'.repeat(20) } }
+        ? {
+            ...o,
+            minOut: 11n,
+            settlement: { ...o.settlement, received: o.settlement.received + 1n, poolPkh: '44'.repeat(20) },
+          }
         : o,
     );
     const result = await verifyEvidenceOrder(access, order);
@@ -80,7 +89,10 @@ describe('verifyEvidenceOrder', () => {
   });
 
   it('flags a settlement in a different block than listed', async () => {
-    const { order, access } = scenario((o) => ({ ...o, settlementBlock: { ...o.settlementBlock, height: SETTLED_AT + 1 } }));
+    const { order, access } = scenario((o) => ({
+      ...o,
+      settlementBlock: { ...o.settlementBlock, height: SETTLED_AT + 1 },
+    }));
     const result = await verifyEvidenceOrder(access, order);
     expect(result).toMatchObject({ kind: 'mismatch', differences: ['the fill is in block 991, not 992'] });
   });
@@ -151,8 +163,14 @@ describe('orderSearchState (?order=)', () => {
   it('keeps loading up to five pages, then says it is not a completed order', () => {
     expect(orderSearchState('cd'.repeat(32), [{ orders: [other] }], true)).toEqual({ kind: 'searching' });
     const fivePages = Array.from({ length: 5 }, () => ({ orders: [other] }));
-    expect(orderSearchState('cd'.repeat(32), fivePages, true)).toEqual({ kind: 'not_found', txid: 'cd'.repeat(32) });
-    expect(orderSearchState('cd'.repeat(32), [{ orders: [other] }], false)).toEqual({ kind: 'not_found', txid: 'cd'.repeat(32) });
+    expect(orderSearchState('cd'.repeat(32), fivePages, true)).toEqual({
+      kind: 'not_found',
+      txid: 'cd'.repeat(32),
+    });
+    expect(orderSearchState('cd'.repeat(32), [{ orders: [other] }], false)).toEqual({
+      kind: 'not_found',
+      txid: 'cd'.repeat(32),
+    });
   });
 
   it('does nothing without the query', () => {

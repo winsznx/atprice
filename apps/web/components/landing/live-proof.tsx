@@ -37,8 +37,16 @@ function Measured({ evidence }: { evidence: Evidence }) {
     <div className="flex flex-col gap-4">
       <dl className="grid grid-cols-1 gap-3 xs:grid-cols-2 lg:grid-cols-4">
         <Stat label="Orders filled" value={count(counts.fills)} />
-        <Stat label="Paid above the minimum" value={`${count(counts.fillsAboveMinimum)} of ${count(counts.fills)}`} note="fills" />
-        <Stat label="Sent by AtPrice’s keeper" value={`${count(counts.keeperFills)} of ${count(counts.fills)}`} note="fills" />
+        <Stat
+          label="Paid above the minimum"
+          value={`${count(counts.fillsAboveMinimum)} of ${count(counts.fills)}`}
+          note="fills"
+        />
+        <Stat
+          label="Sent by AtPrice’s keeper"
+          value={`${count(counts.keeperFills)} of ${count(counts.fills)}`}
+          note="fills"
+        />
         <Stat label="Orders cancelled" value={count(counts.cancels)} note="refunded to the owner" />
       </dl>
       <p className="text-body-sm text-fg-muted">

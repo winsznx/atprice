@@ -188,10 +188,7 @@ function CancelSurface({ open, order, wallet, onClosed, returnFocusTo }: CancelD
       </Button>
     </div>
   );
-  const closeReason =
-    locked && closeBlocked ? (
-      <CloseReason id={closeReasonId} state={state} />
-    ) : null;
+  const closeReason = locked && closeBlocked ? <CloseReason id={closeReasonId} state={state} /> : null;
 
   const contentProps = {
     role: 'alertdialog' as const,
@@ -262,9 +259,7 @@ function CloseReason({ id, state }: { id: string; state: CancelFlowState }) {
 
 function OrderSummaryLine({ order }: { order: Order }) {
   const limit = limitText(order);
-  return (
-    <span className="num">{limit === null ? sideTitle(order) : `${sideTitle(order)} at ${limit}`}</span>
-  );
+  return <span className="num">{limit === null ? sideTitle(order) : `${sideTitle(order)} at ${limit}`}</span>;
 }
 
 interface FlowBodyProps {
@@ -310,7 +305,17 @@ function RecoverLink({ order }: { order: Order }) {
   );
 }
 
-function FlowBody({ order, wallet, flow, disconnected, networkReason, ids, keepRef, headingRef, onClose }: FlowBodyProps) {
+function FlowBody({
+  order,
+  wallet,
+  flow,
+  disconnected,
+  networkReason,
+  ids,
+  keepRef,
+  headingRef,
+  onClose,
+}: FlowBodyProps) {
   const { state } = flow;
   const host = getChain().endpointLabel ?? 'your Electrum server';
   const keep = (
@@ -368,7 +373,14 @@ function FlowBody({ order, wallet, flow, disconnected, networkReason, ids, keepR
       );
     case 'no_coin':
       return (
-        <NoCoinBody order={order} wallet={wallet} flow={flow} state={state} headingRef={headingRef} keep={keep} />
+        <NoCoinBody
+          order={order}
+          wallet={wallet}
+          flow={flow}
+          state={state}
+          headingRef={headingRef}
+          keep={keep}
+        />
       );
     case 'already_spent': {
       const word =
@@ -725,7 +737,9 @@ function ReviewBody({
                 <span>A coin at your owner address</span>
                 <span className="text-fg-secondary">
                   <Num>{`${formatBch(built.ownerCoin.satoshis, 'exact')} BCH`}</Num> from{' '}
-                  {owner === null ? 'your owner address' : (
+                  {owner === null ? (
+                    'your owner address'
+                  ) : (
                     <HashChip value={owner.address} kind="address" label={`Owner address ${owner.address}`} />
                   )}{' '}
                   goes back to the same address in the same transaction.
@@ -796,7 +810,9 @@ function NoCoinBody({
         if (active) unsubscribe = stop;
         else void stop();
       })
-      .catch((error: unknown) => console.warn('Owner address subscription failed; Check again still works:', error));
+      .catch((error: unknown) =>
+        console.warn('Owner address subscription failed; Check again still works:', error),
+      );
     return () => {
       active = false;
       if (unsubscribe !== null) void unsubscribe();
@@ -809,8 +825,8 @@ function NoCoinBody({
         <StatusHeading headingRef={headingRef}>Your wallet needs a coin first</StatusHeading>
         <p className="text-body text-fg-secondary">
           Your wallet needs a coin at this order’s owner address before it can cancel. Send at least{' '}
-          <Num>{formatFee(request)}</Num> to {owner === null ? 'your owner address' : 'the address below'} from
-          any wallet. AtPrice will notice the payment and continue.
+          <Num>{formatFee(request)}</Num> to {owner === null ? 'your owner address' : 'the address below'}{' '}
+          from any wallet. AtPrice will notice the payment and continue.
         </p>
         {owner === null ? null : (
           <div className="flex flex-wrap items-center gap-2">
@@ -821,7 +837,11 @@ function NoCoinBody({
                 Show QR
               </PopoverTrigger>
               <PopoverContent>
-                <QrCode value={owner.address} size={200} label={`QR code of your owner address ${owner.address}`} />
+                <QrCode
+                  value={owner.address}
+                  size={200}
+                  label={`QR code of your owner address ${owner.address}`}
+                />
               </PopoverContent>
             </Popover>
           </div>
@@ -866,13 +886,13 @@ function AwaitingBody({
         <p className="text-body text-fg-secondary">
           {wallet.reconnectingSince === null ? (
             <>
-              Approve the cancel in your wallet · <span className="num">{formatElapsed(elapsed ?? 0)}</span>. AtPrice
-              waits as long as your wallet takes.
+              Approve the cancel in your wallet · <span className="num">{formatElapsed(elapsed ?? 0)}</span>.
+              AtPrice waits as long as your wallet takes.
             </>
           ) : (
             <>
-              Reconnecting to your wallet (<span className="num">{formatElapsed(reconnecting ?? 0)}</span>). Your
-              request is sent again when it answers.
+              Reconnecting to your wallet (<span className="num">{formatElapsed(reconnecting ?? 0)}</span>).
+              Your request is sent again when it answers.
             </>
           )}
         </p>

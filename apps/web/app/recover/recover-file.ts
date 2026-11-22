@@ -45,7 +45,10 @@ export const RECOVER_DIST = join(/*turbopackIgnore: true*/ process.cwd(), '..', 
  * The Recover file for `network`, byte for byte as `apps/recover` built it, checked against the
  * SHA-256 in its manifest so the site can only serve the hash the README publishes (recover.md).
  */
-export const loadRecoverFile = async (network: Network, dist: string = RECOVER_DIST): Promise<RecoverFile> => {
+export const loadRecoverFile = async (
+  network: Network,
+  dist: string = RECOVER_DIST,
+): Promise<RecoverFile> => {
   let raw: string;
   try {
     raw = await readFile(join(/*turbopackIgnore: true*/ dist, 'manifest.json'), 'utf8');
@@ -65,17 +68,26 @@ export const loadRecoverFile = async (network: Network, dist: string = RECOVER_D
   if (!parsed.success) throw new RecoverFileError('RECOVER_MANIFEST_INVALID', parsed.error.message);
   const entry = parsed.data.files[network];
   if (entry === undefined) {
-    throw new RecoverFileError('RECOVER_FILE_MISSING', `the Recover build has no ${network} file; build it with ATPRICE_NETWORK=${network}`);
+    throw new RecoverFileError(
+      'RECOVER_FILE_MISSING',
+      `the Recover build has no ${network} file; build it with ATPRICE_NETWORK=${network}`,
+    );
   }
   let html: Uint8Array<ArrayBuffer>;
   try {
     html = new Uint8Array(await readFile(join(/*turbopackIgnore: true*/ dist, entry.file)));
   } catch (error) {
-    throw new RecoverFileError('RECOVER_FILE_MISSING', `${entry.file}: ${error instanceof Error ? error.message : String(error)}`);
+    throw new RecoverFileError(
+      'RECOVER_FILE_MISSING',
+      `${entry.file}: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
   const sha256 = createHash('sha256').update(html).digest('hex');
   if (sha256 !== entry.sha256) {
-    throw new RecoverFileError('RECOVER_FILE_MISMATCH', `${entry.file} hashes to ${sha256}, the manifest says ${entry.sha256}`);
+    throw new RecoverFileError(
+      'RECOVER_FILE_MISMATCH',
+      `${entry.file} hashes to ${sha256}, the manifest says ${entry.sha256}`,
+    );
   }
   return { html, sha256, csp: entry.csp, file: entry.file };
 };

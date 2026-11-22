@@ -66,7 +66,11 @@ export const cancelAvailability = (
         reconnecting: false,
       };
     case 'CANCELLATION_PENDING':
-      return { kind: 'disabled', reason: 'A cancel is already waiting for confirmation.', reconnecting: false };
+      return {
+        kind: 'disabled',
+        reason: 'A cancel is already waiting for confirmation.',
+        reconnecting: false,
+      };
     case 'RECONCILIATION_REQUIRED':
       return {
         kind: 'disabled',
@@ -173,7 +177,9 @@ export const keeperStale = (check: KeeperCheck | null, health: Health | undefine
 };
 
 /** The spending transaction AtPrice didn't expect, for the reconciliation alert. */
-export const unexpectedSpend = (order: Pick<Order, 'events'>): { readonly txid: string | null; readonly reason: string } => {
+export const unexpectedSpend = (
+  order: Pick<Order, 'events'>,
+): { readonly txid: string | null; readonly reason: string } => {
   const event =
     order.events.find((candidate) => candidate.kind === 'unknown_spend') ??
     order.events.find((candidate) => candidate.conflict !== null);
