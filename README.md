@@ -1,12 +1,49 @@
 # AtPrice
 
+[![ci](https://github.com/winsznx/atprice/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/winsznx/atprice/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/winsznx/atprice)](LICENSE)
+[![Live site](https://img.shields.io/website?url=https%3A%2F%2Fatprice.cash&label=atprice.cash)](https://atprice.cash)
+[![Network: BCH mainnet and chipnet](https://img.shields.io/badge/network-BCH%20mainnet%20%2B%20chipnet-0ac18e)](https://atprice.cash/markets)
+[![Node 24.19.0](https://img.shields.io/badge/node-24.19.0-339933?logo=nodedotjs&logoColor=white)](.nvmrc)
+
 AtPrice is a non-custodial limit order service for Bitcoin Cash. You lock BCH (to buy) or a CashToken (to sell) in a small covenant that can only be spent in two ways: a fill through one genuine Cauldron V0 pool that pays you at least your limit, or a cancel that refunds you. Any party can submit the fill, and AtPrice runs a keeper that watches the pools and fills your order when the price reaches your limit. The keeper holds no key, there is no AtPrice input or output in a fill, and the protocol fee is 0%. If AtPrice disappears, you can still cancel with a single HTML file and your own wallet.
+
+![The AtPrice trade page on mainnet: a 0.05 BCH buy of RES with a live quote from the best Cauldron pool and the exact terms the order would lock](docs/assets/trade-desktop.png)
 
 - Web app: https://atprice.cash
 - Keeper health: https://api.atprice.cash/api/v1/health
 - Source: https://github.com/winsznx/atprice
 
 Mainnet markets are PUSD (ParyonUSD) and RES (Real Estate Superstable). Chipnet runs PUSDTEST. The allowlist is in [`packages/core/src/markets.ts`](packages/core/src/markets.ts).
+
+## Contents
+
+- [Judging quick start](#judging-quick-start)
+- [Verify it yourself](#verify-it-yourself)
+- [How it works](#how-it-works)
+- [Architecture at a glance](#architecture-at-a-glance)
+- [Screenshots](#screenshots)
+- [What the contract enforces, and what it doesn't](#what-the-contract-enforces-and-what-it-doesnt)
+- [Recovery without AtPrice servers](#recovery-without-atprice-servers)
+- [Repository layout](#repository-layout)
+- [Local setup](#local-setup)
+- [Tests](#tests)
+- [Deployment](#deployment)
+- [BCH BLAZE 2026](#bch-blaze-2026)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Judging quick start
+
+Five things to check in about two minutes, none of which need a wallet:
+
+1. Open [atprice.cash/trade](https://atprice.cash/trade), type `0.05` in "You pay" and press "Rate now". The right column shows what the best single Cauldron pool would pay right now and the exact terms the order would lock: amount, network fee cap, the minimum you receive and how to cancel.
+2. Open [atprice.cash/markets](https://atprice.cash/markets). PUSD and RES rates and liquidity are read from mainnet Cauldron pools, stamped with the block they were observed at.
+3. Open [the keeper's health check](https://api.atprice.cash/api/v1/health). Each check is judged by an evaluator the keeper can't write to.
+4. Open the keeper fill [`5a405b53…0d99`](https://chipnet.imaginary.cash/tx/5a405b5329d43648bfcbd80e7650b5105726e3109df4b139a95a1bc3541b0d99) on the chipnet explorer: two inputs (pool, order), two outputs (pool, payout), no AtPrice key and no AtPrice output.
+5. Download the recover file from the [v1.0.0 release](https://github.com/winsznx/atprice/releases/tag/v1.0.0), compare its SHA-256 with the one in [docs/recovery.md](docs/recovery.md#1-the-recover-file), and open it from disk. It cancels an order with no AtPrice server involved.
+
+The contract itself is short: [`AtPriceBuy.cash`](packages/contracts/src/AtPriceBuy.cash) is 80 lines, and the attacks it is tested against are in [`packages/contracts/test/adversarial`](packages/contracts/test/adversarial).
 
 ## Verify it yourself
 
@@ -51,6 +88,53 @@ inputs                                   outputs
 
 The pool's own script enforces its constant-product rule. The order covenant checks the pool is genuine, that the whole order went in, that every unit the pool released goes to your recipient, and that the miner fee taken from the order is at most your cap. The full rules are in [docs/contract.md](docs/contract.md). The system design (keeper, indexer, health) is in [docs/architecture.md](docs/architecture.md).
 
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+  subgraph browser["Your browser"]
+    web["Web app<br/>apps/web"]
+    wallet["Your wallet<br/>over WizardConnect"]
+  end
+  subgraph server["AtPrice server"]
+    api["API<br/>Fastify 5"]
+    keeper["Keeper<br/>holds no key"]
+    db[("Postgres")]
+  end
+  electrum["Public Electrum servers"]
+  chain[("Bitcoin Cash<br/>order covenants and<br/>Cauldron V0 pools")]
+  recover["Recover file or<br/>pnpm recover"]
+
+  web -- "quote, register intent" --> api
+  web -- "unsigned funding tx" --> wallet
+  web -- "broadcast funding" --> electrum
+  api -- "LISTEN/NOTIFY" --> db
+  keeper --- db
+  keeper -- "watch pools and orders,<br/>broadcast 2-in-2-out fills" --> electrum
+  electrum --- chain
+  recover -- "find ATPR records,<br/>broadcast cancel" --> electrum
+  recover -- "unsigned cancel" --> wallet
+```
+
+The browser derives every order parameter itself and the wallet signs. The API and keeper work from public chain data and the intent the browser registers, and neither holds a key that can move funds. The recover path on the right never touches an AtPrice host. Details are in [docs/architecture.md](docs/architecture.md).
+
+## Screenshots
+
+Captured from [atprice.cash](https://atprice.cash) on mainnet.
+
+| Landing                                          | Markets                                                     |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| ![Landing page](docs/assets/home-desktop.png)    | ![Markets with live rates](docs/assets/markets-desktop.png) |
+| Recover, served by the site and as a single file | Trade, with an order ready to fund                          |
+| ![Recover page](docs/assets/recover-desktop.png) | ![Trade page](docs/assets/trade-desktop.png)                |
+
+At 390 px wide:
+
+<p>
+  <img src="docs/assets/home-mobile.png" alt="Landing page on a phone" width="300">
+  <img src="docs/assets/trade-mobile.png" alt="Trade page on a phone with an order filled in" width="300">
+</p>
+
 ## What the contract enforces, and what it doesn't
 
 Enforced on chain, by [`AtPriceBuy.cash`](packages/contracts/src/AtPriceBuy.cash) and [`AtPriceSell.cash`](packages/contracts/src/AtPriceSell.cash):
@@ -74,7 +158,7 @@ Stated limits:
 
 `apps/recover` builds one self-contained HTML file per network. Open it from disk, point it at any public Electrum server, enter your funding txid or owner address, and it finds your `ATPR` records, rebuilds the contract and has your wallet sign a cancel over WizardConnect. It makes no request to any AtPrice host. The same file is served at https://atprice.cash/recover, and `pnpm recover` runs the same logic in a terminal. Neither ever asks for a private key.
 
-Step-by-step instructions, and how to build the cancel by hand, are in [docs/recovery.md](docs/recovery.md).
+Both files are also attached to each [GitHub release](https://github.com/winsznx/atprice/releases), and their SHA-256 hashes are listed in [docs/recovery.md](docs/recovery.md#1-the-recover-file). Step-by-step instructions, and how to build the cancel by hand, are in [docs/recovery.md](docs/recovery.md).
 
 ## Repository layout
 
@@ -159,6 +243,10 @@ Steps, env files, health reasons, alerts and outage response are in [docs/runboo
 ## BCH BLAZE 2026
 
 AtPrice was built for the BCH BLAZE 2026 hackathon and is submitted to the Mainnet Track. It runs on Bitcoin Cash mainnet with real PUSD and RES markets. The pilot runs at a 0% protocol fee.
+
+## Contributing
+
+Setup, the checks CI runs and the rules for contract changes are in [CONTRIBUTING.md](CONTRIBUTING.md). Changes are recorded in [CHANGELOG.md](CHANGELOG.md), and everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md). Security issues go through [SECURITY.md](SECURITY.md), not public issues.
 
 ## License
 
