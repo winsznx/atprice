@@ -1002,7 +1002,7 @@ function TradeScreenFor({
           </div>
           <div className="rounded-lg border border-border bg-surface p-(--space-panel)">
             <RiskList
-              title="Before you fund"
+              title="How your order works"
               headingId="before-you-fund"
               extra={
                 quoteView.kind === 'unavailable'

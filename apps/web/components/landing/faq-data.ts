@@ -57,9 +57,9 @@ export const FAQS: readonly FaqEntry[] = [
     ],
   },
   {
-    question: 'Why one pool per fill, and what is fill-or-kill?',
+    question: 'How does a fill happen?',
     answer: [
-      'The contract settles against exactly one Cauldron pool, so an order is never split across pools. Fill-or-kill means the whole amount trades in one transaction or nothing trades and the order stays open. If no single pool is deep enough to pay your minimum for the whole amount, the order waits.',
+      'Your whole order trades in one transaction through a single Cauldron pool, so the price you get is the price you see, with no partial fills to track. AtPrice’s keeper picks the pool that pays you the most.',
     ],
   },
 ];

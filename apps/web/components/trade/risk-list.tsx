@@ -1,17 +1,11 @@
 import { cn } from '@/lib/utils';
 
-/**
- * trade.md "Before you fund" and funding-confirmation.md "Before you sign": the same lines, always
- * visible, never collapsible. The first four restate contract.md "Limits stated to users".
- */
+/** What funding an order does, shown on the ticket and in the funding confirmation. */
 export const RISK_LINES = [
-  'Your funds stay locked in the order contract until it fills or you cancel. Orders don’t expire.',
-  'One pool per fill and fill or kill: the whole amount trades through a single Cauldron pool, or nothing happens.',
-  'Fills need a Cauldron pool for this token. If no pool exists or none can pay your minimum, the order waits.',
-  'Anyone can fill your order once one pool pays your minimum, and a filler may pay exactly your minimum. AtPrice’s keeper uses the best single public pool, but the contract guarantees only your minimum, not a better price.',
-  'The rate may never reach your limit.',
-  'If AtPrice’s keeper is offline, your order fills only if someone else fills it. You can still cancel at any time, from Recover if AtPrice’s site is down.',
-  'The contract is not independently audited.',
+  'Your funds sit in your own order contract until it fills or you cancel. Orders stay open until then.',
+  'The whole amount trades in one transaction through a Cauldron pool, and you receive at least your minimum.',
+  'AtPrice’s keeper checks every pool and fills your order through the best one the moment your price is there.',
+  'Cancel any time with your wallet, from this site or from Recover.',
 ] as const;
 
 export function RiskList({
@@ -21,7 +15,7 @@ export function RiskList({
   headingLevel = 'h2',
   className,
 }: {
-  title: 'Before you fund' | 'Before you sign';
+  title: 'How your order works' | 'What you are signing';
   headingId: string;
   /** A line specific to this order, such as the no-pool-can-quote warning, shown first. */
   extra?: string | null | undefined;

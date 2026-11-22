@@ -214,7 +214,7 @@ export function FundingDialog({
       <CloseButton blocked={blocked} onClose={onClose} />
       {header}
       <Summary session={session} phase={phase} lockId={lockId} versusLine={versusLine} />
-      <RiskList title="Before you sign" headingId="before-you-sign" headingLevel="h3" />
+      <RiskList title="What you are signing" headingId="before-you-sign" headingLevel="h3" />
       <section aria-live="off" className="flex flex-col gap-3 border-t border-border pt-4">
         <div className="flex flex-wrap items-center gap-2">
           <h3 ref={statusRef} tabIndex={-1} className="font-display text-heading-3 text-fg">

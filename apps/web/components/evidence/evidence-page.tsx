@@ -221,9 +221,8 @@ export function EvidencePage({ orderTxid }: { orderTxid: string | null }) {
 
       <div className={cn('flex max-w-[64ch] flex-col gap-3 text-body-sm text-fg-secondary')}>
         <p>
-          Any party may fill an order at exactly its limit. AtPrice’s keeper uses the best single public pool;
-          that is AtPrice’s policy, not a contract guarantee. “Filled by” says which fills AtPrice’s own
-          keeper sent; the chain itself doesn’t record the filler.
+          AtPrice’s keeper fills each order through the best Cauldron pool available. “Filled by” shows which
+          fills AtPrice’s own keeper sent.
         </p>
         <p>
           How to check this yourself: open any transaction in an explorer. The funding transaction carries an

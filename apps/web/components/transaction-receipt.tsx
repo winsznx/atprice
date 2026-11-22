@@ -195,12 +195,6 @@ export function TransactionReceipt({ order, id = 'receipt' }: { order: Order; id
           <CancelledRows order={order} cancel={settlement} />
         )}
       </dl>
-      {filled ? (
-        <p className="mt-3 max-w-[64ch] text-body-sm text-fg-muted">
-          Any party may fill an order at exactly its limit. AtPrice’s keeper uses the best single public pool,
-          which is AtPrice’s policy, not a contract guarantee.
-        </p>
-      ) : null}
     </section>
   );
 }

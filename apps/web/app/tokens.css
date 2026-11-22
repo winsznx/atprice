@@ -140,14 +140,15 @@
   --spacing: 0.25rem;
   --space-gutter: 1rem;
   --space-gutter-md: 1.5rem;
-  --space-gutter-lg: 2rem;
+  /* Scales with the window so wide screens keep proportional margins instead of a narrow column. */
+  --space-gutter-lg: clamp(2rem, 4vw, 6rem);
   --space-panel: 1.25rem;
   --space-panel-lg: 1.5rem;
   --space-stack: 1rem;
   --space-section: 4rem;
   --space-section-lg: 6rem;
-  --container-content: 76rem;
-  --container-app: 86rem;
+  --container-content: 100%;
+  --container-app: 100%;
   --container-prose: 40rem;
   --size-control: 2.75rem;
   --size-control-sm: 2.25rem;

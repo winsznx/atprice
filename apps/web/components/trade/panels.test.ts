@@ -148,9 +148,9 @@ describe('OrderSummary', () => {
 });
 
 describe('RiskList', () => {
-  it('always lists every contract limit', () => {
+  it('always lists every line of how an order works', () => {
     const html = renderToStaticMarkup(
-      createElement(RiskList, { title: 'Before you fund', headingId: 'risk' }),
+      createElement(RiskList, { title: 'How your order works', headingId: 'risk' }),
     );
     expect(RISK_LINES.every((line) => text(html).includes(text(line)))).toBe(true);
   });

@@ -153,7 +153,7 @@ export const orderActive = (order: Order): AppNotification =>
     kind: 'chain',
     icon: 'filled',
     title: 'Order active',
-    body: `Watching pools for your limit of ${limitOf(order)}. Anyone can fill it once a pool pays your minimum.`,
+    body: `Watching every pool for your limit of ${limitOf(order)}. It fills the moment a pool pays your minimum.`,
     actions: [viewOrder(order)],
     durationMs: CHAIN_MS,
   });

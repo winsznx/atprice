@@ -84,8 +84,8 @@ export function QuotePanel({
         tokenUnit={tokenUnit}
       />
       <p className="text-body-sm text-fg-muted">
-        AtPrice’s keeper re-checks every pool before it submits and uses the best single public pool. That is
-        AtPrice’s policy, not a contract rule: the contract guarantees only your minimum.
+        AtPrice’s keeper re-checks every pool before it submits and fills through the best one. The contract
+        guarantees you receive at least your minimum.
       </p>
     </section>
   );

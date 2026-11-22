@@ -1,4 +1,4 @@
-import { DropIcon, LifebuoyIcon, LockKeyIcon, WalletIcon, WarningIcon } from '@phosphor-icons/react/dist/ssr';
+import { DropIcon, LifebuoyIcon, LockKeyIcon, WalletIcon } from '@phosphor-icons/react/dist/ssr';
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -6,7 +6,7 @@ import { CONTROL_TRANSITION } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Band, SECTION_HEADING } from './section';
 
-/** The footer's `Contract limits` link lands here (`/#limits`). */
+/** The footer's `How funds are protected` link lands here (`/#limits`). */
 export const LIMITS_ID = 'limits';
 
 const LINK = cn('text-link underline underline-offset-4', CONTROL_TRANSITION);
@@ -42,13 +42,6 @@ const CARDS: readonly { readonly icon: PhosphorIcon; readonly title: string; rea
   },
 ];
 
-const LIMITS = [
-  'One pool per fill',
-  'Fill or kill',
-  'Good till cancelled',
-  'Needs a Cauldron pool for the token',
-] as const;
-
 export function Safety() {
   return (
     <Band labelledBy={LIMITS_ID} className="flex flex-col gap-10">
@@ -73,33 +66,6 @@ export function Safety() {
           </li>
         ))}
       </ul>
-      <div className="grid gap-6 md:grid-cols-2 md:gap-6">
-        <div className="flex flex-col gap-2">
-          <h3 className="text-label font-semibold text-fg">The surplus rule</h3>
-          <p className="text-body text-fg-secondary">
-            You get at least your minimum. Anyone may fill your order at exactly your limit, so a better price
-            is never guaranteed. AtPrice’s keeper uses the best single public pool, which is AtPrice’s policy,
-            not something the contract enforces.
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-label font-semibold text-fg">Limits</h3>
-          <ul className="flex flex-wrap gap-2">
-            {LIMITS.map((limit) => (
-              <li
-                key={limit}
-                className="rounded-full bg-surface-sunken px-3 py-1 text-body-sm text-fg-secondary"
-              >
-                {limit}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <p className="flex gap-3 rounded-md bg-status-pending-subtle p-4 text-body text-fg-secondary">
-        <WarningIcon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-status-pending" />
-        <span className="text-fg">Contracts not independently audited; use small amounts.</span>
-      </p>
     </Band>
   );
 }

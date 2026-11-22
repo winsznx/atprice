@@ -9,7 +9,7 @@ const LINK = cn(
   CONTROL_TRANSITION,
 );
 
-/** DD 8 footer: Recover, Evidence, Contract limits, Source code, the network and the build version. */
+/** DD 8 footer: Recover, Evidence, How funds are protected, Source code, the network and the build version. */
 export function SiteFooter() {
   const source = publicEnv.banner.sourceRepoUrl;
   return (
@@ -29,7 +29,7 @@ export function SiteFooter() {
             </li>
             <li>
               <Link href="/#limits" className={LINK}>
-                Contract limits
+                How funds are protected
               </Link>
             </li>
             <li>
