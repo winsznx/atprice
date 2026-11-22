@@ -12,3 +12,7 @@ export * from './tx/wizardconnect.js';
 export * from './tx/execute.js';
 export * from './tx/cancel.js';
 export * from './tx/fund.js';
+export * from './markets.js';
+export * from './order-state.js';
+export * from './spend.js';
+export * from './evaluation.js';

@@ -1,0 +1,41 @@
+{
+  "network": "chipnet",
+  "tokenCategory": "dfe50223c8d5cba8dcef8dff6d92b61deb88a8ba44947367f2b746487b56039b",
+  "capturedAt": "2026-11-22T02:55:02.777Z",
+  "tipHeight": 342289,
+  "source": "indexer-chipnet.riften.net pool/active + chipnet Fulcrum listunspent",
+  "pools": [
+    {
+      "ownerPkh": "a10dd0bc10a32b9ce10c8285a8bcaf586d00a140",
+      "txid": "2b846c36a25dde1265d5e85ae5a7926694d7882fd48917270d580f2ebd50150d",
+      "vout": 0,
+      "sats": "150291010",
+      "tokens": "29909",
+      "height": 342194
+    },
+    {
+      "ownerPkh": "8ee26d6c9f58369f94864dc3630cdeb17fae2f2d",
+      "txid": "f82976c464c6078dc6bf667b2e1e69fae54aee326b02d7522c440cf62a261d41",
+      "vout": 1,
+      "sats": "3676202511",
+      "tokens": "729331",
+      "height": 342279
+    },
+    {
+      "ownerPkh": "dff8a0d0004593af14a1e293d8b45faa5432b5bc",
+      "txid": "05e5ea0ee2c893d3911e9fbc8b89c54a44e30d494ad83f4035d2bb5fd51b8347",
+      "vout": 0,
+      "sats": "2401340",
+      "tokens": "471",
+      "height": 342176
+    },
+    {
+      "ownerPkh": "2c131ae7fb82e31626d40cd295cec221b2d916c0",
+      "txid": "f82976c464c6078dc6bf667b2e1e69fae54aee326b02d7522c440cf62a261d41",
+      "vout": 0,
+      "sats": "1234733701",
+      "tokens": "244961",
+      "height": 342279
+    }
+  ]
+}

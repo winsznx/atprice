@@ -1,0 +1,47 @@
+{
+  "name": "@atprice/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AtPrice API and keeper: two processes from one package",
+  "files": [
+    "dist",
+    "migrations"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint --max-warnings 0 .",
+    "test": "vitest run",
+    "test:live": "vitest run --config vitest.live.config.ts",
+    "migrate": "tsx src/migrate-cli.ts",
+    "dev:api": "tsx watch src/api/main.ts",
+    "dev:keeper": "tsx watch src/keeper/main.ts",
+    "start:api": "node dist/api/main.js",
+    "start:keeper": "node dist/keeper/main.js",
+    "start:migrate": "node dist/migrate-cli.js"
+  },
+  "dependencies": {
+    "@atprice/chain": "workspace:*",
+    "@atprice/core": "workspace:*",
+    "@bitauth/libauth": "3.1.0-next.8",
+    "@cashlab/cauldron": "1.0.3",
+    "@cashlab/common": "1.0.5",
+    "@fastify/cors": "11.4.1",
+    "@fastify/helmet": "13.2.0",
+    "@fastify/rate-limit": "11.2.2",
+    "cashscript": "0.14.0",
+    "fastify": "5.12.8",
+    "pg": "8.23.1",
+    "pino": "10.4.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@atprice/api-schema": "workspace:*",
+    "@types/node": "26.6.6",
+    "@types/pg": "8.23.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  }
+}

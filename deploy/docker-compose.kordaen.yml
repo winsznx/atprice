@@ -1,0 +1,91 @@
+# Server stack for the Kordaen VPS (D-015). That host already runs one shared Caddy on 80/443
+# (project `compose`, network `compose_default`), so this stack ships no proxy of its own: the api joins
+# `compose_default` under the alias `atprice-api` and the shared Caddyfile proxies the API domain to it.
+# Usage from the repository root on the VPS:
+#   docker compose -f deploy/docker-compose.kordaen.yml --env-file /etc/atprice/server.env up -d --build
+
+name: atprice
+
+x-server: &server
+  image: atprice-server:latest
+  restart: unless-stopped
+  depends_on:
+    migrate:
+      condition: service_completed_successfully
+  environment: &server-env
+    ATPRICE_NETWORK: ${ATPRICE_NETWORK:?set ATPRICE_NETWORK to chipnet or mainnet}
+    DATABASE_URL: postgres://atprice:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/atprice
+    KEEPER_SWEEP_INTERVAL_MS: ${KEEPER_SWEEP_INTERVAL_MS:-30000}
+    ELECTRUM_SERVERS: ${ELECTRUM_SERVERS:-}
+    ATPRICE_COHORT: ${ATPRICE_COHORT:-pilot}
+    LOG_LEVEL: ${LOG_LEVEL:-info}
+  logging:
+    driver: json-file
+    options: { max-size: 20m, max-file: '7' }
+  networks: [backend]
+
+services:
+  postgres:
+    image: postgres:16.11-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: atprice
+      POSTGRES_DB: atprice
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U atprice -d atprice']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [backend]
+
+  migrate:
+    <<: *server
+    build: { context: .., dockerfile: apps/server/Dockerfile }
+    restart: 'no'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ['node', 'dist/migrate-cli.js']
+
+  keeper:
+    <<: *server
+    command: ['node', 'dist/keeper/main.js']
+
+  api:
+    <<: *server
+    command: ['node', 'dist/api/main.js']
+    environment:
+      <<: *server-env
+      API_PORT: '4000'
+      API_HOST: 0.0.0.0
+      WEB_ORIGIN: ${WEB_ORIGIN:?set WEB_ORIGIN to the web app origin}
+      HEALTH_EVAL_INTERVAL_MS: ${HEALTH_EVAL_INTERVAL_MS:-30000}
+      # The shared Caddy's address on compose_default is assigned by Docker and changes when it restarts,
+      # so trust the network's subnet; only the host's own containers can reach the api there.
+      TRUST_PROXY: ${TRUST_PROXY:-172.18.0.0/16}
+    networks:
+      backend: {}
+      edge:
+        aliases: [atprice-api]
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4000/api/v1/network').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  backend: {}
+  edge:
+    external: true
+    name: compose_default
+
+volumes:
+  postgres-data:

@@ -1,0 +1,47 @@
+{
+  "name": "@atprice/chain",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Isomorphic chain access for AtPrice: Electrum client with failover, Cauldron indexer and Rostrum clients, broadcast and explorer links",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:live": "vitest run --config vitest.live.config.ts",
+    "lint": "eslint --max-warnings 0 ."
+  },
+  "dependencies": {
+    "@atprice/core": "workspace:*",
+    "@bitauth/libauth": "3.1.0-next.8",
+    "@electrum-cash/network": "4.4.8",
+    "@electrum-cash/socket": "4.2.0",
+    "@electrum-cash/tcp-socket": "4.2.0",
+    "@electrum-cash/web-socket": "4.2.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "eventemitter3": "5.0.4",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  }
+}

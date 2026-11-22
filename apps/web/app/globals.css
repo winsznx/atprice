@@ -1,0 +1,107 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import 'tw-animate-css';
+
+@layer base {
+  body {
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/*
+ * DD 12: the second layer of a Phosphor duotone icon (the shape Phosphor draws at 20% opacity) takes a
+ * status tint token instead, so a badge reads as tint on tint with no new colour:
+ * `duotone-status-filled-subtle`.
+ */
+@utility duotone-* {
+  & [opacity] {
+    fill: --value(--color-*);
+    opacity: 1;
+  }
+}
+
+/* motion.md M-07: Radix Presence waits for these keyframes to unmount closing disclosure content. */
+@keyframes disclosure-open {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+@keyframes disclosure-close {
+  from {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  to {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+
+/* DD 7.10: a toast never grows into the header, whatever the viewport height. */
+[data-notice] {
+  max-height: calc(100dvh - var(--size-header) - var(--sticky-bar-h) - 2rem - env(safe-area-inset-bottom));
+}
+@media (min-width: 48rem) and (min-height: 50rem) {
+  [data-notice] {
+    max-height: calc(
+      (100dvh - var(--size-header) - var(--sticky-bar-h) - 4rem - env(safe-area-inset-bottom)) / 3
+    );
+  }
+}
+
+/*
+ * motion.md M-04. Sonner 2.0.8 appends its stylesheet to <head> at runtime, so these rules win on
+ * specificity alone: every selector starts with the doubled region attribute.
+ */
+[data-sonner-toaster][data-sonner-toaster] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-sonner-toaster][data-sonner-toaster] [data-sonner-toast] {
+    transition:
+      transform var(--duration-base) var(--ease-enter),
+      opacity var(--duration-base) var(--ease-enter);
+  }
+  [data-sonner-toaster][data-sonner-toaster] [data-sonner-toast] > * {
+    transition: opacity var(--duration-base) var(--ease-enter);
+  }
+  [data-sonner-toaster][data-sonner-toaster]
+    [data-sonner-toast][data-removed='true'][data-swipe-out='false'][data-expanded='true'],
+  [data-sonner-toaster][data-sonner-toaster]
+    [data-sonner-toast][data-removed='true'][data-front='true'][data-swipe-out='false'] {
+    transition:
+      transform var(--duration-fast) var(--ease-exit),
+      opacity var(--duration-fast) var(--ease-exit);
+    opacity: 0;
+  }
+}
+@media (min-width: 48rem) {
+  [data-sonner-toaster][data-sonner-toaster]
+    [data-sonner-toast][data-x-position='right'][data-mounted='false'] {
+    --y: translateX(16px);
+  }
+  [data-sonner-toaster][data-sonner-toaster]
+    [data-sonner-toast][data-x-position='right'][data-removed='true'][data-swipe-out='false'] {
+    --y: translateY(calc(var(--lift) * var(--offset))) translateX(16px);
+  }
+}
+@media (max-width: 47.9375rem) {
+  [data-sonner-toaster][data-sonner-toaster]
+    [data-sonner-toast][data-y-position='bottom'][data-mounted='false'] {
+    --y: translateY(16px);
+  }
+  [data-sonner-toaster][data-sonner-toaster]
+    [data-sonner-toast][data-y-position='bottom'][data-removed='true'][data-swipe-out='false'] {
+    --y: translateY(calc(var(--lift) * var(--offset) + 16px));
+  }
+}

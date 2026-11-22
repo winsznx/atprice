@@ -1,0 +1,256 @@
+/* AtPrice design tokens. Source of truth: internal/design/ATPRICE_DESIGN_DECISIONS.md section 9. Components never use raw colour values. */
+@theme static {
+  --color-*: initial;
+  --breakpoint-*: initial;
+
+  /* neutrals and surfaces */
+  --color-fg: #10131c;
+  --color-fg-secondary: #3b4252;
+  --color-fg-muted: #566072;
+  --color-fg-disabled: #8b93a3;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f5f6f9;
+  --color-surface-muted: #eceff4;
+  --color-surface-selected: #f3f0fd;
+  --color-fg-hover: #2b3140;
+  --color-border: #e2e6ed;
+  --color-border-input: #767f91;
+  --color-border-strong: #5d6676;
+  --color-scrim: rgb(16 19 28 / 0.48);
+
+  /* brand and interaction */
+  --color-brand: #5531d1;
+  --color-brand-hover: #4423b0;
+  --color-brand-fg: #ffffff;
+  --color-brand-subtle: #efebfc;
+  --color-link: #4a27c4;
+  --color-focus: #5531d1;
+  --color-focus-inverse: #c9bcff;
+
+  /* sides */
+  --color-buy: #0c6b61;
+  --color-buy-subtle: #e2f4f1;
+  --color-sell: #ad2448;
+  --color-sell-subtle: #fbe9ee;
+
+  /* status */
+  --color-status-open: #1f5fbf;
+  --color-status-open-subtle: #e8f0fc;
+  --color-status-pending: #8a4f00;
+  --color-status-pending-subtle: #fdf2dc;
+  --color-status-filled: #157038;
+  --color-status-filled-subtle: #e3f5ea;
+  --color-status-cancelled: #4a5263;
+  --color-status-cancelled-subtle: #eef0f3;
+  --color-status-failed: #b3261e;
+  --color-status-failed-subtle: #fdebe9;
+  --color-status-failed-hover: #8f1e18;
+  --color-status-review: #8e2470;
+  --color-status-review-subtle: #f9e8f4;
+
+  /* banner */
+  --color-banner: #10131c;
+  --color-banner-fg: #ffffff;
+  --color-banner-fg-muted: #c3c8d4;
+  --color-banner-link: #c9bcff;
+  --color-banner-chip: #252a36;
+  --color-banner-chip-hover: #343a48;
+  --color-banner-chip-fg: #ffffff;
+  --color-banner-chip-border: #8b93a3;
+
+  /* charts (hand-written SVG) */
+  --color-chart-line: var(--color-brand);
+  --color-chart-axis: var(--color-border-input);
+  --color-chart-grid: var(--color-border);
+  --color-chart-label: var(--color-fg-muted);
+
+  /* shadcn/ui role names, mapped onto the tokens above so stock components render in our language */
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-fg);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-fg);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-fg);
+  --color-primary: var(--color-brand);
+  --color-primary-foreground: var(--color-brand-fg);
+  --color-secondary: var(--color-surface-sunken);
+  --color-secondary-foreground: var(--color-fg);
+  --color-muted: var(--color-surface-muted);
+  --color-muted-foreground: var(--color-fg-muted);
+  --color-accent: var(--color-surface-sunken);
+  --color-accent-foreground: var(--color-fg);
+  --color-destructive: var(--color-status-failed);
+  --color-input: var(--color-border-input);
+  --color-ring: var(--color-focus);
+  --color-white: var(--color-brand-fg);
+
+  /* type scale */
+  --text-display-lg: 2.5rem;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.025em;
+  --text-display-lg--font-weight: 600;
+  --text-heading-1: 2rem;
+  --text-heading-1--line-height: 1.2;
+  --text-heading-1--letter-spacing: -0.025em;
+  --text-heading-1--font-weight: 600;
+  --text-heading-2: 1.5rem;
+  --text-heading-2--line-height: 1.3;
+  --text-heading-2--letter-spacing: -0.02em;
+  --text-heading-2--font-weight: 600;
+  --text-heading-3: 1.25rem;
+  --text-heading-3--line-height: 1.4;
+  --text-heading-3--letter-spacing: -0.01em;
+  --text-heading-3--font-weight: 600;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.5;
+  --text-caption--font-weight: 500;
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.5;
+  --text-eyebrow--letter-spacing: 0.06em;
+  --text-eyebrow--font-weight: 600;
+  --text-num-xl: 2rem;
+  --text-num-xl--line-height: 1.15;
+  --text-num-xl--letter-spacing: -0.01em;
+  --text-num-xl--font-weight: 600;
+  --text-num-lg: 1.5rem;
+  --text-num-lg--line-height: 1.25;
+  --text-num-lg--letter-spacing: -0.005em;
+  --text-num-lg--font-weight: 600;
+  --text-num-md: 1rem;
+  --text-num-md--line-height: 1.5;
+  --text-num-md--font-weight: 500;
+  --text-num-sm: 0.875rem;
+  --text-num-sm--line-height: 1.45;
+  --text-num-sm--font-weight: 500;
+  --text-mono-md: 0.875rem;
+  --text-mono-md--line-height: 1.5;
+  --text-mono-sm: 0.8125rem;
+  --text-mono-sm--line-height: 1.5;
+
+  /* spacing and layout */
+  --spacing: 0.25rem;
+  --space-gutter: 1rem;
+  --space-gutter-md: 1.5rem;
+  --space-gutter-lg: 2rem;
+  --space-panel: 1.25rem;
+  --space-panel-lg: 1.5rem;
+  --space-stack: 1rem;
+  --space-section: 4rem;
+  --space-section-lg: 6rem;
+  --container-content: 76rem;
+  --container-app: 86rem;
+  --container-prose: 40rem;
+  --size-control: 2.75rem;
+  --size-control-sm: 2.25rem;
+  --size-control-lg: 3.25rem;
+  --size-header: 4rem;
+
+  /* radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* elevation */
+  --shadow-none: none;
+  --shadow-inset: inset 0 0 0 1px rgb(16 19 28 / 0.12);
+  --shadow-popover: 0 2px 6px rgb(16 19 28 / 0.06), 0 12px 24px -8px rgb(16 19 28 / 0.18);
+  --shadow-dialog: 0 4px 12px rgb(16 19 28 / 0.08), 0 24px 48px -12px rgb(16 19 28 / 0.28);
+  --shadow-sticky: 0 -1px 0 var(--color-border), 0 -8px 16px -12px rgb(16 19 28 / 0.16);
+
+  /* z-index */
+  --z-base: 0;
+  --z-sticky: 20;
+  --z-header: 30;
+  --z-toast: 40;
+  --z-overlay: 50;
+  --z-dialog: 60;
+  --z-popover: 70;
+  --z-skip: 80;
+
+  /* breakpoints */
+  --breakpoint-xs: 24.375rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 90rem;
+
+  /* motion */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+  --duration-max: 300ms;
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-move: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@theme inline {
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+:root {
+  color-scheme: light;
+  --sticky-bar-h: 0px; /* written by the trade action bar's ResizeObserver below lg; stays 0px under the short rule (5.10) */
+  --toast-stack-h: 0px; /* written by the toast list's ResizeObserver: the space the toasts take above the bar or viewport edge; 0px when none shows */
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-fg);
+    background: var(--color-surface);
+    scroll-behavior: auto;
+    scroll-padding-top: calc(var(--size-header) + 0.5rem);
+    scroll-padding-bottom: calc(var(--sticky-bar-h) + var(--toast-stack-h));
+  }
+  body {
+    padding-bottom: calc(var(--sticky-bar-h) + var(--toast-stack-h));
+  }
+  [data-site-header] {
+    position: sticky;
+    top: 0;
+  }
+  @media (max-height: 30rem) {
+    html {
+      scroll-padding-top: 0.5rem;
+    }
+    [data-site-header] {
+      position: static;
+    }
+  }
+  * {
+    border-color: var(--color-border);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  [data-surface='banner'] :focus-visible {
+    outline-color: var(--color-focus-inverse);
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@utility hash {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  overflow-wrap: anywhere;
+}

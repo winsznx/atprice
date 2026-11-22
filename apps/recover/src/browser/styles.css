@@ -1,0 +1,32 @@
+@import 'tailwindcss' source(none);
+@import '../../../web/app/tokens.css';
+@source '../ui';
+
+/*
+ * Recover ships Inter and JetBrains Mono only (recover.md "Shell", Fonts row). Headings use Inter 600,
+ * so the display variable points at Inter too. The @font-face rules are added by scripts/build.ts.
+ */
+:root {
+  --font-inter: 'Inter';
+  --font-jetbrains: 'JetBrains Mono';
+  --font-bricolage: 'Inter';
+}
+
+@layer base {
+  body {
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* The Recover header isn't sticky, so nothing covers a focused control at the top. */
+  html {
+    scroll-padding-top: 0.5rem;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary {
+    list-style: none;
+  }
+}

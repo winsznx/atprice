@@ -1,0 +1,11 @@
+# TLS termination and the single trusted proxy in front of the API (architecture.md r5, API). No access
+# log: the API logs requests itself with truncated client addresses.
+{$API_DOMAIN} {
+	encode zstd gzip
+	request_body {
+		max_size 16KB
+	}
+	reverse_proxy api:4000 {
+		header_up X-Forwarded-For {remote_host}
+	}
+}

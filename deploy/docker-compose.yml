@@ -1,0 +1,103 @@
+# Server stack for one VPS (architecture.md r5, deployment; D-015). Prepared, not run.
+# Usage from the repository root:
+#   docker compose -f deploy/docker-compose.yml --env-file /etc/atprice/server.env up -d --build
+# The env file lives outside the repo and holds ATPRICE_NETWORK, POSTGRES_PASSWORD, WEB_ORIGIN, API_DOMAIN
+# and any optional overrides (ELECTRUM_SERVERS, KEEPER_SWEEP_INTERVAL_MS, HEALTH_EVAL_INTERVAL_MS).
+
+name: atprice
+
+x-server: &server
+  image: atprice-server:latest
+  restart: unless-stopped
+  depends_on:
+    migrate:
+      condition: service_completed_successfully
+  environment: &server-env
+    ATPRICE_NETWORK: ${ATPRICE_NETWORK:?set ATPRICE_NETWORK to chipnet or mainnet}
+    DATABASE_URL: postgres://atprice:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/atprice
+    KEEPER_SWEEP_INTERVAL_MS: ${KEEPER_SWEEP_INTERVAL_MS:-30000}
+    ELECTRUM_SERVERS: ${ELECTRUM_SERVERS:-}
+    ATPRICE_COHORT: ${ATPRICE_COHORT:-pilot}
+    LOG_LEVEL: ${LOG_LEVEL:-info}
+  logging:
+    driver: json-file
+    options: { max-size: 20m, max-file: '7' }
+  networks: [backend]
+
+services:
+  postgres:
+    image: postgres:16.11-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: atprice
+      POSTGRES_DB: atprice
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U atprice -d atprice']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [backend]
+    # No published port: only the api, keeper and migrate containers reach Postgres.
+
+  migrate:
+    <<: *server
+    build: { context: .., dockerfile: apps/server/Dockerfile }
+    restart: 'no'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ['node', 'dist/migrate-cli.js']
+
+  keeper:
+    <<: *server
+    command: ['node', 'dist/keeper/main.js']
+
+  api:
+    <<: *server
+    command: ['node', 'dist/api/main.js']
+    environment:
+      <<: *server-env
+      API_PORT: '4000'
+      API_HOST: 0.0.0.0
+      WEB_ORIGIN: ${WEB_ORIGIN:?set WEB_ORIGIN to the web app origin}
+      HEALTH_EVAL_INTERVAL_MS: ${HEALTH_EVAL_INTERVAL_MS:-30000}
+      # Caddy is the single reverse proxy and has this fixed address on the backend network.
+      TRUST_PROXY: 172.28.0.10
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4000/api/v1/network').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  caddy:
+    image: caddy:2.10.2
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN to the public API host name}
+    ports: ['80:80', '443:443', '443:443/udp']
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      backend:
+        ipv4_address: 172.28.0.10
+
+networks:
+  backend:
+    ipam:
+      config: [{ subnet: 172.28.0.0/24 }]
+
+volumes:
+  postgres-data:
+  caddy-data:
+  caddy-config:

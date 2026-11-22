@@ -1,0 +1,51 @@
+{
+  "name": "@atprice/recover",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AtPrice Recover: one self-contained HTML file and a Node CLI that cancel any AtPrice order without AtPrice servers",
+  "exports": {
+    "./manifest": "./dist/manifest.json"
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "recover": "tsx src/cli/main.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint --max-warnings 0 .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@atprice/chain": "workspace:*",
+    "@atprice/core": "workspace:*",
+    "@bitauth/libauth": "3.1.0-next.8",
+    "@phosphor-icons/react": "2.1.10",
+    "@wizardconnect/core": "0.2.11",
+    "@wizardconnect/dapp": "0.2.8",
+    "cashscript": "0.14.0",
+    "qrcode-generator": "2.0.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@tailwindcss/postcss": "4.3.5",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "eslint": "10.15.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "happy-dom": "21.0.4",
+    "postcss": "8.5.33",
+    "subset-font": "2.9.0",
+    "tailwindcss": "4.3.5",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "5.1.1"
+  }
+}

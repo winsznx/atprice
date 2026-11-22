@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.next
+**/coverage
+**/*.tsbuildinfo
+.git
+.local
+internal
+phase0
+e2e
+apps/web
+recordings
+**/.env
+**/.env.*
+!**/.env.example

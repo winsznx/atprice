@@ -1,0 +1,32 @@
+{
+  "name": "@atprice/api-schema",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The AtPrice HTTP API contract: zod schemas for every response, shared by apps/server and apps/web",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "eslint --max-warnings 0 ."
+  },
+  "dependencies": {
+    "@atprice/core": "workspace:*",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  }
+}
