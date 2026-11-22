@@ -85,6 +85,10 @@
   --color-white: var(--color-brand-fg);
 
   /* type scale */
+  --text-hero: clamp(2.75rem, 2rem + 3.4vw, 5.25rem);
+  --text-hero--line-height: 1.02;
+  --text-hero--letter-spacing: -0.035em;
+  --text-hero--font-weight: 600;
   --text-display-lg: 2.5rem;
   --text-display-lg--line-height: 1.1;
   --text-display-lg--letter-spacing: -0.025em;
@@ -140,20 +144,21 @@
   --spacing: 0.25rem;
   --space-gutter: 1rem;
   --space-gutter-md: 1.5rem;
-  /* Scales with the window so wide screens keep proportional margins instead of a narrow column. */
-  --space-gutter-lg: clamp(2rem, 4vw, 6rem);
+  --space-gutter-lg: 2rem;
   --space-panel: 1.25rem;
   --space-panel-lg: 1.5rem;
   --space-stack: 1rem;
   --space-section: 4rem;
   --space-section-lg: 6rem;
-  --container-content: 100%;
-  --container-app: 100%;
+  --container-content: 76rem;
+  --container-app: 86rem;
   --container-prose: 40rem;
   --size-control: 2.75rem;
   --size-control-sm: 2.25rem;
   --size-control-lg: 3.25rem;
   --size-header: 4rem;
+  /* The BLAZE banner's height on desktop, so the hero fills exactly the first screen under it. */
+  --size-banner: 4.25rem;
 
   /* radii */
   --radius-xs: 6px;

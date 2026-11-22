@@ -11,14 +11,14 @@ export function Hero() {
     <div
       className={cn(
         CONTAINER,
-        'grid gap-10 pt-10 pb-(--space-section) md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-12 lg:pt-20 lg:pb-(--space-section-lg)',
+        'grid gap-10 pt-10 pb-(--space-section) md:pt-14 lg:min-h-[calc(100svh-var(--size-header)-var(--size-banner))] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-16 lg:py-16',
       )}
     >
-      <div className="flex flex-col items-start gap-6">
-        <h1 className="max-w-[18ch] font-display text-heading-1 text-balance text-fg xs:text-display-lg">
+      <div className="flex flex-col items-start gap-6 lg:gap-8">
+        <h1 className="max-w-[14ch] font-display text-heading-1 text-balance text-fg xs:text-display-lg lg:text-hero">
           Set your price. Trade when the market meets it.
         </h1>
-        <p className="max-w-[56ch] text-body text-fg-secondary lg:text-lead">
+        <p className="max-w-[52ch] text-body text-fg-secondary lg:text-lead">
           Place a limit order for a CashToken on Bitcoin Cash, and it fills through a Cauldron pool once the
           market reaches your price, whether or not you are online.
         </p>
