@@ -143,6 +143,8 @@ export interface IntentRequest {
   readonly minOut: bigint;
   readonly maxNetworkFee: bigint;
   readonly nonce: string;
+  /** The contract address the browser derived; the server re-derives it and refuses a mismatch. */
+  readonly orderAddress: string;
 }
 
 type Signal = { readonly signal?: AbortSignal | undefined };

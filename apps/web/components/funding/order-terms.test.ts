@@ -102,6 +102,15 @@ describe('deriveOrder', () => {
       minOut: 23_000n,
     });
   });
+
+  it('sends the browser-derived contract address so the server can cross-check it', () => {
+    // #given an order derived in the browser
+    const order = deriveOrder(inputs, 'chipnet', nonce);
+    // #when
+    const request = intentRequest(order);
+    // #then
+    expect(request.orderAddress).toBe(order.orderAddress);
+  });
 });
 
 describe('intentAddressMatches', () => {

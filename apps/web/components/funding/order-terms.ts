@@ -133,6 +133,7 @@ export const intentRequest = (order: DerivedOrder): IntentRequest => ({
   minOut: order.params.minOut,
   maxNetworkFee: order.params.maxNetworkFee,
   nonce: binToHex(order.params.nonce),
+  orderAddress: order.orderAddress,
 });
 
 /**

@@ -96,6 +96,7 @@ describe('api client', () => {
       minOut: 1n,
       maxNetworkFee: 2000n,
       nonce: '01'.repeat(8),
+      orderAddress: 'bchtest:pexample',
     });
     const init = fetchMock.mock.calls[0]?.[1];
     expect(JSON.parse(String(init?.body))).toMatchObject({
