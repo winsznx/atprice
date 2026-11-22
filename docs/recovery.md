@@ -17,6 +17,16 @@ Get the file:
 
 - Build it yourself: `pnpm install --frozen-lockfile && pnpm build`, or just `pnpm --filter @atprice/recover build` after the workspace packages are built. The files land in `apps/recover/dist/`, and the build prints each file's SHA-256 and writes it to `apps/recover/dist/manifest.json`.
 - Or save https://atprice.cash/recover. The website serves the same bytes from the same manifest, so you can compare its SHA-256 with your own build.
+- Or download it from a [GitHub release](https://github.com/winsznx/atprice/releases). Each release attaches both files.
+
+SHA-256 of the v1.0.0 files, built from the `v1.0.0` tag:
+
+| File                                 | SHA-256                                                            |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| `atprice-recover-mainnet-1.0.0.html` | `7324d6ed9c827125b2a5c288ba790fde0b8032fc201c6e2782ee42dd10376d51` |
+| `atprice-recover-chipnet-1.0.0.html` | `4e18793d0585fa5680b1750075f360250d9b90bde4e58a958beec70efde594fe` |
+
+Check a file before you open it with `shasum -a 256 <file>` on macOS or `sha256sum <file>` on Linux. If the hash doesn't match, don't use the file.
 
 Use it:
 
