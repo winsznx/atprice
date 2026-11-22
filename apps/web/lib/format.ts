@@ -152,8 +152,10 @@ export const formatSignedUnits = (units: bigint, decimals: number, mode: AmountM
   `${units < 0n ? '−' : '+'}${formatUnits(units < 0n ? -units : units, decimals, mode)}`;
 
 /** Middle truncation for hashes and addresses (DD 7.11): first 8 and last 6 of the payload. */
+const CASH_ADDRESS_PREFIX = /^(bitcoincash|bchtest|bchreg):/;
+
 export const truncateMiddle = (value: string, head = 8, tail = 6): string => {
-  const payload = value.includes(':') ? value.slice(value.indexOf(':') + 1) : value;
+  const payload = value.replace(CASH_ADDRESS_PREFIX, '');
   return payload.length <= head + tail + 1 ? payload : `${payload.slice(0, head)}…${payload.slice(-tail)}`;
 };
 
