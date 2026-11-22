@@ -1,0 +1,78 @@
+pragma cashscript ^0.14.0;
+
+// Cauldron V0 pool redeem script around the 20-byte owner hash (@cashlab/cauldron 1.0.3, cauldron_poolv0).
+bytes constant POOL_PREFIX = 0x746376a914;
+bytes constant POOL_SUFFIX = 0x88ac67c0d1c0ce88c25288c0cdc0c788c0c6c0d095c0c6c0cc9490539502e80396c0cc7c94c0d3957ca268;
+
+// A sell order: a fungible CashToken in, BCH out, filled through one genuine Cauldron V0 pool.
+// tokenCategory is in introspection byte order, the reverse of the category ID shown by explorers.
+// minOut is the gross payout: the user's minimum net proceeds plus the 2000 sats the order UTXO holds.
+contract AtPriceSell(
+    bytes20 ownerPkh,
+    bytes recipientLockingBytecode,
+    bytes32 tokenCategory,
+    int minOut,
+    int maxNetworkFee,
+    bytes8 nonce
+) {
+    function execute(bytes20 poolPkh) {
+        require(nonce != 0x0000000000000000, "nonce must be non-zero");
+        require(this.activeInputIndex == 1, "order must be input 1");
+        require(tx.inputs.length == 2, "exactly two inputs");
+        require(tx.outputs.length == 2, "exactly two outputs");
+
+        bytes poolScript = POOL_PREFIX + poolPkh + POOL_SUFFIX;
+        require(tx.inputs[0].lockingBytecode == new LockingBytecodeP2SH32(hash256(poolScript)), "input 0 is not a Cauldron V0 pool");
+        // Pushing only the redeem script leaves OP_DEPTH at 0, which selects the pool's exchange branch.
+        require(tx.inputs[0].unlockingBytecode == 0x44 + poolScript, "pool must be spent through its exchange branch");
+        require(tx.outputs[0].lockingBytecode == tx.inputs[0].lockingBytecode, "pool must continue at output 0");
+        require(tx.inputs[0].tokenCategory == tokenCategory, "pool input holds another token");
+        require(tx.outputs[0].tokenCategory == tokenCategory, "pool output holds another token");
+
+        require(tx.inputs[1].tokenCategory == tokenCategory, "sell order holds another token");
+
+        int b0 = tx.inputs[0].value;
+        int t0 = tx.inputs[0].tokenAmount;
+        int b1 = tx.outputs[0].value;
+        int t1 = tx.outputs[0].tokenAmount;
+        require(t1 - t0 == tx.inputs[1].tokenAmount, "every order token must go into the pool");
+
+        int bchOut = b0 - b1;
+        require(tx.outputs[1].lockingBytecode == recipientLockingBytecode, "payout must go to the recipient");
+        require(tx.outputs[1].tokenCategory == 0x, "payout must not hold tokens");
+        require(tx.outputs[1].value >= minOut, "payout below minOut");
+
+        require(bchOut + tx.inputs[1].value - tx.outputs[1].value <= maxNetworkFee, "network fee above maxNetworkFee");
+
+        // Taking one satoshi more out of the pool would break its constant-product rule: no BCH is left behind.
+        int w = bchOut + 1;
+        require((b1 - 1 - w * 3 / 1000) * t1 < b0 * t0, "fill leaves BCH in the pool");
+    }
+
+    function cancel() {
+        int i = this.activeInputIndex;
+        require(i > 0, "order cannot be input 0");
+        require(tx.inputs[0].lockingBytecode == new LockingBytecodeP2PKH(ownerPkh), "input 0 must be the owner");
+        require(tx.outputs.length <= tx.inputs.length, "too many outputs");
+
+        require(tx.outputs[i].lockingBytecode == new LockingBytecodeP2PKH(ownerPkh), "refund must go to the owner");
+        require(tx.outputs[i].tokenCategory == tx.inputs[i].tokenCategory, "refund must keep the token category");
+        require(tx.outputs[i].tokenAmount == tx.inputs[i].tokenAmount, "refund must keep the token amount");
+        require(tx.outputs[i].nftCommitment == tx.inputs[i].nftCommitment, "refund must keep the NFT commitment");
+        require(tx.outputs[i].value >= tx.inputs[i].value - maxNetworkFee, "refund below value minus maxNetworkFee");
+    }
+
+    function cancelWithSig(pubkey ownerPk, sig ownerSig) {
+        int i = this.activeInputIndex;
+        require(tx.outputs.length <= tx.inputs.length + 1, "too many outputs");
+        require(hash160(ownerPk) == ownerPkh, "not the owner key");
+
+        require(tx.outputs[i].lockingBytecode == new LockingBytecodeP2PKH(ownerPkh), "refund must go to the owner");
+        require(tx.outputs[i].tokenCategory == tx.inputs[i].tokenCategory, "refund must keep the token category");
+        require(tx.outputs[i].tokenAmount == tx.inputs[i].tokenAmount, "refund must keep the token amount");
+        require(tx.outputs[i].nftCommitment == tx.inputs[i].nftCommitment, "refund must keep the NFT commitment");
+        require(tx.outputs[i].value >= tx.inputs[i].value - maxNetworkFee, "refund below value minus maxNetworkFee");
+
+        require(checkSig(ownerSig, ownerPk), "invalid owner signature");
+    }
+}

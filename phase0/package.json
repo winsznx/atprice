@@ -1,0 +1,22 @@
+{
+  "name": "@atprice/phase0",
+  "private": true,
+  "type": "module",
+  "description": "Phase 0 feasibility harness: chipnet proofs for PRD Q1-Q4",
+  "dependencies": {
+    "@bitauth/libauth": "3.1.0-next.8",
+    "@cashlab/cauldron": "1.0.3",
+    "@cashlab/common": "1.0.4",
+    "@electrum-cash/network": "4.4.8",
+    "@electrum-cash/tcp-socket": "4.2.0",
+    "cashc": "0.14.0",
+    "cashscript": "0.14.0",
+    "@atprice/core": "workspace:*",
+    "@atprice/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "tsx": "4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

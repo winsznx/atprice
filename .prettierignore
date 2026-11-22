@@ -1,0 +1,6 @@
+internal/
+pnpm-lock.yaml
+**/artifacts/*.json
+.next/
+dist/
+packages/contracts/src/artifacts.ts
