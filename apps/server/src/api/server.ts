@@ -241,7 +241,7 @@ export const buildServer = async (ctx: ApiContext): Promise<FastifyInstance> => 
     const sats = observed ? (stats.liquidity_sats ?? '0') : '0';
     const tokens = observed ? (stats.liquidity_tokens ?? '0') : '0';
     return {
-      slug: market.symbol.toLowerCase(),
+      slug: `bch-${market.symbol.toLowerCase()}`,
       tokenId: market.tokenCategory,
       symbol: market.symbol,
       name: market.name,

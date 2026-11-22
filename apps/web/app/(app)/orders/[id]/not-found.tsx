@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
+import { notFoundMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = { title: 'Order not found' };
+export const metadata: Metadata = notFoundMetadata('Order not found');
 
 /** order-detail.md "Route": a malformed id is a 404 that says what an order id is. */
 export default function InvalidOrderId() {

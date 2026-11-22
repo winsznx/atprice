@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import { MarketsPage } from '@/components/markets/markets-page';
 import { loadMarkets } from '@/components/markets/server-data';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Markets',
-  description: 'Bitcoin Cash token markets backed by Cauldron pools, with live rates, liquidity and availability.',
-};
+  description:
+    'Bitcoin Cash token markets backed by Cauldron pools, with live rates, liquidity and availability. Each one takes non-custodial limit orders.',
+  path: '/markets',
+});
 
 export default async function MarketsRoute() {
   const markets = await loadMarkets();

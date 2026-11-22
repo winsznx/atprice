@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Network } from '@atprice/core';
 import { z } from 'zod';
+import { SITE_URL } from '@/lib/seo';
 
 /** Named failures of serving the Recover file; each fails `next build`, never a silent fallback. */
 export class RecoverFileError extends Error {
@@ -79,10 +80,14 @@ export const loadRecoverFile = async (network: Network, dist: string = RECOVER_D
   return { html, sha256, csp: entry.csp, file: entry.file };
 };
 
-/** The response headers `/recover` sends: the file's own CSP, plus its hash for anyone checking. */
+/**
+ * The response headers `/recover` sends: the file's own CSP, plus its hash for anyone checking. The
+ * canonical travels as a header because the file's bytes are fixed by its published hash.
+ */
 export const recoverHeaders = (file: RecoverFile): Record<string, string> => ({
   'content-type': 'text/html; charset=utf-8',
   'content-security-policy': file.csp,
   'x-atprice-recover-sha256': file.sha256,
   'cache-control': 'public, max-age=300, must-revalidate',
+  link: `<${SITE_URL}/recover>; rel="canonical"`,
 });

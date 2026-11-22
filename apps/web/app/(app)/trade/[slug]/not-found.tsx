@@ -1,5 +1,9 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
+import { notFoundMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = notFoundMetadata('Market not found');
 
 export default function MarketNotFound() {
   return (

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { marketBySlug, pairText } from '@/components/trade/market';
 import { TradeScreen } from '@/components/trade/trade-screen';
+import { notFoundMetadata, pageMetadata } from '@/lib/seo';
 
 interface TradePageProps {
   readonly params: Promise<{ slug: string }>;
@@ -12,13 +13,16 @@ const single = (value: string | string[] | undefined): string | null =>
   typeof value === 'string' ? value : null;
 
 export async function generateMetadata({ params }: TradePageProps): Promise<Metadata> {
-  const market = marketBySlug((await params).slug);
-  return market === undefined
-    ? { title: 'Market not found' }
-    : {
-        title: `Trade ${pairText(market)}`,
-        description: `Place a ${pairText(market)} limit order on Bitcoin Cash. The order lives in its own contract and fills when one Cauldron pool pays your minimum.`,
-      };
+  const { slug } = await params;
+  const market = marketBySlug(slug);
+  if (market === undefined) return notFoundMetadata('Market not found');
+  const pair = pairText(market);
+  return pageMetadata({
+    title: `Trade ${pair}`,
+    shareTitle: `Trade ${pair} on AtPrice`,
+    description: `Place a ${pair} limit order on Bitcoin Cash. The order lives in its own contract and fills when one Cauldron pool pays your minimum. Cancel any time.`,
+    path: `/trade/${slug}`,
+  });
 }
 
 /** trade.md: the slug comes from the bundled allowlist, so an unknown one is a 404 with no API call. */

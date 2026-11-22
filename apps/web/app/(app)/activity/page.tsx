@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ActivityScreen } from '@/components/orders/activity/activity-screen';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Activity',
-  description: 'Every funding, fill and cancel transaction of AtPrice orders, with its chain state.',
-};
+  description:
+    'Every funding, fill and cancel transaction of AtPrice orders on Bitcoin Cash, with its confirmation state and explorer link.',
+  path: '/activity',
+});
 
 function ActivityFallback() {
   return (

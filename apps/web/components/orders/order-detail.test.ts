@@ -14,7 +14,7 @@ import {
   raceLost,
   unexpectedSpend,
 } from './order-detail';
-import { isOrderId, openGraphDescription, openGraphTitle, titleBlock } from './order-title';
+import { fundedText, isOrderId, openGraphDescription, openGraphTitle, orderHeadline, titleBlock } from './order-title';
 import { event, FUNDING_TXID, makeOrder, makeSellOrder, OWNER_PKH, SETTLEMENT_TXID } from './test-fixtures';
 
 const MATCH: NetworkCheck = { status: 'match' };
@@ -87,6 +87,12 @@ describe('order-detail.md route and title block', () => {
     const order = makeOrder();
     expect(openGraphTitle(order)).toBe('Buy PUSDTEST at 460.00 PUSDTEST per BCH on AtPrice');
     expect(openGraphDescription(order, 'Open')).toBe('Status: Open. Funded 22 Nov 2026.');
+  });
+
+  it('gives the share card the headline and funding date without the site name', () => {
+    const order = makeOrder();
+    expect(orderHeadline(order)).toBe('Buy PUSDTEST at 460.00 PUSDTEST per BCH');
+    expect(fundedText(order)).toBe('Funded 22 Nov 2026.');
   });
 });
 

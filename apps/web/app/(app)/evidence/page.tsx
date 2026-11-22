@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { EvidencePage } from '@/components/evidence/evidence-page';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Evidence',
   description:
     'Every completed AtPrice order, read from the blockchain, with explorer links and a check you can run from your own browser.',
-};
+  path: '/evidence',
+});
 
 const TXID = /^[0-9a-fA-F]{64}$/;
 

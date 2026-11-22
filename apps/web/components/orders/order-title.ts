@@ -52,20 +52,27 @@ export const titleBlock = (order: Order): TitleBlock => {
   };
 };
 
-/** Open Graph title: `Buy PUSD at 460.00 PUSD per BCH on AtPrice`. No addresses. */
-export const openGraphTitle = (order: Order): string => {
+/** `Buy PUSD at 460.00 PUSD per BCH`: the share card's title. No addresses. */
+export const orderHeadline = (order: Order): string => {
   const symbol = tokenSymbol(order.tokenCategory);
   const limit = limitText(order);
   const verb = order.side === 'buy' ? 'Buy' : 'Sell';
-  return limit === null ? `${verb} ${symbol} on AtPrice` : `${verb} ${symbol} at ${limit} on AtPrice`;
+  return limit === null ? `${verb} ${symbol}` : `${verb} ${symbol} at ${limit}`;
 };
+
+/** Open Graph title: `Buy PUSD at 460.00 PUSD per BCH on AtPrice`. No addresses. */
+export const openGraphTitle = (order: Order): string => `${orderHeadline(order)} on AtPrice`;
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
 
-/** `Status: Open. Funded 22 Nov 2026.` (UTC date: metadata is rendered on the server). */
-export const openGraphDescription = (order: Order, statusLabel: string): string => {
+/** `Funded 22 Nov 2026.` (UTC date: metadata and share cards are rendered on the server). */
+export const fundedText = (order: Order): string => {
   const funding = order.events.find((event) => event.kind === 'funding');
   const date = new Date(funding?.firstSeenAt ?? order.createdAt);
-  return `Status: ${statusLabel}. Funded ${date.getUTCDate()} ${MONTHS[date.getUTCMonth()] ?? ''} ${date.getUTCFullYear()}.`;
+  return `Funded ${date.getUTCDate()} ${MONTHS[date.getUTCMonth()] ?? ''} ${date.getUTCFullYear()}.`;
 };
+
+/** `Status: Open. Funded 22 Nov 2026.` */
+export const openGraphDescription = (order: Order, statusLabel: string): string =>
+  `Status: ${statusLabel}. ${fundedText(order)}`;
 

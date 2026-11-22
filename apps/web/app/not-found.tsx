@@ -1,6 +1,10 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Lockup } from '@/components/mark';
 import { buttonVariants } from '@/components/ui/button';
+import { notFoundMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = notFoundMetadata('Page not found');
 
 export default function NotFound() {
   return (

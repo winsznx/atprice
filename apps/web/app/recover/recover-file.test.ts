@@ -38,7 +38,11 @@ describe('loadRecoverFile', () => {
     const file = await loadRecoverFile('chipnet', dist);
     // #then the bytes and headers are the build's own
     expect(new TextDecoder().decode(file.html)).toBe(HTML);
-    expect(recoverHeaders(file)).toMatchObject({ 'content-security-policy': CSP, 'x-atprice-recover-sha256': sha(HTML) });
+    expect(recoverHeaders(file)).toMatchObject({
+      'content-security-policy': CSP,
+      'x-atprice-recover-sha256': sha(HTML),
+      link: '<https://atprice.cash/recover>; rel="canonical"',
+    });
   });
 
   it('refuses a file that differs from the manifest hash', async () => {

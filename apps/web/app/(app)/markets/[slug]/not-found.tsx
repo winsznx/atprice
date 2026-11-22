@@ -1,4 +1,8 @@
+import type { Metadata } from 'next';
 import { MarketNotFound } from '@/components/markets/market-detail-page';
+import { notFoundMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = notFoundMetadata('Market not found');
 
 export default function MarketNotFoundRoute() {
   return (

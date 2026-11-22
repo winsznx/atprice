@@ -15,12 +15,15 @@ import { api } from '@/lib/api/client';
 import { isApiError } from '@/lib/api/errors';
 import type { MarketSummary } from '@/lib/api/schemas';
 import { defaultMarket } from '@/lib/markets';
+import { pageMetadata } from '@/lib/seo';
 import { cn } from '@/lib/utils';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Trade',
-  description: 'Place a limit order on a Bitcoin Cash token market.',
-};
+  description:
+    'Place a non-custodial limit order on a Bitcoin Cash token market. It fills through a Cauldron pool once the price reaches your limit, and you can cancel any time.',
+  path: '/trade',
+});
 
 /** The market list changes with pool liquidity, so `/trade` decides on every request. */
 export const dynamic = 'force-dynamic';

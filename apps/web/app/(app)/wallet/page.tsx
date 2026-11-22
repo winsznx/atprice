@@ -1,11 +1,15 @@
 import type { Metadata } from 'next';
 import { WalletPageContent } from '@/components/wallet/wallet-page-content';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+/** Shows only the connected wallet, so there is nothing here for a search engine to list. */
+export const metadata: Metadata = pageMetadata({
   title: 'Wallet',
   description:
-    'Connect a WizardConnect wallet and see what AtPrice can see from it: owner address, network and balances.',
-};
+    'Connect a WizardConnect wallet and see what AtPrice can see from it: owner address, network and balances. Your keys stay in your wallet.',
+  path: '/wallet',
+  indexable: false,
+});
 
 export default function WalletPage() {
   return (
