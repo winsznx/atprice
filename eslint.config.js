@@ -9,6 +9,8 @@ export default tseslint.config(
       '**/dist/**',
       '**/.next/**',
       'internal/**',
+      '.local/**',
+      '.vercel/**',
       'phase0/**',
       '**/next-env.d.ts',
       '**/artifacts/**',
