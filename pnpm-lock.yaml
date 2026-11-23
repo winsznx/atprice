@@ -300,11 +300,11 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       '@cashlab/common':
-        specifier: 1.0.5
-        version: 1.0.5
+        specifier: 1.0.6
+        version: 1.0.6
       '@fastify/cors':
-        specifier: 11.4.1
-        version: 11.4.1
+        specifier: 11.4.3
+        version: 11.4.3
       '@fastify/helmet':
         specifier: 13.2.0
         version: 13.2.0
@@ -614,8 +614,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       '@cashlab/common':
-        specifier: 1.0.4
-        version: 1.0.4
+        specifier: 1.0.6
+        version: 1.0.6
       '@electrum-cash/network':
         specifier: 4.4.8
         version: 4.4.8
@@ -738,11 +738,11 @@ packages:
   '@cashlab/cauldron@1.0.3':
     resolution: {integrity: sha512-prWQTiXf9sUpqP8qMK2pr/Y5RQw1b1hk5aH3nqZEyTF46fdaDyQwoKwM+szPrLQhxarLgEHWKFSAPL2Ga+uoHQ==}
 
-  '@cashlab/common@1.0.4':
-    resolution: {integrity: sha512-XkT0rFeyo3p0CPHVOKvG2SnBHM0U2gp6TA7aIserlRhJNoQ0xWz8UJ0hXHKEtXqECq/EDtuoK1Uy1VIKactYuQ==}
-
   '@cashlab/common@1.0.5':
     resolution: {integrity: sha512-qMzoOJSkWyWdttNn956MRb1dZHqVaB4s0HmQyn+4jOm4ipgLhazsRdJoa6elZeHSA6ofMEZpTXjXUQRSeTYjmw==}
+
+  '@cashlab/common@1.0.6':
+    resolution: {integrity: sha512-iFelTuMqjUhV/DPjp02+76C8POtLylSZUNZpUUdx9cJUWBtIpBZxKFPFqHeh+3SUrW6jUOwto2DqY18Bj3NJCg==}
 
   '@cashscript/utils@0.14.0':
     resolution: {integrity: sha512-gPCImBQAOyPu8ndHxvciiqBz5cjTneSWqzQdQoPOZH5zNQnAdzZ4bYykzgI7DOfCGum32DHFmusqm5GrAyiT4A==}
@@ -978,8 +978,8 @@ packages:
   '@fastify/ajv-compiler@4.0.8':
     resolution: {integrity: sha512-xYcAFYoyP/NELMgj6I7LmMAmiqeXMal0wsM2SgueN9OyMr6bVKHomO9OxuStC7bIAEl4Z3JXBbDPwpXRp59NPQ==}
 
-  '@fastify/cors@11.4.1':
-    resolution: {integrity: sha512-WuPATGGyc3YzpOfumovBJ4xC2RPBBFyDFElwldFRBCgM2G27xH9DnXTho9+nc2Ho6gLD1hKTetdOntR+G38+7A==}
+  '@fastify/cors@11.4.3':
+    resolution: {integrity: sha512-6NNFNR1i9t1oG1WlQftwc2ugElFm4cG75ylYyGNiKKiyxlVGueneup9MQ9Nd3eI4lT6kVOJaxV1Jqa727/E4jg==}
 
   '@fastify/deepmerge@3.2.4':
     resolution: {integrity: sha512-kc8GQq5gX9RRhw0rov3DMrN8wS8yRlxJRdDzsYwwdBV/wazuVgc/1K7CKL90tlvu3RlHan6Y0R0aE3nJtBz2eQ==}
@@ -3697,11 +3697,11 @@ snapshots:
     dependencies:
       '@cashlab/common': 1.0.5
 
-  '@cashlab/common@1.0.4':
+  '@cashlab/common@1.0.5':
     dependencies:
       '@bitauth/libauth': 3.1.0-next.6
 
-  '@cashlab/common@1.0.5':
+  '@cashlab/common@1.0.6':
     dependencies:
       '@bitauth/libauth': 3.1.0-next.6
 
@@ -3899,7 +3899,7 @@ snapshots:
       ajv-formats: 3.0.1
       fast-uri: 4.2.3
 
-  '@fastify/cors@11.4.1':
+  '@fastify/cors@11.4.3':
     dependencies:
       fastify-plugin: 6.0.1
       toad-cache: 3.7.4
